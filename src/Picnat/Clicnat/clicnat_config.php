@@ -5,8 +5,6 @@ namespace \Picnat\Clicnat;
  * @brief Intéroge le fichier de configuration XML
  */
 class clicnat_config extends DOMDocument {
-	private $doc;
-
 	function __construct($fichier) {
 		parent::__construct('1.0', 'UTF-8');
 		if (!$this->load($fichier)) {
