@@ -204,8 +204,8 @@ abstract class clicnat_iterateur implements \Iterator {
 	public function tri($sens) {
 		if ($sens == 'asc') {
 			sort($this->ids);
-		} else {
-			rsort($this->ids);
+			return;
 		}
+		rsort($this->ids);
 	}
 }
