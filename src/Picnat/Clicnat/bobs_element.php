@@ -111,7 +111,7 @@ class bobs_element extends bobs_tests {
 
 		// if it's first insert we must build sql
 		if (!$qm->ready($table.BOBS_INSERT_QUERY_SUFFIX)) {
-			$values = array();
+			$values = [];
 			$sql = "insert into $table (";
 			foreach ($data as $k => $v) {
 				$values[] = $v;
@@ -147,7 +147,7 @@ class bobs_element extends bobs_tests {
 
 	public function update_field_null($champ, $sans_dmaj_update=false) {
 		$sql = sprintf("update {$this->table} set $champ = null where {$this->pk} = $1");
-		$q = bobs_qm()->query($this->db, md5($sql), $sql, array($this->__get($this->pk)));
+		$q = bobs_qm()->query($this->db, md5($sql), $sql, [$this->__get($this->pk)]);
 		if ($q) {
 			$this->$champ = null;
 			if (!$sans_dmaj_update)
@@ -187,7 +187,7 @@ class bobs_element extends bobs_tests {
 		}
 
 		$sql = sprintf("update {$this->table} set $champ = $2 where {$this->pk} = $1");
-		$q = bobs_qm()->query($this->db, md5($sql), $sql, array($id, $valeur));
+		$q = bobs_qm()->query($this->db, md5($sql), $sql, [$id, $valeur]);
 		if (pg_affected_rows($q) == 0) {
 			throw new \Exception("Aucune modification enregistrée");
 		}
@@ -226,7 +226,7 @@ class bobs_element extends bobs_tests {
 		return pg_fetch_assoc($q);
 	}
 
-	public static function query_fetch_all($db, $sql, $opts = array()) {
+	public static function query_fetch_all($db, $sql, $opts = []) {
 		self::s_teste_ressource($db);
 
 		$q = self::query($db, $sql, $opts);
@@ -241,9 +241,9 @@ class bobs_element extends bobs_tests {
 
 		// probably no result, but return
 		// array for count and foreach loops
-		if ($t == false)
-			return array();
-
+		if (!t) {
+			return [];
+		}
 		return $t;
 	}
 
@@ -260,7 +260,7 @@ class bobs_element extends bobs_tests {
 	 * @brief transforme une colonne array de la base en un tableau d'entiers
 	 */
 	public function array_integer_get($prop) {
-		return split(',', str_replace(array('{','}'), '', $this->$prop));
+		return split(',', str_replace(['{','}'], '', $this->$prop));
 	}
 
 	/**
@@ -269,7 +269,7 @@ class bobs_element extends bobs_tests {
 	 * {3,2,1} => (3,2,1)
 	 */
 	public function array_integer_get_sqlin($prop) {
-		return str_replace(array('{','}'), array('(',')'), $this->$prop);
+		return str_replace(['{','}'], ['(',')'], $this->$prop);
 	}
 
 	/**
@@ -280,14 +280,16 @@ class bobs_element extends bobs_tests {
 	 */
 	public static function array2tabtxt($tab, $fp) {
 		$l = '';
-		foreach ($tab[0] as $k=>$v)
+		foreach ($tab[0] as $k=>$v) {
 			$l .= $k."\t";
+		}
 		fwrite($fp, sprintf("%s\r\n", trim($l, "\t")));
 
 		foreach ($tab as $ltab) {
 			$l = '';
-			foreach ($ltab as $k => $v)
+			foreach ($ltab as $k => $v) {
 				$l .= '"'.(empty($v)?' ':$v)."\"\t";
+			}
 
 			fwrite($fp, sprintf("%s\r\n", trim($l, "\t")));
 		}
@@ -300,7 +302,7 @@ class bobs_element extends bobs_tests {
 	 * @return un tableau
 	 */
 	public function table_columns() {
-		$q = bobs_qm($this->db, 'columns', self::sql_columns, array($this->table));
+		$q = bobs_qm($this->db, 'columns', self::sql_columns, [$this->table]);
 		$t = self::fetch_all($q);
 		return array_column($t, 'column_name');
 	}
@@ -308,7 +310,7 @@ class bobs_element extends bobs_tests {
 	const sql_column_type = "select data_type from information_schema.columns where table_name=$1 and column_name=$2";
 
 	public function column_type($col) {
-		$q = bobs_qm()->query($this->db, 'column_type', self::sql_column_type,array($this->table, $col));
+		$q = bobs_qm()->query($this->db, 'column_type', self::sql_column_type,[$this->table, $col]);
 		$r = self::fetch($q);
 		return isset($r['data_type'])?$r['data_type']:false;
 	}
