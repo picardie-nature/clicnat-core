@@ -1,0 +1,17 @@
+{
+   "name": "picnat/clicnatcore",
+   "description": "clicnat core lib",
+   "type": "library",
+   "autoload": {
+       "psr-4" : {
+          "\\": "src"
+       },
+       "files": [
+          "src/defines.php",
+          "src/helpers.php"
+       ]
+   },
+   "require": {
+   }
+}
+
