@@ -21,7 +21,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 		$nom = trim($nom);
 
 		if (empty($nom)) {
-			throw new InvalidArgumentException('pas de nom');
+			throw new \InvalidArgumentException('pas de nom');
 		}
 
 		// $this->table, $colque des minuscules
@@ -29,9 +29,9 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 
 		// on coupe au nom de l'autorité
 		$n = strpos($nom, '(');
-		if ($n !== false)
+		if ($n !== false) {
 			$nom = trim(substr($nom, 0, $n));
-		$old = '';
+		}
 
 		static $subst_chars;
 
@@ -56,10 +56,10 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 				'ï' => 'i'
 			);
 
-			$subst_chars = array(
+			$subst_chars = [
 				array_keys($defs),
 				array_values($defs)
-			);
+			];
 
 			unset($defs);
 		}
@@ -128,7 +128,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 			foreach ($especes_id as $id) {
 				try {
 					$especes[] = new $classe($db, $id);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					bobs_log("recherche $classe pas de résultat pour id: $id");
 					continue;
 				}

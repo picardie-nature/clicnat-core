@@ -10,10 +10,10 @@ class bobs_gpx_wpt {
 	public function __construct($dom_element) {
 		$this->latitude = $dom_element->getAttribute('lat');
 		if (empty($this->latitude))
-			throw new Exception('latitude vide');
+			throw new \Exception('latitude vide');
 		$this->longitude = $dom_element->getAttribute('lon');
 		if (empty($this->longitude))
-			throw new Exception('longitude vide');
+			throw new \Exception('longitude vide');
 		foreach ($dom_element->getElementsByTagName('cmt') as $cmt) {
 			$this->commtr = $cmt->nodeValue;
 		}

@@ -38,17 +38,17 @@ class bobs_calendrier extends bobs_element {
 		$sql = 'select utilisateur.* from utilisateur,calendriers_participants
 			where calendriers_participants.id_utilisateur=utilisateur.id_utilisateur
 			and id_date=$1';
-		$q = bobs_qm()->query($this->db, 'cal-get-particip', $sql, array($this->id_date));
+		$q = bobs_qm()->query($this->db, 'cal-get-particip', $sql, [$this->id_date]);
 		return self::fetch_all($q);
 	}
 
 	public function ajoute_participant($id_utilisateur) {
 		self::cli($id_utilisateur);
 		return parent::insert($this->db, 'calendriers_participants',
-			array(
+			[
 				'id_utilisateur' => $id_utilisateur,
 				'id_date' => $this->id_date
-			)
+			]
 		);
 	}
 
@@ -176,10 +176,11 @@ class bobs_calendrier extends bobs_element {
 	 */
 	public static function get_dates_tag($db, $tag) {
 		self::cls($tag);
-		if (strlen($tag) > self::tag_max_length)
-			throw new Exception('tag trop long');
-		$q = bobs_qm()->query($db, 'cal_get_dates_tag', self::sql_dates_tag, array($tag));
-		$t = array();
+		if (strlen($tag) > self::tag_max_length) {
+			throw new \Exception('tag trop long');
+		}
+		$q = bobs_qm()->query($db, 'cal_get_dates_tag', self::sql_dates_tag, [$tag]);
+		$t = [];
 		while ($r = self::fetch($q)) {
 			$t[] = $r['id_date'];
 		}
