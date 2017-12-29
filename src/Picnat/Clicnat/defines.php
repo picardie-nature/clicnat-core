@@ -23,3 +23,7 @@ define('NICHEUR_CERTAIN', 3);
 define('NICHEUR_PROBABLE', 2);
 define('NICHEUR_POSSIBLE', 1);
 define('PAS_NICHEUR', 0);
+
+define('BOBS_TAGS_NIDIF', '120,121,122,123');
+define('TAG_PROTOCOLE', 'ETUD');
+define('TAG_STRUCTURE', 'STRU');

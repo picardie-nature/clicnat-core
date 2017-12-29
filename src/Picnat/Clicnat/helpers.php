@@ -2,7 +2,6 @@
 
 namespace \Picnat\Clicnat;
 
-
 if (!function_exists('array_column')) {
 	/**
 	 * @brief Retourne les valeurs d'une colonne d'un tableau d'entrée (en attendant PHP 5.5)
@@ -142,4 +141,18 @@ function aonfm_tri_sys2($a,$b) {
 function aonfm_tri_systematique($a, $b) {
 	if ($a['objet']->systematique == $b['objet']->systematique) return 0;
 	return ((int)$a['objet']->systematique > (int)$b['objet']->systematique)?1:-1;
+}
+
+/**
+  * @return bobs_citation
+  */
+function get_citation($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_citation', 'id_citation');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
 }
