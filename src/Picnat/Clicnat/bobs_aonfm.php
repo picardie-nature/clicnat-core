@@ -174,7 +174,7 @@ class bobs_aonfm {
 		foreach ($this->nicheurs as $nicheur) {
 			try {
 				if (empty($nicheur->carre_atlas)) $nicheur->def_carre_atlas();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				continue;
 			}
 			$f = "$dir_esp_annee/{$nicheur->carre_atlas}";
@@ -204,7 +204,7 @@ class bobs_aonfm {
 			}
 			$fo = fopen($f, 'w');
 			if (!$fo)
-				throw new Exception('Ne peut pas enregistrer le statut');
+				throw new \Exception('Ne peut pas enregistrer le statut');
 			fwrite($fo, $statut);
 			fclose($fo);
 		}
@@ -385,7 +385,7 @@ class bobs_aonfm {
 				$ok_pour_ajout = true;
 				try {
 					$nicheur->def_carre_atlas();
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					echo "Autre chose que espace_point: on passe";
 					$ok_pour_ajout=false;
 				}
@@ -414,7 +414,7 @@ class bobs_aonfm {
 				try {
 					$nicheur->def_carre_atlas();
 					$this->log_citations($nicheur);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					echo "Autre chose que espace_point: on passe";
 					$ok_pour_ajout=false;
 				}

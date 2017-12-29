@@ -20,7 +20,7 @@ class bobs_query_manager extends bobs_tests {
 		bobs_element::s_teste_ressource($db);
 
 		if (!is_array($args))
-			throw new InvalidArgumentException('$args is not array');
+			throw new \InvalidArgumentException('$args is not array');
 
 		// $sql peut être vide quand la requête a été préparée
 		self::cls($sql);
@@ -28,16 +28,16 @@ class bobs_query_manager extends bobs_tests {
 		self::cls($name);
 
 		if (empty($name))
-			throw new InvalidArgumentException('$name est vide');
+			throw new \InvalidArgumentException('$name est vide');
 
 		if (array_key_exists($name, $this->prepared)) {
 			$this->prepared[$name]['n'] += 1;
 		} else {
 			if (empty($sql))
-				throw new InvalidArgumentException('$sql is empty');
+				throw new \InvalidArgumentException('$sql is empty');
 			if (!pg_prepare($db, $name, $sql)) {
 				$err = pg_last_error($db);
-				throw new InvalidArgumentException("prepare query \"$name\" failed\n\n$sql\n$err\n");
+				throw new \InvalidArgumentException("prepare query \"$name\" failed\n\n$sql\n$err\n");
 			}
 			$this->prepared[$name] = [
 				'n' => 1,
@@ -50,7 +50,7 @@ class bobs_query_manager extends bobs_tests {
 		#name permet de se référer à la requete préparée
 		$q = pg_execute($db, $name, $args);
 		if (!$q) {
-			throw new Exception('query "'.$name.'" failed '.$sql.' '.pg_errormessage());
+			throw new \Exception('query "'.$name.'" failed '.$sql.' '.pg_errormessage());
 		}
 		$temps = microtime(true)-$start;
 		if ($this->prepared[$name]['n'] == 1) {

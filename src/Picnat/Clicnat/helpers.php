@@ -62,10 +62,10 @@ function csv_clean_string($s,$quote) {
 function tmpdir($path="/tmp", $prefix="clicnat") {
 	$fn = tempnam($path,$prefix);
 	if (!$fn)
-		throw new Exception('peut pas créer de dossier temporaire (tempnam)');
+		throw new \Exception('peut pas créer de dossier temporaire (tempnam)');
 	unlink($fn);
 	if (!mkdir($fn))
-		throw new Exception('peut pas créer de dossier temporaire (mkdir)');
+		throw new \Exception('peut pas créer de dossier temporaire (mkdir)');
 	return $fn;
 }
 

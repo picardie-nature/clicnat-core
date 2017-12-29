@@ -5,7 +5,7 @@ namespace \Picnat\Clicnat;
 /**
  * @brief Iterateur construit a partir d'un type enum de la base
  */
-class clicnat_db_type_enum implements Iterator {
+class clicnat_db_type_enum implements \Iterator {
 	protected $typname;
 	protected $position;
 	protected $valeurs;

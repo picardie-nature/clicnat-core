@@ -2,7 +2,7 @@
 
 namespace \Picnat\Clicnat;
 
-abstract class clicnat_iterateur implements Iterator {
+abstract class clicnat_iterateur implements \Iterator {
 	protected $db;
 	protected $position;
 	protected $ids;
@@ -16,10 +16,12 @@ abstract class clicnat_iterateur implements Iterator {
 	 * @param $hash identifiant utilisé pour l'enregistrement en session
 	 */
 	public function __construct($db, $ids, $hash = null) {
-		if (!is_array($ids))
-			throw new InvalidArgumentException('$ids doit être un tableau');
-		if (!is_resource($db))
-			throw new InvalidArgumentException('$db doit être une ressource');
+		if (!is_array($ids)) {
+			throw new \InvalidArgumentException('$ids doit être un tableau');
+		}
+		if (!is_resource($db)) {
+			throw new \InvalidArgumentException('$db doit être une ressource');
+		}
 		$this->db = $db;
 		$this->position = 0;
 		$this->ids = $ids;

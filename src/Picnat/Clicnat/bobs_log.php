@@ -8,7 +8,7 @@ function bobs_log($msg) {
 	$f = fopen(BOBS_LOG_FILE, "a+");
 
 	if (!$f)
-	throw new Exception('open log file failed '.BOBS_LOG_FILE);
+	throw new \Exception('open log file failed '.BOBS_LOG_FILE);
 
 	flock($f, LOCK_EX);
 	fprintf($f, "%s bobs-%s (sid=%s) %s\n",

@@ -72,7 +72,7 @@ class bobs_element extends bobs_tests {
 
 	public static function s_teste_ressource($db) {
 		if (@get_resource_type($db) != DB_RESOURCE_TYPE)
-			throw new InvalidArgumentException('$db doit être une resource pgsql');
+			throw new \InvalidArgumentException('$db doit être une resource pgsql');
 	}
 
 	public static function nextval($db, $sequence) {
@@ -80,7 +80,7 @@ class bobs_element extends bobs_tests {
 		self::cls($sequence);
 
 		if (empty($sequence))
-			throw new InvalidArgumentException('$sequence ne peut être vide');
+			throw new \InvalidArgumentException('$sequence ne peut être vide');
 
 		$q = bobs_qm()->query($db, 'nextval_'.$sequence, 'select nextval($1) as n', [$sequence]);
 		$r = self::fetch($q);
@@ -88,7 +88,7 @@ class bobs_element extends bobs_tests {
 		self::cli($r['n']);
 
 		if (empty($r['n']))
-			throw new Exception('nextval a échoué, identifiant vide');
+			throw new \Exception('nextval a échoué, identifiant vide');
 
 		return $r['n'];
 	}
@@ -98,13 +98,13 @@ class bobs_element extends bobs_tests {
 		self::cls($table);
 
 		if (empty($table))
-			throw new InvalidArgumentException('$table ne peut être vide');
+			throw new \InvalidArgumentException('$table ne peut être vide');
 
 		if (!is_array($data))
-			throw new InvalidArgumentException('$data doit être un tableau');
+			throw new \InvalidArgumentException('$data doit être un tableau');
 
 		if (get_resource_type($db) != DB_RESOURCE_TYPE)
-			throw new InvalidArgumentException('$db doit être une resource pgsql');
+			throw new \InvalidArgumentException('$db doit être une resource pgsql');
 
 		$qm = bobs_qm();
 		$sql = '';
@@ -129,7 +129,7 @@ class bobs_element extends bobs_tests {
 
 		if (!$q) {
 			echo "<pre>$sql</pre>";
-			throw new Exception('Problème lors de l\'insertion : '.pg_last_error());
+			throw new \Exception('Problème lors de l\'insertion : '.pg_last_error());
 		}
 
 	}
@@ -175,21 +175,21 @@ class bobs_element extends bobs_tests {
 			return true;
 
 		if (empty($this->pk))
-			throw new Exception("clé primaire non définie");
+			throw new \Exception("clé primaire non définie");
 
 		if (empty($this->table))
-			throw new Exception("table non définie");
+			throw new \Exception("table non définie");
 
 		$id = $this->__get($this->pk);
 
 		if (empty($id)) {
-			throw new Exception("Pas de valeur pour la clé primaire {$this->pk}");
+			throw new \Exception("Pas de valeur pour la clé primaire {$this->pk}");
 		}
 
 		$sql = sprintf("update {$this->table} set $champ = $2 where {$this->pk} = $1");
 		$q = bobs_qm()->query($this->db, md5($sql), $sql, array($id, $valeur));
 		if (pg_affected_rows($q) == 0) {
-			throw new Exception("Aucune modification enregistrée");
+			throw new \Exception("Aucune modification enregistrée");
 		}
 		if ($q) {
 			$this->$champ = $valeur;
@@ -210,18 +210,18 @@ class bobs_element extends bobs_tests {
 	 */
 	static function query($db, $sql, $opts=array()) {
 		if (get_resource_type($db) != DB_RESOURCE_TYPE)
-			throw new InvalidArgumentException('$db doit être une resource pgsql');
+			throw new \InvalidArgumentException('$db doit être une resource pgsql');
 
 		$q = @pg_query($db, $sql);
 		if (!$q)
-			throw new Exception('Erreur base de données '.pg_last_error().'<br/>'.$sql);
+			throw new \Exception('Erreur base de données '.pg_last_error().'<br/>'.$sql);
 
 		return $q;
 	}
 
 	public static function fetch($q) {
 		if (!is_resource($q))
-			throw new Exception('$q doit être une ressource');
+			throw new \Exception('$q doit être une ressource');
 			# retourne un tableau associatif contenant la ligne du résultat contenu dans $q
 		return pg_fetch_assoc($q);
 	}
@@ -235,7 +235,7 @@ class bobs_element extends bobs_tests {
 
 	public static function fetch_all($q) {
 		if (!is_resource($q))
-			throw new Exception('$q est pas une ressource');
+			throw new \Exception('$q est pas une ressource');
 		# retourne un tableau contenant toutes les lignes du resultat
 		$t = pg_fetch_all($q);
 
@@ -324,8 +324,9 @@ class bobs_element extends bobs_tests {
 			}
 		}
 
-		if (empty($delim))
-			throw new Exception('Date invalide - délimiteur introuvable');
+		if (empty($delim)) {
+			throw new \Exception('Date invalide - délimiteur introuvable');
+		}
 
 		list($jour, $mois, $annee) = explode($delim, $texte);
 

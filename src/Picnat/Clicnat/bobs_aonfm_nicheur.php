@@ -20,7 +20,7 @@ class bobs_aonfm_nicheur {
 			$citation = current($this->citations);
 			if (!is_object($citation)) {
 				print_r($this);
-				throw new Exception('$citation est pas un objet');
+				throw new \Exception('$citation est pas un objet');
 			}
 			$obs = $citation->get_observation();
 			$espace = $obs->get_espace();
@@ -29,7 +29,7 @@ class bobs_aonfm_nicheur {
 					$this->carre_atlas = $espace->l93_10x10_id_espace;
 					break;
 				default:
-					throw new Exception('ne sait pas encore faire');
+					throw new \Exception('ne sait pas encore faire');
 			}
 		}
 	}

@@ -35,15 +35,15 @@ class clicnat_mail {
 
 	public function envoi($destinataire) {
 		if (empty($this->sujet))
-			throw new Exception('Sujet vide');
+			throw new \Exception('Sujet vide');
 
 		if (empty($this->message))
-			throw new Exception('Message vide');
+			throw new \Exception('Message vide');
 
 		$hfrom = "From: {$this->from}\r\n";
 
 		if (!mail($destinataire, $this->sujet, $this->message, $this->headers.$hfrom, "-f{$this->from}")) {
-			throw new Exception('Message pas envoyé');
+			throw new \Exception('Message pas envoyé');
 		}
 
 		return true;

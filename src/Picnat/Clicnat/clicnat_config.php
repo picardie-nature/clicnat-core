@@ -10,14 +10,14 @@ class clicnat_config extends DOMDocument {
 	function __construct($fichier) {
 		parent::__construct('1.0', 'UTF-8');
 		if (!$this->load($fichier)) {
-			throw new Exception('échec chargement configuration');
+			throw new \Exception('échec chargement configuration');
 		}
 	}
 
 	public function query($xpath_q) {
 		$xp = new DOMXpath($this);
 		if (!$xp)
-			throw new Exception('expression : '.$xpath_q.' invalide');
+			throw new \Exception('expression : '.$xpath_q.' invalide');
 		return $xp->query($xpath_q);
 	}
 

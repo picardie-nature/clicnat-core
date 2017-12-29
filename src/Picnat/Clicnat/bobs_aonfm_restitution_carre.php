@@ -106,7 +106,7 @@ class bobs_aonfm_restitution_carre {
 		$q = bobs_qm()->query($this->db, 'aonfm_g_r1', $sql, array($this->id_espace, $this->annee, $id_espece));
 		$r = bobs_element::fetch($q);
 		if ($statut < 1) $statut = 0;
-		if ($statut > 3) throw new Exception('pas possible');
+		if ($statut > 3) throw new \Exception('pas possible');
 		$params = array(
 			$this->id_espace,
 			$this->annee,
