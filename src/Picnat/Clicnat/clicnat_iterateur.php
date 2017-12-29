@@ -201,10 +201,11 @@ abstract class clicnat_iterateur implements \Iterator {
 		return false;
 	}
 
-	public function tri($sens,$tri = null){
-		if ($sens == 'asc')
+	public function tri($sens) {
+		if ($sens == 'asc') {
 			sort($this->ids);
-		else
+		} else {
 			rsort($this->ids);
+		}
 	}
 }

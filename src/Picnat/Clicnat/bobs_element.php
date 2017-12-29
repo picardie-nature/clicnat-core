@@ -128,7 +128,7 @@ class bobs_element extends bobs_tests {
 		$q = $qm->query($db, $table.BOBS_INSERT_QUERY_SUFFIX, $sql, $data);
 
 		if (!$q) {
-			echo "<pre>$sql</pre>";
+			echo "<pre>".htmlentities($sql)."</pre>";
 			throw new \Exception('Problème lors de l\'insertion : '.pg_last_error());
 		}
 
