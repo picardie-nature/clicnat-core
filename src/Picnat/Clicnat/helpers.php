@@ -25,8 +25,9 @@ if (!function_exists('array_column')) {
 function get_db_type_enum($db, $typname) {
 	static $types;
 
-	if (!isset($types))
-		$types = array();
+	if (!isset($types)) {
+		$types = [];
+	}
 
 	if (!isset($types[$typname])) {
 		$types[$typname] = new clicnat_db_type_enum($db, $typname);
@@ -206,4 +207,87 @@ function get_espece_inpn($db, $id_or_array) {
 function clicnat_cmp_tri_tableau_especes_n_citations($a, $b) {
 	if ($a['n_citations'] == $b['n_citations']) return 0;
 	return ($a['n_citations'] > $b['n_citations'])? -1: 1;
+}
+
+function get_travail($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('clicnat_travaux', 'id_travail');
+	try {
+		return $mngr->get($db, $id_or_array, clicnat_travaux::instance($db, $id_or_array));
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+function get_texte($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('clicnat_textes', 'id_texte');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+function get_tag($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_tags', 'id_tag');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+function get_tag_by_ref($db, $ref) {
+	static $transltr;
+
+	if (!isset($transltr)) $transltr = array();
+
+	if (!array_key_exists($ref, $transltr))
+		$transltr[$ref] = bobs_tags::by_ref($db, $ref);
+
+	return $transltr[$ref];
+}
+
+function get_tache($db, $id) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('clicnat_tache', 'id_tache');
+	try {
+		return $mngr->get($db, $id);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+function get_structure($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr)) {
+		$mngr = new bobs_single_mngr('clicnat_structure', 'id_structure');
+	}
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+//JBH Get structure by name
+function get_structure_by_name($db, $ref) {
+	if (empty($ref))
+		throw new InvalidArgumentException('$ref est vide');
+	$q = bobs_qm()->query($db, 'structure_by_name', 'select id_structure from structures where nom=$1', array($ref));
+	$r = bobs_element::fetch($q);
+  $id_structure = $r['id_structure'];
+	$struct = new clicnat_structure($db, $id_structure);
+
+	return $struct;
+}
+
+function smarty_modifier_markdown_txt($txt) {
+	return clicnat_markdown_txt($txt);
 }
