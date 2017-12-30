@@ -15,6 +15,7 @@
    "require": {
       "html2text/html2text": "^4.1",
       "symfony/polyfill-mbstring": "^1.6",
-      "roderik/pwgen-php": "^0.1.7"
+      "roderik/pwgen-php": "^0.1.7",
+      "smarty/smarty": "^3.1"
    }
 }
