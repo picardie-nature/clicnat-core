@@ -102,3 +102,57 @@ if (!defined('CLICNAT_HIRONDELLE_ID_ESPECE_RIVIERE'))
 	define('CLICNAT_HIRONDELLE_ID_ESPECE_RIVIERE', 815);
 
 define('SRID_BY_DEFAULT', 4326);
+
+if (!defined('BIN_HISTOGRAMME_MOIS'))
+	define('BIN_HISTOGRAMME_MOIS', '/usr/local/bin/histogramme_mois');
+
+define('IMPORT_MAX_COL', 37);
+define('IMPORT_UPDIR', '/tmp');
+
+define('IMPORT_SESSION_N', 'imp_h');
+
+define('IMPORT_COL_OBS_OBSERV', 1);
+define('IMPORT_COL_OBS_LIEU', 2);
+define('IMPORT_COL_CIT_ORDRE', 3);
+define('IMPORT_COL_CIT_ESPECE', 4);
+define('IMPORT_COL_CIT_EFFECTIF', 5);
+//define('IMPORT_COL_CIT_EFFECTIF2', 6);
+define('IMPORT_COL_OBS_DATE', 7);
+define('IMPORT_COL_IGNORER', 8);
+define('IMPORT_COL_TEMPERATURE', 9);
+define('IMPORT_COL_CODE_FNAT', 10);
+define('IMPORT_COL_GENRE', 11);
+define('IMPORT_COL_AGE', 12);
+define('IMPORT_COL_COMMENTAIRE', 13);
+define('IMPORT_COL_HEURE', 14);
+define('IMPORT_COL_DUREE', 15);
+define('IMPORT_COL_LATITUDE_DMS', 16);
+define('IMPORT_COL_LONGITUDE_DMS', 17);
+define('IMPORT_COL_LATITUDE_D', 18);
+define('IMPORT_COL_LONGITUDE_D', 19);
+define('IMPORT_COL_CD_NOM', 20);
+define('IMPORT_COL_INDICE_FIA', 21);
+define('IMPORT_COL_PERIODE_DATE_A', 22);
+define('IMPORT_COL_PERIODE_DATE_B', 23);
+define('IMPORT_COL_WKT', 24);
+
+if (!defined('BIN_LISTE_ESPACES_SHP_ENGLOBANT'))
+	define('BIN_LISTE_ESPACES_SHP_ENGLOBANT','/usr/local/bin/shp_listes_espaces_englobant');
+
+// a garder tant qu'on utilise le double système de date
+define('MAINT_ANCIENNE_DATE',1);
+
+if (!defined('TAG_ATTENTE_VALIDATION'))
+	define('TAG_ATTENTE_VALIDATION', 'ATTV');
+
+if (!defined('TAG_HOMOLOGATION_NECESSAIRE'))
+	define('TAG_HOMOLOGATION_NECESSAIRE', 'LOGN');
+
+if (!defined('TAG_HOMLOGEE'))
+	define('TAG_HOMOLOGEE', 'LOGV');
+
+if (!defined('TAG_INVALIDE'))
+	define('TAG_INVALIDE', 'INV!');
+
+if (!defined('TAG_NOUVEL_OBSERVATEUR'))
+	define('TAG_NOUVEL_OBSERVATEUR', 'NEWO');

@@ -540,3 +540,68 @@ function get_espace($db,$table,$id_espace) {
 	}
 	throw new \Exception("pas possible avec table:$table id_espace:$id_espace");
 }
+
+
+/**
+  * @return bobs_observation
+  */
+function get_observation($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_observation', 'id_observation');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+
+function cache_distance() {
+	static $cache;
+	if (!isset($cache))
+		$cache = new clicnat_cache_distance();
+	return $cache;
+}
+
+
+function get_phoque_photos($db, $id_or_array) {
+	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('clicnat_phoque_photos', 'document_ref');
+
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		switch ($e->getCode()) {
+			case BOBS_ERR_NOTFOUND:
+				throw $e;
+			default:
+				return null;
+		}
+	}
+}
+
+function get_phoque($db, $id_or_array) {
+	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('clicnat_phoque', 'id_phoque');
+
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		switch ($e->getCode()) {
+			case BOBS_ERR_NOTFOUND:
+				throw $e;
+			default:
+				return null;
+		}
+	}
+}
+
+
+function bobs_reseaux_liste($db) {
+	return clicnat_reseau::liste_reseaux($db);
+}
