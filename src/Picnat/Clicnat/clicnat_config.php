@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 /**
  * @brief Intéroge le fichier de configuration XML

@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 /**
  * @brief Recherche des nicheurs pour l'AONFM

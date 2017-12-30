@@ -1,6 +1,5 @@
 <?php
-
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 /**
  * @brief Iterateur construit a partir d'un type enum de la base

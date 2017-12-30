@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 /**
  * @brief Recherche des oiseaux nicheurs sur les données d'une sélection

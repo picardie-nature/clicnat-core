@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_time extends bobs_tests {
 	const equal = 0;

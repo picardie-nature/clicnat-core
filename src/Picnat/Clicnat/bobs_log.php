@@ -1,6 +1,6 @@
 <?php
 
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 function bobs_log($msg) {
 	global $context;

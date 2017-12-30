@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_aonfm_restitution_carre {
 	protected $id_espace;

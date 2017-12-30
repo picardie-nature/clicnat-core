@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_aonfm_choix_resp_tps_abond {
 	const id_liste_especes_a_denombrer_a = 52;

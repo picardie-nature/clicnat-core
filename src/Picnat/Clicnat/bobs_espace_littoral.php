@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_espace_littoral extends bobs_poly {
 	function __construct($db, $id, $table='espace_littoral') {

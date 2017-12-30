@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class clicnat_pays_statistique extends bobs_element {
 	protected $id_pays;

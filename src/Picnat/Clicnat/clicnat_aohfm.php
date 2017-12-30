@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class clicnat_aohfm {
 	public static function xml_atlas_ornitho($db) {

@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_citation_avec_validation extends bobs_citation {
 	protected $time_start;

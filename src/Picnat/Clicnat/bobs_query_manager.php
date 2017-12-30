@@ -1,6 +1,5 @@
 <?php
-
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 
 class bobs_query_manager extends bobs_tests {

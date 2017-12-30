@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_commune extends bobs_poly {
 	const sql_recherche_espace_commune = "select * from espace_commune where lower(regexp_replace(nom,'-',' ','g')) ilike lower(regexp_replace($1||'%','-',' ','g')) order by nom";

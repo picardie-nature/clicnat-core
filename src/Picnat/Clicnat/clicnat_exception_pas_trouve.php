@@ -1,5 +1,4 @@
 <?php
-
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class clicnat_exception_pas_trouve extends \Exception { }

@@ -1,6 +1,5 @@
 <?php
-
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 abstract class clicnat_iterateur implements \Iterator {
 	protected $db;

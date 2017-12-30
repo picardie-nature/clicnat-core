@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 class bobs_espace_departement extends bobs_departement {
 	public static function rechercher($db, $args, $table='espace_departement') {
