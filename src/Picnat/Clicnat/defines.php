@@ -63,3 +63,42 @@ define('BOBS_EXTRACT_SHP_1KM',	'atlas');
 define('BOBS_EXTRACT_SHP_NORMAL', 'normal');
 define('BOBS_EXTRACT_SHP_MIX', 'mix');
 define('BOBS_EXTRACT_SHP_NCHIRO', 'nchiro');
+
+
+define('EPSG_WGS84', 4326);
+define('EPSG_RGF93', 2154);
+define('BM_LAYER_PT', 'bm_layer_pt_int');
+define('DEFAULT_MAPFILE', '/carto/l93.map');
+define('MAPSTORE', '/mapstore');
+define('MAPSTORE_BACKGROUNDS', MAPSTORE.'/backgrounds');
+define('COORD_REGION_AX', 1.51);
+define('COORD_REGION_AY', 50.5679);
+define('COORD_REGION_BX', 4,24621);
+define('COORD_REGION_BY', 48.7815);
+define('FONT_ARIAL', '/usr/share/fonts/truetype/msttcorefonts/arial.ttf');
+define('ATLAS_SHAPE_PATH', '/atlas/%d/atlas.shp');
+
+if (!defined('DOCS_BASE_DIR'))
+	define('DOCS_BASE_DIR', '/docs');
+
+if (!defined('MONGO_DB_STR')) define('MONGO_DB_STR', 'mongodb://localhost:27017');
+if (!defined('MONGO_BASE')) define('MONGO_BASE', 'clicnat');
+
+if (!defined('CLICNAT_HIRONDELLE_TAG'))
+	define('CLICNAT_HIRONDELLE_TAG', 629);
+
+if (!defined('CLICNAT_HIRONDELLE_ID_TAG_OCCUPANT'))
+	define('CLICNAT_HIRONDELLE_ID_TAG_OCCUPANT', 630);
+
+if (!defined('CLICNAT_HIRONDELLE_ID_TAG_PUBLIQUE'))
+	define('CLICNAT_HIRONDELLE_ID_TAG_PUBLIQUE', 631);
+
+
+if (!defined('CLICNAT_HIRONDELLE_ID_ESPECE_RUSTIQUE'))
+	define('CLICNAT_HIRONDELLE_ID_ESPECE_RUSTIQUE', 725);
+if (!defined('CLICNAT_HIRONDELLE_ID_ESPECE_FENETRE'))
+	define('CLICNAT_HIRONDELLE_ID_ESPECE_FENETRE', 387);
+if (!defined('CLICNAT_HIRONDELLE_ID_ESPECE_RIVIERE'))
+	define('CLICNAT_HIRONDELLE_ID_ESPECE_RIVIERE', 815);
+
+define('SRID_BY_DEFAULT', 4326);

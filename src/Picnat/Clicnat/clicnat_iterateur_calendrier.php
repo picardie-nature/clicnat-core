@@ -4,7 +4,7 @@ namespace Picnat\Clicnat;
 class clicnat_iterateur_calendrier implements \Iterator {
 	private $db;
 	private $position;
-	private $ids = array();
+	private $ids = [];
 
 	public function __construct($db, $ids) {
 		$this->db = $db;

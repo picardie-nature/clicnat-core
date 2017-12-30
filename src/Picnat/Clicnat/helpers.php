@@ -1,5 +1,4 @@
 <?php
-
 namespace \Picnat\Clicnat;
 
 if (!function_exists('array_column')) {
@@ -47,11 +46,11 @@ function clicnat_markdown_txt($txt_md) {
 
 	$html = markdown($txt_md);
 
-	if (!isset($html2txt))
+	if (!isset($html2txt)) {
 		$html2txt = new \Html2Text\Html2Text($html, false, array('do_links' => 'none'));
-	else
+	} else {
 		$html2txt->set_html($html);
-
+	}
 	return $html2txt->get_text();
 }
 
@@ -164,7 +163,7 @@ function get_classe($db, $id) {
 		$mngr = new bobs_single_mngr('bobs_classe', 'classe');
 	try {
 		return $mngr->get($db, $id);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -178,7 +177,7 @@ function get_espece($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('bobs_espece', 'id_espece');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 	    switch ($e->getCode()) {
 		case BOBS_ERR_NOTFOUND:
 		    throw $e;
@@ -194,7 +193,7 @@ function get_espece_inpn($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('bobs_espece_inpn', 'id_espece');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 	    switch ($e->getCode()) {
 		case BOBS_ERR_NOTFOUND:
 		    throw $e;
@@ -215,7 +214,7 @@ function get_travail($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('clicnat_travaux', 'id_travail');
 	try {
 		return $mngr->get($db, $id_or_array, clicnat_travaux::instance($db, $id_or_array));
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -226,7 +225,7 @@ function get_texte($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('clicnat_textes', 'id_texte');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -237,7 +236,7 @@ function get_tag($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('bobs_tags', 'id_tag');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -259,7 +258,7 @@ function get_tache($db, $id) {
 		$mngr = new bobs_single_mngr('clicnat_tache', 'id_tache');
 	try {
 		return $mngr->get($db, $id);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -271,7 +270,7 @@ function get_structure($db, $id_or_array) {
 	}
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -302,7 +301,242 @@ function get_selection($db, $id_or_array) {
 		$mngr = new bobs_single_mngr('bobs_selection', 'id_selection');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
+}
+
+/**
+ * @brief CHR : Gestionnaire d'instances
+ */
+function get_chr($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_chr', bobs_chr::chr_pkey);
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+	    switch ($e->getCode()) {
+		case BOBS_ERR_NOTFOUND:
+		    throw $e;
+		default:
+		    return null;
+	    }
+	}
+}
+
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_structure objet bobs_espace_point
+ */
+function get_espace_structure($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_structure', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_point objet bobs_espace_point
+ */
+function get_espace_point($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_point', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_line
+ */
+function get_espace_line($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_line', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_polygon objet bobs_espace_polygon
+ */
+function get_espace_polygon($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_polygon', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_commune objet bobs_espace_commune
+ */
+function get_espace_commune($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_commune', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @param ressource $db
+ * @param int $id_or_array
+ * @return bobs_espace_departement objet bobs_espace_departement
+ */
+function get_espace_departement($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_departement', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+
+/**
+ * @return bobs_espace_chiro objet espace_chiro
+ */
+function get_espace_chiro($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_chiro', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @return bobs_espace_l93_10x10
+ */
+function get_espace_l93_10x10($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_l93_10x10', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @return bobs_espace_l93_5x5
+ */
+function get_espace_l93_5x5($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_l93_5x5', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+
+/**
+ * @return bobs_espace_littoral
+ */
+function get_espace_littoral($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_littoral', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @return bobs_espace_toponyme
+ */
+function get_espace_toponyme($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_toponyme', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+/**
+ * @return bobs_espace_ligne
+ */
+function get_espace_ligne($db, $id_or_array) {
+    	static $mngr;
+
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espace_ligne', 'id_espace');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
+}
+
+function get_espace($db,$table,$id_espace) {
+	switch ($table) {
+		case 'espace_point':
+			return get_espace_point($db, $id_espace);
+		case 'espace_polygon':
+			return get_espace_polygon($db, $id_espace);
+		case 'espace_chiro':
+			return get_espace_chiro($db, $id_espace);
+		case 'espace_line':
+			return get_espace_ligne($db, $id_espace);
+		case 'espace_commune':
+			return get_espace_commune($db, $id_espace);
+		case 'espace_departement':
+			return get_espace_departement($db, $id_espace);
+		case 'espace_toponyme':
+			return get_espace_toponyme($db, $id_espace);
+		case 'espace_littoral':
+			return get_espace_littoral($db, $id_espace);
+		case 'espace_structure':
+			return get_espace_structure($db, $id_espace);
+		case 'espace_l93_10x10':
+			return get_espace_l93_10x10($db, $id_espace);
+	}
+	throw new \Exception("pas possible avec table:$table id_espace:$id_espace");
 }
