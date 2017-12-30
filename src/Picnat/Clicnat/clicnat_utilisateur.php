@@ -775,7 +775,7 @@ class clicnat_utilisateur extends bobs_element {
 				$extraction->ajouter_condition(new bobs_ext_c_esp_comite_homolog($t_chr['id_chr']));
 				$extraction->autorise_utilisateur($this->id_utilisateur, $position);
 			}
-   		}
+		}
 	}
 
 	/**
@@ -833,8 +833,10 @@ class clicnat_utilisateur extends bobs_element {
 		if (!empty($this->nb_citations_authok))
 			return $this->nb_citations_authok;
 
-		$sql = sprintf("select count(*) as n from utilisateur_citations_ok where id_utilisateur=%d",
-			$this->id_utilisateur);
+		$sql = sprintf(
+			"select count(*) as n from utilisateur_citations_ok where id_utilisateur=%d",
+			$this->id_utilisateur
+		);
 		$q = self::query($this->db, $sql);
 		$r = self::fetch($q);
 		$this->nb_citations_authok = $r['n'];
@@ -920,18 +922,9 @@ class clicnat_utilisateur extends bobs_element {
 		$q = self::query($this->db, $sql);
 
 
-		while ($r = self::fetch($q))
+		while ($r = self::fetch($q)) {
 			$observations[$r['id_observation']] = new bobs_observation($this->db, $r);
-		/*
-		$sql = sprintf("select c.id_observation,e.id_espece,e.nom_f,
-					e.nom_s,sum(c.nb) as total
-				from citations c,especes e
-				where c.id_espece=e.id_espece
-				and clicnat___mad_id_citation_ok(%d, c.id_citation)
-				group by c.id_observation,e.id_espece,e.nom_f,e.nom_s",
-				$this->id_utilisateur);
-		$q = self::query($this->db, $sql);
-		*/
+		}
 		return $observations;
 	}
 
@@ -1079,7 +1072,6 @@ class clicnat_utilisateur extends bobs_element {
 	public function migration_observation_dispatch() {
 		if (!$this->virtuel)
 			throw new Exception('Ne fonctionne que sur les utilisateurs virtuel');
-		echo "<pre>";
 		$sql = sprintf("select * from utilisateur where %d = any(associations)", $this->id_utilisateur);
 		$q = self::query($this->db, $sql);
 		while ($r = self::fetch($q)) {
@@ -1092,7 +1084,6 @@ class clicnat_utilisateur extends bobs_element {
 					from observations_observateurs
 					where id_utilisateur=%d)",
 				$r['id_utilisateur'], $this->id_utilisateur, $r['id_utilisateur']);
-			echo "$sql\n";
 			self::query($this->db, $sql);
 			$sql = sprintf("insert into observations_observateurs (id_observation,id_utilisateur)
 				select oo.id_observation, %d
@@ -1103,21 +1094,16 @@ class clicnat_utilisateur extends bobs_element {
 					from observations_observateurs
 					where id_utilisateur = %d)",
 				$r['id_utilisateur'], $this->id_utilisateur, $r['id_utilisateur']);
-			echo "$sql\n";
 			self::query($this->db, $sql);
 		}
 		$sql = sprintf("update observations set id_utilisateur = null from observations_observateurs
 			where observations_observateurs.id_observation=observations.id_observation and observations.id_utilisateur=%d",
 			$this->id_utilisateur);
 		self::query($this->db, $sql);
-		echo "$sql\n";
 		$sql = sprintf("delete from observations_observateurs where id_utilisateur=%d", $this->id_utilisateur);
 		self::query($this->db, $sql);
-		echo "$sql\n";
 		$sql = sprintf("delete from utilisateur where id_utilisateur=%d", $this->id_utilisateur);
-		echo "$sql\n";
 		self::query($this->db, $sql);
-		echo "</pre>";
 	}
 
 	const sql_select_c_atlas = 'select id_espace from espace_l93_10x10 where nom=$1';

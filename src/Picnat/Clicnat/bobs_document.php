@@ -15,15 +15,15 @@ class bobs_document {
 
 	public function __construct($doc_dir, $db=null) {
 		if (empty($doc_dir))
-			throw new Exception('doc_id vide');
+			throw new \Exception('doc_id vide');
 		// chemin complet vers le fichier
 		if (!preg_match('/^[a-f0-9]{13}$/', $doc_dir))
-			throw new Exception('doc_id invalide (1) '.$doc_dir);
+			throw new \Exception('doc_id invalide (1) '.$doc_dir);
 
 		$this->c_path = sprintf('%s/%s', DOCS_BASE_DIR, $doc_dir);
 
 		if (!file_exists($this->c_path))
-			throw new Exception('doc_id invalide (2)');
+			throw new \Exception('doc_id invalide (2)');
 
 		$this->f_content_xml = $this->c_path.'/contents.xml';
 		$this->f_blob = $this->c_path.'/blob.bin';
@@ -35,12 +35,13 @@ class bobs_document {
 
 	public static function getInstance($doc_id) {
 		static $instances;
-		if (!isset($instances))
-			$instances = array();
+		if (!isset($instances)) {
+			$instances = [];
+		}
 		if (!isset($instances[$doc_id])) {
 			try {
 				$instances[$doc_id] = new bobs_document($doc_id);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				return false;
 			}
 		}
@@ -101,13 +102,13 @@ class bobs_document {
 			}
 		}
 		if ($erreur) {
-			throw new Exception('upload : ne peut pas créer de répertoire');
+			throw new \Exception('upload : ne peut pas créer de répertoire');
 		}
 		$create_dir = sprintf("%s/%s", DOCS_BASE_DIR, $d);
 		if (!mkdir($create_dir)) {
-			throw new Exception('upload erreur création dossier (1) : '.$create_dir);
+			throw new \Exception('upload erreur création dossier (1) : '.$create_dir);
 		}
-		return array($d, $create_dir, $path);
+		return [$d, $create_dir, $path];
 	}
 
 	public static function sauve_fichier($path_src) {
@@ -152,7 +153,7 @@ class bobs_document {
 				$xml = '<file type="pdf" format="pdf"></file>';
 				break;
 			default:
-				throw new Exception('upload : mime inconnu '.$mime);
+				throw new \Exception('upload : mime inconnu '.$mime);
 		}
 		file_put_contents($create_dir.'/contents.xml', $xml);
 	}
@@ -170,12 +171,12 @@ class bobs_document {
 		$f_src = $_files_ligne['tmp_name'];
 
 		if (!file_exists($f_src)) {
-			throw new Exception("upload : le fichier à déplacer n'existe pas $f_src");
+			throw new \Exception("upload : le fichier à déplacer n'existe pas $f_src");
 		}
 
 		if (!move_uploaded_file($f_src, $path)) {
 			unlink($f_src);
-			throw new Exception('upload : ne peux pas copier le fichier envoyé');
+			throw new \Exception('upload : ne peux pas copier le fichier envoyé');
 		}
 
 		self::creation_donnees_xml($path, $create_dir);
@@ -199,7 +200,7 @@ class bobs_document {
 			default:
 				$type = $doc->get_type();
 		}
-		throw new Exception("$type inconnu");
+		throw new \Exception("$type inconnu");
 	}
 
 	public static function get_mime($path) {
@@ -226,7 +227,7 @@ class bobs_document {
 		$q = bobs_qm()->query(get_db(), 'doc_ex_attente', self::sql_doc_espece, [$this->get_doc_id()]);
 		$r = bobs_element::fetch($q);
 		if ($r == false) {
-			throw new Exception("pas associé à un taxon pour illustration");
+			throw new \Exception("pas associé à un taxon pour illustration");
 		}
 		return $r['en_attente'] == 't';
 	}
@@ -251,7 +252,7 @@ class bobs_document {
 	const sql_select_id_espece = 'select id_espece from especes_documents where document_ref=$1';
 
 	public function get_doc_espece() {
-		$q = bobs_qm()->query($this->db, 'b_g_id_esp', self::sql_select_id_espece, array($this->get_doc_id()));
+		$q = bobs_qm()->query($this->db, 'b_g_id_esp', self::sql_select_id_espece, [$this->get_doc_id()]);
 		$r = bobs_element::fetch($q);
 		return get_espece($this->db, $r['id_espece']);
 	}
@@ -270,7 +271,7 @@ class bobs_document {
 		}
 
 		if (!link($this->f_blob, $f_back)) {
-			throw new Exception("Ne peut pas faire le lien {$this->f_blob} -&gt; $f_back");
+			throw new \Exception("Ne peut pas faire le lien {$this->f_blob} -&gt; $f_back");
 		}
 
 		return true;
@@ -281,7 +282,7 @@ class bobs_document {
 		if (file_exists($f_back)) {
 			unlink($this->f_blob);
 			if (!link($f_back, $this->f_blob)) {
-				throw new Exception('ne peut restaurer ancien document');
+				throw new \Exception('ne peut restaurer ancien document');
 			}
 			unlink($f_back);
 			return true;

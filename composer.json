@@ -7,8 +7,9 @@
           "\\": "src"
        },
        "files": [
-          "src/defines.php",
-          "src/helpers.php"
+          "src/Picnat/Clicnat/defines.php",
+          "src/Picnat/Clicnat/helpers.php",
+          "src/Picnat/Clicnat/helpers_carto.php"
        ]
    },
    "require": {
