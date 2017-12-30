@@ -44,3 +44,22 @@ define('BOBS_TBL_TAG_CITATION', 'citations_tags');
 define('BOBS_TBL_TAG_ESPACE', 'espace_tags');
 define('BOBS_TBL_TAG_OBSERVATION','observations_tags');
 define('BOBS_TBL_TAG_ESPECE','especes_tags');
+
+define('GML_NS_URL', 'http://www.opengis.net/gml/3.2');
+define('SINP_NS_URL', 'http://inpn.mnhn.fr/sinp/');
+
+if (!defined('SINP_PLATEFORME_URL'))
+	define('SINP_PLATEFORME_URL', 'http://obs.picardie-nature.org/occtax/');
+
+if (!defined('SINP_IDCNP'))
+	define('SINP_IDCNP', '1296');
+
+if (!defined('SINP_GESTIONNAIRE'))
+	define('SINP_GESTIONNAIRE', 'Picardie Nature');
+
+define('BOBS_BIN_EXTRACT_SELECTION', '/usr/local/bin/extract_selection');
+define('BOBS_EXTRACTSHP_TMP', '/tmp/bobs-sel-%d');
+define('BOBS_EXTRACT_SHP_1KM',	'atlas');
+define('BOBS_EXTRACT_SHP_NORMAL', 'normal');
+define('BOBS_EXTRACT_SHP_MIX', 'mix');
+define('BOBS_EXTRACT_SHP_NCHIRO', 'nchiro');

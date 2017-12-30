@@ -291,3 +291,18 @@ function get_structure_by_name($db, $ref) {
 function smarty_modifier_markdown_txt($txt) {
 	return clicnat_markdown_txt($txt);
 }
+
+
+/**
+  * @return bobs_selection
+  */
+function get_selection($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_selection', 'id_selection');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+		return null;
+	}
+}
