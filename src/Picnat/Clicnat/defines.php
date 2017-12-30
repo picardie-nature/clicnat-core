@@ -27,3 +27,8 @@ define('PAS_NICHEUR', 0);
 define('BOBS_TAGS_NIDIF', '120,121,122,123');
 define('TAG_PROTOCOLE', 'ETUD');
 define('TAG_STRUCTURE', 'STRU');
+
+if (!defined('WFS_SERVICE_PROVIDER')) define('WFS_SERVICE_PROVIDER', 'Clicnat - Picardie Nature');
+if (!defined('WFS_CONTACT_NAME')) define('WFS_CONTACT_NAME', 'Responsable SIG');
+if (!defined('WFS_CONTACT_MAIL')) define('WFS_CONTACT_MAIL', 'md@picardie-nature.org');
+if (!defined('WFS_URL_BASE')) define('WFS_URL_BASE', 'http://hyla.picardie-nature.org/~nicolas/public2/?page=wfs');
