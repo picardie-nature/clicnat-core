@@ -1,5 +1,5 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 define('DB_RESOURCE_TYPE', 'pgsql link');
 
