@@ -156,3 +156,54 @@ function get_citation($db, $id_or_array) {
 		return null;
 	}
 }
+
+function get_classe($db, $id) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_classe', 'classe');
+	try {
+		return $mngr->get($db, $id);
+	} catch (Exception $e) {
+		return null;
+	}
+}
+
+/**
+  * @return bobs_espece
+  */
+function get_espece($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espece', 'id_espece');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+	    switch ($e->getCode()) {
+		case BOBS_ERR_NOTFOUND:
+		    throw $e;
+		default:
+		    return null;
+	    }
+	}
+}
+
+function get_espece_inpn($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_espece_inpn', 'id_espece');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (Exception $e) {
+	    switch ($e->getCode()) {
+		case BOBS_ERR_NOTFOUND:
+		    throw $e;
+		default:
+		    return null;
+	    }
+	}
+}
+
+function clicnat_cmp_tri_tableau_especes_n_citations($a, $b) {
+	if ($a['n_citations'] == $b['n_citations']) return 0;
+	return ($a['n_citations'] > $b['n_citations'])? -1: 1;
+}

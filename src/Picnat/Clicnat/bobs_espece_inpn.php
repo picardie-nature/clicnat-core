@@ -57,7 +57,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 		self::cls($classe);
 
 		if (empty($classe))
-		    throw new Exception('Classe est vide nouvelle classe ?');
+		    throw new \Exception('Classe est vide nouvelle classe ?');
 
 		$sql = "select * from taxref_inpn_especes
 				where lower(lb_nom) like lower('%'||$1||'%')
@@ -118,7 +118,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 			$esp = new bobs_espece_inpn($db, $r);
 			try {
 			    $mots = self::index_nom($esp->lb_nom);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 			    echo "ATTENTION NE PEUT INDEXER ESPECE {$esp->cd_nom}\n";
 			    continue;
 			}
