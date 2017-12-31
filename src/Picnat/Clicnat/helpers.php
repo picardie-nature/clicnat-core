@@ -574,7 +574,7 @@ function get_phoque_photos($db, $id_or_array) {
 
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		switch ($e->getCode()) {
 			case BOBS_ERR_NOTFOUND:
 				throw $e;
@@ -592,7 +592,7 @@ function get_phoque($db, $id_or_array) {
 
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		switch ($e->getCode()) {
 			case BOBS_ERR_NOTFOUND:
 				throw $e;
@@ -602,7 +602,20 @@ function get_phoque($db, $id_or_array) {
 	}
 }
 
-
 function bobs_reseaux_liste($db) {
 	return clicnat_reseau::liste_reseaux($db);
+}
+
+/**
+ * @return bobs_utilisateur
+ */
+function get_utilisateur($db, $id_or_array) {
+	static $mngr;
+	if (!isset($mngr))
+		$mngr = new bobs_single_mngr('bobs_utilisateur', 'id_utilisateur');
+	try {
+		return $mngr->get($db, $id_or_array);
+	} catch (\Exception $e) {
+		return null;
+	}
 }
