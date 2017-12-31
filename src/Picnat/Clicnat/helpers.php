@@ -150,7 +150,7 @@ function aonfm_tri_systematique($a, $b) {
 function get_citation($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_citation', 'id_citation');
+		$mngr = new bobs_single_mngr(bobs_citation::class, 'id_citation');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -161,7 +161,7 @@ function get_citation($db, $id_or_array) {
 function get_classe($db, $id) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_classe', 'classe');
+		$mngr = new bobs_single_mngr(bobs_classe::class, 'classe');
 	try {
 		return $mngr->get($db, $id);
 	} catch (\Exception $e) {
@@ -175,7 +175,7 @@ function get_classe($db, $id) {
 function get_espece($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espece', 'id_espece');
+		$mngr = new bobs_single_mngr(bobs_espece::class, 'id_espece');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -191,7 +191,7 @@ function get_espece($db, $id_or_array) {
 function get_espece_inpn($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espece_inpn', 'id_espece');
+		$mngr = new bobs_single_mngr(bobs_espece_inpn::class, 'id_espece');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -212,7 +212,7 @@ function clicnat_cmp_tri_tableau_especes_n_citations($a, $b) {
 function get_travail($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('clicnat_travaux', 'id_travail');
+		$mngr = new bobs_single_mngr(clicnat_travaux::class, 'id_travail');
 	try {
 		return $mngr->get($db, $id_or_array, clicnat_travaux::instance($db, $id_or_array));
 	} catch (\Exception $e) {
@@ -223,7 +223,7 @@ function get_travail($db, $id_or_array) {
 function get_texte($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('clicnat_textes', 'id_texte');
+		$mngr = new bobs_single_mngr(clicnat_textes::class, 'id_texte');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -234,7 +234,7 @@ function get_texte($db, $id_or_array) {
 function get_tag($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_tags', 'id_tag');
+		$mngr = new bobs_single_mngr(bobs_tags::class, 'id_tag');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -245,7 +245,7 @@ function get_tag($db, $id_or_array) {
 function get_tag_by_ref($db, $ref) {
 	static $transltr;
 
-	if (!isset($transltr)) $transltr = array();
+	if (!isset($transltr)) $transltr = [];
 
 	if (!array_key_exists($ref, $transltr))
 		$transltr[$ref] = bobs_tags::by_ref($db, $ref);
@@ -256,7 +256,7 @@ function get_tag_by_ref($db, $ref) {
 function get_tache($db, $id) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('clicnat_tache', 'id_tache');
+		$mngr = new bobs_single_mngr(clicnat_tache::class, 'id_tache');
 	try {
 		return $mngr->get($db, $id);
 	} catch (\Exception $e) {
@@ -267,7 +267,7 @@ function get_tache($db, $id) {
 function get_structure($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr)) {
-		$mngr = new bobs_single_mngr('clicnat_structure', 'id_structure');
+		$mngr = new bobs_single_mngr(clicnat_structure::class, 'id_structure');
 	}
 	try {
 		return $mngr->get($db, $id_or_array);
@@ -299,7 +299,7 @@ function smarty_modifier_markdown_txt($txt) {
 function get_selection($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_selection', 'id_selection');
+		$mngr = new bobs_single_mngr(bobs_selection::class, 'id_selection');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -313,7 +313,7 @@ function get_selection($db, $id_or_array) {
 function get_chr($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_chr', bobs_chr::chr_pkey);
+		$mngr = new bobs_single_mngr(bobs_chr::class, bobs_chr::chr_pkey);
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -335,7 +335,7 @@ function get_chr($db, $id_or_array) {
 function get_espace_structure($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_structure', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_structure::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -352,7 +352,7 @@ function get_espace_structure($db, $id_or_array) {
 function get_espace_point($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_point', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_point::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -368,7 +368,7 @@ function get_espace_point($db, $id_or_array) {
 function get_espace_line($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_line', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_line::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -384,7 +384,7 @@ function get_espace_line($db, $id_or_array) {
 function get_espace_polygon($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_polygon', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_polygon::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -400,7 +400,7 @@ function get_espace_polygon($db, $id_or_array) {
 function get_espace_commune($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_commune', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_commune::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -416,7 +416,7 @@ function get_espace_commune($db, $id_or_array) {
 function get_espace_departement($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_departement', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_departement::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -432,7 +432,7 @@ function get_espace_chiro($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_chiro', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_chiro::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -447,7 +447,7 @@ function get_espace_l93_10x10($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_l93_10x10', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_l93_10x10::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -462,7 +462,7 @@ function get_espace_l93_5x5($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_l93_5x5', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_l93_5x5::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -478,7 +478,7 @@ function get_espace_littoral($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_littoral', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_littoral::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -493,7 +493,7 @@ function get_espace_toponyme($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_toponyme', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_toponyme::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -508,7 +508,7 @@ function get_espace_ligne($db, $id_or_array) {
     	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_espace_ligne', 'id_espace');
+		$mngr = new bobs_single_mngr(bobs_espace_ligne::class, 'id_espace');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -549,7 +549,7 @@ function get_espace($db,$table,$id_espace) {
 function get_observation($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_observation', 'id_observation');
+		$mngr = new bobs_single_mngr(bobs_observation::class, 'id_observation');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (Exception $e) {
@@ -570,7 +570,7 @@ function get_phoque_photos($db, $id_or_array) {
 	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('clicnat_phoque_photos', 'document_ref');
+		$mngr = new bobs_single_mngr(clicnat_phoque_photos::class, 'document_ref');
 
 	try {
 		return $mngr->get($db, $id_or_array);
@@ -588,7 +588,7 @@ function get_phoque($db, $id_or_array) {
 	static $mngr;
 
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('clicnat_phoque', 'id_phoque');
+		$mngr = new bobs_single_mngr(clicnat_phoque::class, 'id_phoque');
 
 	try {
 		return $mngr->get($db, $id_or_array);
@@ -612,7 +612,7 @@ function bobs_reseaux_liste($db) {
 function get_utilisateur($db, $id_or_array) {
 	static $mngr;
 	if (!isset($mngr))
-		$mngr = new bobs_single_mngr('bobs_utilisateur', 'id_utilisateur');
+		$mngr = new bobs_single_mngr(bobs_utilisateur::class, 'id_utilisateur');
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
