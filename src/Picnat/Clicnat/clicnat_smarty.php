@@ -52,8 +52,8 @@ abstract class clicnat_smarty extends \Smarty {
 			$this->registerPlugin('function', 'texte', [$this,'smarty_function_texte']);
 			$this->registerPlugin('function', 'doc', [$this,'bobs_doc']);
 			$this->registerPlugin('function', 'commtr_txt', [$this, 'smarty_commtr_txt']);
-			$this->registerPlugin('modifier', 'markdown', 'smarty_modifier_markdown');
-			$this->registerPlugin('modifier', 'markdown_txt', 'smarty_modifier_markdown_txt');
+			//$this->registerPlugin('modifier', 'markdown', 'smarty_modifier_markdown');
+			//$this->registerPlugin('modifier', 'markdown_txt', 'smarty_modifier_markdown_txt');
 		}
 		$this->alertes = array();
 	}
