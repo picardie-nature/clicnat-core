@@ -17,22 +17,27 @@ class bobs_aonfm_choix_resp_tps_abond {
 	const sql_select_r = 'select * from aonfm_choix_responsable_tps_abond where id_espace=$1';
 
 	public static function get_resultats($db, $id_espace) {
-		$t = array();
-		$q = bobs_qm()->query($db, 'gresult', self::sql_select_r, array($id_espace));
+		$t = [];
+		$q = bobs_qm()->query($db, 'gresult', self::sql_select_r, [$id_espace]);
 		while ($r = bobs_element::fetch($q)) {
 			$s = '';
-			if ($r['abondance_liste'] > 0)
+			if ($r['abondance_liste'] > 0) {
 				$s = "classe ".((int)$r['abondance_liste']/100);
-			if ($r['abondance_n'] > 0)
+			}
+			if ($r['abondance_n'] > 0) {
 				$s = $r['abondance_n'];
+			}
 			$t[$r['id_espece']] = empty($s)?'?':$s;
 		}
 		return $t;
 	}
 
 	public static function get($db, $id_espace, $id_espece) {
-		$t = array('abondance_liste' => 0, 'abondance_n' => 0);
-		$q = bobs_qm()->query($db, 'qsel', self::sql_select, array($id_espace, $id_espece));
+		$t = [
+			'abondance_liste' => 0,
+			'abondance_n' => 0
+		];
+		$q = bobs_qm()->query($db, 'qsel', self::sql_select, [$id_espace, $id_espece]);
 		$r = bobs_element::fetch($q);
 		if (pg_num_rows($q)== 1) {
 			$t['abondance_liste'] = $r['abondance_liste'];
@@ -42,10 +47,10 @@ class bobs_aonfm_choix_resp_tps_abond {
 	}
 
 	public static function enregistrer($db,$id_espace,$id_espece,$abondance_liste,$abondance_n) {
-		$q = bobs_qm()->query($db, 'qexiste', self::sql_choix_existe, array($id_espace,$id_espece));
+		$q = bobs_qm()->query($db, 'qexiste', self::sql_choix_existe, [$id_espace,$id_espece]);
 		$r = bobs_element::fetch($q);
 		if ($r['n'] != 1) {
-			bobs_qm()->query($db, 'qinsert', self::sql_choix_init, array($id_espace, $id_espece));
+			bobs_qm()->query($db, 'qinsert', self::sql_choix_init, [$id_espace, $id_espece]);
 		}
 		if (!empty($abondance_n)) $abondance_liste=0;
 		$abondance_n = (int)$abondance_n;
@@ -55,12 +60,12 @@ class bobs_aonfm_choix_resp_tps_abond {
 	public static function liste_classes_large () {
 		static $classes;
 		if (!isset($classes)) {
-			$classes = array(
-				100 => array('id'=>100, 'min'=>1, 'max'=>9),
-				200 => array('id'=>200, 'min'=>10, 'max'=>99),
-				300 => array('id'=>300, 'min'=>100, 'max'=>999),
-				400 => array('id'=>400, 'min'=>1000, 'max'=> 999999)
-			);
+			$classes = [
+				100 => ['id'=>100, 'min'=>1, 'max'=>9],
+				200 => ['id'=>200, 'min'=>10, 'max'=>99],
+				300 => ['id'=>300, 'min'=>100, 'max'=>999],
+				400 => ['id'=>400, 'min'=>1000, 'max'=> 999999]
+			];
 		}
 		return $classes;
 	}
@@ -68,27 +73,28 @@ class bobs_aonfm_choix_resp_tps_abond {
 	public static function liste_classes_precise () {
 		static $classes;
 		if (!isset($classes)) {
-			$classes = array(
-				100 => array('id'=>100, 'min'=>1, 'max'=>5),
-				105 => array('id'=>105, 'min'=>6, 'max'=>9),
-				200 => array('id'=>200, 'min'=>10, 'max'=>24),
-				210 => array('id'=>210, 'min'=>25, 'max'=>49),
-				215 => array('id'=>215, 'min'=>50, 'max'=>74),
-				220 => array('id'=>220, 'min'=>75, 'max'=>99),
-				305 => array('id'=>305, 'min'=>100, 'max'=>249),
-				310 => array('id'=>310, 'min'=>250, 'max'=>499),
-				315 => array('id'=>315, 'min'=>500, 'max'=>749),
-				320 => array('id'=>320, 'min'=>749, 'max'=>999),
-				400 => array('id'=>400, 'min'=>1000, 'max'=> 999999),
-			);
+			$classes = [
+				100 => ['id'=>100, 'min'=>1, 'max'=>5],
+				105 => ['id'=>105, 'min'=>6, 'max'=>9],
+				200 => ['id'=>200, 'min'=>10, 'max'=>24],
+				210 => ['id'=>210, 'min'=>25, 'max'=>49],
+				215 => ['id'=>215, 'min'=>50, 'max'=>74],
+				220 => ['id'=>220, 'min'=>75, 'max'=>99],
+				305 => ['id'=>305, 'min'=>100, 'max'=>249],
+				310 => ['id'=>310, 'min'=>250, 'max'=>499],
+				315 => ['id'=>315, 'min'=>500, 'max'=>749],
+				320 => ['id'=>320, 'min'=>749, 'max'=>999],
+				400 => ['id'=>400, 'min'=>1000, 'max'=> 999999],
+			];
 		}
 		return $classes;
 	}
 
 	public static function classe_large($nb_couples) {
 		foreach (self::liste_classes_large() as $id_classe => $classe) {
-			if (($nb_couples >= $classe['min']) && ($nb_couples <= $classe['max']))
+			if (($nb_couples >= $classe['min']) && ($nb_couples <= $classe['max'])) {
 				return $id_classe;
+			}
 		}
 		return null;
 	}

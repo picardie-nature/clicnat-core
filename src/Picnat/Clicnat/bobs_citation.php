@@ -169,7 +169,7 @@ class bobs_citation extends bobs_element_commentaire {
 			$this->nb = $n;
 		}
 		$this->update_date_maj_field();
-		return bobs_qm()->query($this->db, 'citations_set_eff', self::sql_set_effectif, array($this->id_citation, $n));
+		return bobs_qm()->query($this->db, 'citations_set_eff', self::sql_set_effectif, [$this->id_citation, $n]);
 	}
 
 	const sql_set_min_max = 'update citations set nb=null, nb_min=$2, nb_max=$3 where id_citation=$1';
@@ -177,7 +177,7 @@ class bobs_citation extends bobs_element_commentaire {
 
 	public function set_effectif_min_max($eff_min, $eff_max) {
 		if ($eff_min == '0' && $eff_max == '0') {
-			return bobs_qm()->query($this->db, 'citations_set_eff_min_max_null', self::sql_set_min_max_null, array($this->id_citation));
+			return bobs_qm()->query($this->db, 'citations_set_eff_min_max_null', self::sql_set_min_max_null, [$this->id_citation]);
 		}
 		self::cli($eff_min, self::except_si_inf_1);
 		self::cli($eff_max, self::except_si_inf_1);
@@ -186,7 +186,11 @@ class bobs_citation extends bobs_element_commentaire {
 			throw new \Exception('effectif min = max');
 
 		$this->update_date_maj_field();
-		return bobs_qm()->query($this->db, 'citations_set_eff_min_max', self::sql_set_min_max, array($this->id_citation, min($eff_min,$eff_max), max($eff_min,$eff_max)));
+		return bobs_qm()->query($this->db, 'citations_set_eff_min_max', self::sql_set_min_max, [
+			$this->id_citation,
+			min($eff_min,$eff_max),
+			max($eff_min,$eff_max)
+		]);
 	}
 
 	/**
@@ -288,9 +292,10 @@ class bobs_citation extends bobs_element_commentaire {
 	 * @brief objet indice qualité ou false
 	 */
 	public function get_indice_qualite() {
-	    if ($this->indice_qualite > 0)
+		if ($this->indice_qualite > 0) {
 			return new bobs_indice_qualite($this->indice_qualite);
-	    return false;
+		}
+		return false;
 	}
 
 	/**
@@ -316,8 +321,9 @@ class bobs_citation extends bobs_element_commentaire {
 		self::cli($this->id_citation);
 		$list = $this->get_age_list();
 
-		if (!array_key_exists($age, $list))
+		if (!array_key_exists($age, $list)) {
 			throw new \InvalidArgumentException('$age unknown : ('.$age.')');
+		}
 
 		return $this->update_field('age', $age);
 	}
@@ -342,20 +348,20 @@ class bobs_citation extends bobs_element_commentaire {
 
 	public function delete() {
 		try {
-		    $qm = bobs_qm();
-		    $qm->query($this->db, 'cit_del_1', self::sql_del_cit_1, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_2', self::sql_del_cit_2, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_3', self::sql_del_cit_3, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_4', self::sql_del_cit_4, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_5', self::sql_del_cit_5, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_6', self::sql_del_cit_6, [$this->id_citation]);
+			$qm = bobs_qm();
+			$qm->query($this->db, 'cit_del_1', self::sql_del_cit_1, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_2', self::sql_del_cit_2, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_3', self::sql_del_cit_3, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_4', self::sql_del_cit_4, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_5', self::sql_del_cit_5, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_6', self::sql_del_cit_6, [$this->id_citation]);
 			$qm->query($this->db, 'cit_del_8', self::sql_del_cit_8, [$this->id_citation]);
 			$qm->query($this->db, 'cit_del_9', self::sql_del_cit_9, [$this->id_citation]);
-		    $qm->query($this->db, 'cit_del_7', self::sql_del_cit_7, [$this->id_citation]);
+			$qm->query($this->db, 'cit_del_7', self::sql_del_cit_7, [$this->id_citation]);
 		} catch (\Exception $e) {
-		    bobs_log(sprintf("ERROR : can't delete citation %d", $this->id_citation));
-		    bobs_log($e->getMessage());
-		    throw $e;
+			bobs_log(sprintf("ERROR : can't delete citation %d", $this->id_citation));
+			bobs_log($e->getMessage());
+			throw $e;
 		}
 		bobs_log(sprintf("citation %d dropped", $this->id_citation));
 		return true;
@@ -366,44 +372,44 @@ class bobs_citation extends bobs_element_commentaire {
 	}
 
 	public static function get_gender_list() {
-		return array(
-			' '  => array('val' => ' ',  'lib' => 'inconnu', 'prop' => false),
-			'?'  => array('val' => '?',  'lib' => 'inconnu', 'prop' => true),
-			'C'  => array('val' => 'C',  'lib' => 'couple',  'prop' => true),
-			'F'  => array('val' => 'F',  'lib' => 'femelle', 'prop' => true),
-			'F?' => array('val' => 'F?', 'lib' => 'femelle', 'prop' => false),
-			'FI' =>	array('val' => 'FI', 'lib' => 'femelle ou immature', 'prop' => true),
-			'I'  =>	array('val' => 'I',  'lib' => 'immature','prop' => true),
-			'M'  => array('val' => 'M',  'lib' => 'mâle',    'prop' => true),
-			'M?' => array('val' => 'M?', 'lib' => 'mâle *',  'prop' => false),
-			'MF' => array('val' => 'MF', 'lib' => 'mâle et femelle', 'prop' => true),
-			'N'  => array('val' => 'N',  'lib' => 'N ?',     'prop' => false)
-		);
+		return [
+			' '  => ['val' => ' ',  'lib' => 'inconnu', 'prop' => false],
+			'?'  => ['val' => '?',  'lib' => 'inconnu', 'prop' => true],
+			'C'  => ['val' => 'C',  'lib' => 'couple',  'prop' => true],
+			'F'  => ['val' => 'F',  'lib' => 'femelle', 'prop' => true],
+			'F?' => ['val' => 'F?', 'lib' => 'femelle', 'prop' => false],
+			'FI' =>	['val' => 'FI', 'lib' => 'femelle ou immature', 'prop' => true],
+			'I'  =>	['val' => 'I',  'lib' => 'immature','prop' => true],
+			'M'  => ['val' => 'M',  'lib' => 'mâle',    'prop' => true],
+			'M?' => ['val' => 'M?', 'lib' => 'mâle *',  'prop' => false],
+			'MF' => ['val' => 'MF', 'lib' => 'mâle et femelle', 'prop' => true],
+			'N'  => ['val' => 'N',  'lib' => 'N ?',     'prop' => false]
+		];
 	}
 
 	public static function get_age_list() {
 		return array(
-			'?'   => array('val' => '?',   'lib' => 'inconnu', 'prop' => true, 'classes' => 'ABROMIPL'),
-			'1A'  => array('val' => '1A',  'lib' => 'un an', 'prop' => true, 'classes' => 'OM'),
-			'+1A' => array('val' => '+1A', 'lib' => 'plus de un an', 'prop' => true, 'classes' => 'OM'),
-			'2A'  => array('val' => '2A',  'lib' => 'deux ans', 'prop' => true, 'classes' => 'OM'),
-			'+2A' => array('val' => '+2A', 'lib' => 'plus de deux ans', 'prop' => true, 'classes' => 'OM'),
-			'3A'  => array('val' => '3A',  'lib' => 'trois ans', 'prop' => true, 'classes' => 'OM'),
-			'4A'  => array('val' => '4A',  'lib' => 'quatre ans', 'prop' => true, 'classes' => 'OM'),
-			'5A'  => array('val' => '5A',  'lib' => 'cinq ans', 'prop' => true, 'classes' => 'OM'),
-			'AD'  => array('val' => 'AD',  'lib' => 'adulte', 'prop' => true, 'classes' => 'BROMI'),
-			'AD&' => array('val' => 'AD&', 'lib' => 'adulte et immature', 'prop' => true, 'classes' => 'I'),
-			'ADP' => array('val' => 'ADP', 'lib' => 'adulte et pulli', 'prop' => true, 'classes' => 'O'),
-			'EX'  => array('val' => 'EX',  'lib' => 'exuvie', 'prop' => true, 'classes' => 'I'),
-			'IMM' => array('val' => 'IMM', 'lib' => 'immature', 'prop' => true, 'classes' => 'OI'),
-			'EME' => array('val' => 'EM',  'lib' => 'émergence', 'prop' => true, 'classes' => 'I'),
-			'JUV' => array('val' => 'JUV', 'lib' => 'juvénile',	'prop' => true, 'classes' => 'BORI'),
-			'LA'  => array('val' => 'LA',  'lib' => 'larve', 'prop' => true, 'classes' => 'IBR'),
-			'P'   => array('val' => 'P',   'lib' => 'ponte', 'prop' => true, 'classes' => 'BR'),
-			'PUL' => array('val' => 'PUL', 'lib' => 'poussin', 'prop' => true, 'classes' => 'O'),
-			'VOL' => array('val' => 'VOL', 'lib' => 'volant', 'prop' => true, 'classes' => 'OI'),
-			'CHE' => array('val' => 'CHE', 'lib' => 'chenille', 'prop' => true, 'classes' => 'I'),
-			'CRY' => array('val' => 'CRY', 'lib' => 'chrysalide', 'prop' => true, 'classes' => 'I')
+			'?'   => ['val' => '?',   'lib' => 'inconnu', 'prop' => true, 'classes' => 'ABROMIPL'],
+			'1A'  => ['val' => '1A',  'lib' => 'un an', 'prop' => true, 'classes' => 'OM'],
+			'+1A' => ['val' => '+1A', 'lib' => 'plus de un an', 'prop' => true, 'classes' => 'OM'],
+			'2A'  => ['val' => '2A',  'lib' => 'deux ans', 'prop' => true, 'classes' => 'OM'],
+			'+2A' => ['val' => '+2A', 'lib' => 'plus de deux ans', 'prop' => true, 'classes' => 'OM'],
+			'3A'  => ['val' => '3A',  'lib' => 'trois ans', 'prop' => true, 'classes' => 'OM'],
+			'4A'  => ['val' => '4A',  'lib' => 'quatre ans', 'prop' => true, 'classes' => 'OM'],
+			'5A'  => ['val' => '5A',  'lib' => 'cinq ans', 'prop' => true, 'classes' => 'OM'],
+			'AD'  => ['val' => 'AD',  'lib' => 'adulte', 'prop' => true, 'classes' => 'BROMI'],
+			'AD&' => ['val' => 'AD&', 'lib' => 'adulte et immature', 'prop' => true, 'classes' => 'I'],
+			'ADP' => ['val' => 'ADP', 'lib' => 'adulte et pulli', 'prop' => true, 'classes' => 'O'],
+			'EX'  => ['val' => 'EX',  'lib' => 'exuvie', 'prop' => true, 'classes' => 'I'],
+			'IMM' => ['val' => 'IMM', 'lib' => 'immature', 'prop' => true, 'classes' => 'OI'],
+			'EME' => ['val' => 'EM',  'lib' => 'émergence', 'prop' => true, 'classes' => 'I'],
+			'JUV' => ['val' => 'JUV', 'lib' => 'juvénile',	'prop' => true, 'classes' => 'BORI'],
+			'LA'  => ['val' => 'LA',  'lib' => 'larve', 'prop' => true, 'classes' => 'IBR'],
+			'P'   => ['val' => 'P',   'lib' => 'ponte', 'prop' => true, 'classes' => 'BR'],
+			'PUL' => ['val' => 'PUL', 'lib' => 'poussin', 'prop' => true, 'classes' => 'O'],
+			'VOL' => ['val' => 'VOL', 'lib' => 'volant', 'prop' => true, 'classes' => 'OI'],
+			'CHE' => ['val' => 'CHE', 'lib' => 'chenille', 'prop' => true, 'classes' => 'I'],
+			'CRY' => ['val' => 'CRY', 'lib' => 'chrysalide', 'prop' => true, 'classes' => 'I']
 		);
 	}
 
@@ -752,11 +758,11 @@ class bobs_citation extends bobs_element_commentaire {
 
 	public function proposer_homologation($id_utilisateur) {
 		$tag = bobs_tags::by_ref($this->db, TAG_ATTENTE_VALIDATION);
-		if ($this->a_tag($tag->id_tag))
+		if ($this->a_tag($tag->id_tag)) {
 			$this->supprime_tag($tag->id_tag, $id_utilisateur);
-		else
+		} else {
 			return false;
-
+		}
 		$tag = bobs_tags::by_ref($this->db, TAG_HOMOLOGATION_NECESSAIRE);
 
 		$this->ajoute_tag($tag->id_tag, null, null, $id_utilisateur);
