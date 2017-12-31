@@ -241,7 +241,7 @@ class bobs_element extends bobs_tests {
 
 		// probably no result, but return
 		// array for count and foreach loops
-		if (!t) {
+		if (!$t) {
 			return [];
 		}
 		return $t;
