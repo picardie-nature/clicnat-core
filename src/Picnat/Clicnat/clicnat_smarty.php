@@ -292,7 +292,7 @@ abstract class clicnat_smarty extends \Smarty {
 		exit();
 	}
 
-	public function display($tpl, $cache_id=null, $compile_id=null) {
+	public function display($tpl, $cache_id=null, $compile_id=null, $parent = null) {
 		if (isset($_SESSION[self::k_s_alertes]) && $_SESSION[self::k_s_alertes] != false) {
 			$this->alertes = json_decode($_SESSION[self::k_s_alertes],true);
 			$_SESSION[self::k_s_alertes] = false;
