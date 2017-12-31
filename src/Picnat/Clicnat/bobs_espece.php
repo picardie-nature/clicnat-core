@@ -267,7 +267,6 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 
 	public function xeno_canto() {
-		require_once(OBS_DIR.'xeno-canto.php');
 		return new clicnat_oiseau_xcanto($this->db, $this->id_espece);
 	}
 
@@ -837,12 +836,11 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 
 	public function entrepot_liste_communes_presence($departement) {
-		require_once('entrepot.php');
 		$state = entrepot::db()->especes_presence_communes_status->findOne(array("id_espece"=>$this->id_espece));
 
 		if (is_null($state)) return array();
 
-		$criteres = array("id_espece" => "{$this->id_espece}", "dept"=>sprintf("%d",$departement), "version" => (int)$state['current_version']);
+		$criteres = ["id_espece" => "{$this->id_espece}", "dept"=>sprintf("%d",$departement), "version" => (int)$state['current_version']];
 
 		$curseur = entrepot::db()->especes_presence_communes_data->find($criteres);
 		$curseur->sort(array("nom"=>1));
@@ -850,7 +848,6 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 
 	public function enregistre_liste_communes_presence($force=false) {
-		require_once('entrepot.php');
 		$id_citation_max = $this->id_citation_max();
 		$state = entrepot::db()->especes_presence_communes_status->findOne(array("id_espece"=>$this->id_espece));
 		if (is_null($state)) {
@@ -1674,8 +1671,7 @@ class bobs_espece extends bobs_abstract_espece {
 	 */
 	public function documents_liste() {
 		$q = bobs_qm()->query($this->db, 'esp_assoc_doc_liste', self::sql_doc_list, array($this->id_espece));
-		$tr = array();
-		require_once(OBS_DIR.'/docs.php');
+		$tr = [];
 		while ($r = self::fetch($q)) {
 			$doc = bobs_document::getInstance($r['document_ref']);
 			if ($doc)

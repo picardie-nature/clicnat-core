@@ -902,8 +902,7 @@ class bobs_citation extends bobs_element_commentaire {
 
 	public function documents_liste() {
 		$q = bobs_qm()->query($this->db, 'cits_assoc_doc_liste', self::sql_doc_liste, [$this->id_citation]);
-		$tr = array();
-		require_once(OBS_DIR.'/docs.php');
+		$tr = [];
 		while ($r = self::fetch($q)) {
 			$tr[] = new bobs_document($r['document_ref']);
 		}

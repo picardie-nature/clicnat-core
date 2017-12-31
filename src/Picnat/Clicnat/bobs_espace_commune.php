@@ -158,8 +158,6 @@ class bobs_espace_commune extends bobs_commune {
 	}
 
 	public function entrepot_liste_especes() {
-		require_once(OBS_DIR.'entrepot.php');
-
 		$faire_cache_annees_obs = !isset($this->cache_annees_obs);
 		if ($faire_cache_annees_obs)
 			$this->cache_annees_obs = array();
@@ -229,8 +227,6 @@ class bobs_espace_commune extends bobs_commune {
 		order by ep.nom';
 
 	public function get_ecoles() {
-		require_once(OBS_DIR.'/ecoles.php');
-
 		$q = bobs_qm()->query($this->db, 'esp_com_l_ecoles', self::sql_liste_ecoles, array(clicnat_ecole::tag($this->db)->id_tag, $this->id_espace));
 		$t = array();
 		while ($r = self::fetch($q)) {

@@ -4,7 +4,7 @@ namespace Picnat\Clicnat;
 /**
  * @brief classe de base pour les "controleurs" des sites de saisies
  */
-abstract class clicnat_smarty extends Smarty {
+abstract class clicnat_smarty extends \Smarty {
 	protected $db;
 
 	use clicnat_http_headers;
@@ -31,12 +31,12 @@ abstract class clicnat_smarty extends Smarty {
 		if (!defined('CLICNAT2')) {
 			if (!file_exists($this->compile_dir)) {
 				if (!mkdir($this->compile_dir)) {
-					throw new Exception("ne peux pas créer le dossier {$this->compile_dir}");
+					throw new \Exception("ne peux pas créer le dossier {$this->compile_dir}");
 				}
 			}
 			if (!file_exists($this->cache_dir)) {
 				if (!mkdir($this->cache_dir)) {
-					throw new Exception("ne peux pas créer le dossier {$this->cache_dir}");
+					throw new \Exception("ne peux pas créer le dossier {$this->cache_dir}");
 				}
 			}
 		}
@@ -117,12 +117,12 @@ abstract class clicnat_smarty extends Smarty {
 					case 'indice_qualite':
 						try {
 							$i1 = new bobs_indice_qualite($v1);
-						} catch (Exception $e) {
+						} catch (\Exception $e) {
 							$i1 = "inconnu";
 						}
 						try {
 							$i2 = new bobs_indice_qualite($v2);
-						} catch (Exception $e) {
+						} catch (\Exception $e) {
 							$i2 = "inconnu";
 						}
 						$params['commentaire'] = "niveau de certitude identification passe de <i>{$i1}</i> a <i>{$i2}</i>";
@@ -135,24 +135,23 @@ abstract class clicnat_smarty extends Smarty {
 	}
 
 	public function smarty_function_texte($params) {
-		require_once("HTMLPurifier.auto.php");
 		static $htmlpurifier;
 		if (!$htmlpurifier) {
-			$config = HTMLPurifier_Config::createDefault();
+			$config = \HTMLPurifier_Config::createDefault();
 			$config->set('Autoformat.AutoParagraph', true);
 			$config->set('AutoFormat.RemoveEmpty', true);
 			$config->set('AutoFormat.RemoveEmpty.RemoveNbsp', true);
-			$htmlpurifier = new HTMLPurifier($config);
+			$htmlpurifier = new \HTMLPurifier($config);
 		}
 
 		$nom = $params['nom'];
 		if (empty($nom)) {
-			throw new Exception('usage : {texte nom="ref_du_texte"}');
+			throw new \Exception('usage : {texte nom="ref_du_texte"}');
 		}
 		try {
 			$texte = clicnat_textes::par_nom($this->db, $nom);
 			return $htmlpurifier->purify(Markdown(trim($texte->texte))."<span title=\"{$nom}\">&bull;</span>");
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -185,7 +184,6 @@ abstract class clicnat_smarty extends Smarty {
 	}
 
 	public function bobs_doc($params, &$smarty) {
-		require_once(OBS_DIR.'docs.php');
 		$this->assign($params['var'], bobs_document::get_instance($params['id']));
 	}
 
@@ -218,17 +216,21 @@ abstract class clicnat_smarty extends Smarty {
 
 	protected function before_autocomplete_commune() {
 		bobs_element::cls($_GET['term']);
-		require_once(OBS_DIR.'espace.php');
 		$tt = array();
 		if (!empty($_GET['term'])) {
 			$s = str_replace(
-				array("é","è","ê","ï","î","ô"),
-				array("e","e","e","i","i","o"),
+				["é","è","ê","ï","î","ô"],
+				["e","e","e","i","i","o"],
 				$_GET['term']);
 			$t = bobs_espace_commune::rechercher($this->db, array("nom" => $s));
-			if (is_array($t))
-			foreach ($t as $l)
-			    $tt[] = array('label'=>sprintf("%s (%02d) ",$l->nom,$l->dept), 'value'=>$l->id_espace);
+			if (is_array($t)) {
+				foreach ($t as $l) {
+		    	$tt[] = [
+						'label'=>sprintf("%s (%02d) ",$l->nom,$l->dept),
+						'value'=>$l->id_espace
+					];
+				}
+			}
 		}
 		// change pas tous les jours
 		$this->header_cacheable(86400);
@@ -238,7 +240,6 @@ abstract class clicnat_smarty extends Smarty {
 
 	protected function before_autocomplete_departement() {
 		bobs_element::cls($_GET['term']);
-		require_once(OBS_DIR.'espace.php');
 		$t = bobs_espace_departement::rechercher($this->db, array("nom" => $_GET['term']));
 		$tt = array();
 		foreach ($t as $l) {

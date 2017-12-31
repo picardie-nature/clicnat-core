@@ -107,10 +107,9 @@ class bobs_commentaire implements i_clicnat_tests {
 	}
 
 	public static function get_commentaires($db, $table, $champ_id, $id_element) {
-		$t = array();
+		$t = [];
 		self::cls($table);
 		self::cls($champ_id);
-		require_once(OBS_DIR.'tags.php');
 
 		$sql = "select * from {$table} where {$champ_id}=$1 order by date_commentaire";
 		$q = bobs_qm()->query($db, "cmtr_g_{$table}", $sql, array((int)$id_element));

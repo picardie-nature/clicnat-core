@@ -109,7 +109,7 @@ class bobs_aonfm_choix_resp_tps_abond {
 
 		$rr = $espece->get_referentiel_regional();
 
-		$r = array();
+		$r = [];
 
 		$r[self::fourchette_large] = 1;
 		$r[self::fourchette_precise] = 0;
@@ -125,7 +125,7 @@ class bobs_aonfm_choix_resp_tps_abond {
 			$r[self::chiffre_precis] = 1;
 			return $r;
 		}
-		require_once('liste_espece.php');
+
 		if (!isset($liste_a)) $liste_a = new clicnat_listes_especes($db, self::id_liste_especes_a_denombrer_a);
 		if (!isset($liste_b)) $liste_b = new clicnat_listes_especes($db, self::id_liste_especes_a_denombrer_b);
 

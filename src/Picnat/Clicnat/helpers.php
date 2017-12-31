@@ -1,6 +1,9 @@
 <?php
 namespace Picnat\Clicnat;
 
+use Michelf\MarkdownExtra;
+use Html2Text\Html2Text;
+
 if (!function_exists('array_column')) {
 	/**
 	 * @brief Retourne les valeurs d'une colonne d'un tableau d'entrée (en attendant PHP 5.5)
@@ -40,14 +43,12 @@ function get_db_type_enum($db, $typname) {
  * @return texte sans balises markdown
  */
 function clicnat_markdown_txt($txt_md) {
-	require_once('markdown.php');
-	require_once(OBS_DIR.'/Html2Text.php');
 	static $html2txt;
-
-	$html = markdown($txt_md);
+	$parser = new MarkdownExtra();
+	$html = $parser->transform($txt_md);
 
 	if (!isset($html2txt)) {
-		$html2txt = new \Html2Text\Html2Text($html, false, array('do_links' => 'none'));
+		$html2txt = new Html2Text($html, false, array('do_links' => 'none'));
 	} else {
 		$html2txt->set_html($html);
 	}

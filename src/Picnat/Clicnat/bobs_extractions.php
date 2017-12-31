@@ -111,7 +111,6 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public function get_citations($inverse_ordre = false) {
-		require_once(OBS_DIR.'citations.php');
 		$cits = $this->dans_un_tableau($inverse_ordre);
 		$tcit = array_column($cits, 'id_citation');
 		unset($cits);

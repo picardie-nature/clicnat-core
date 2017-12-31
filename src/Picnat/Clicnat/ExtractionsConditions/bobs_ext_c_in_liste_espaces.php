@@ -13,7 +13,6 @@ class bobs_ext_c_in_liste_espaces extends bobs_extractions_conditions {
 
 	public function __toString() {
 		$db = $this->extraction->get_db();
-		require_once(OBS_DIR.'liste_espace.php');
 		$liste = new clicnat_listes_espaces($db, $this->id_liste_espace);
 		return "Liste d'espaces : $liste";
 	}

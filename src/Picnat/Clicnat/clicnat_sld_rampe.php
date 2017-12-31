@@ -39,11 +39,10 @@ class clicnat_sld_rampe extends clicnat_sld implements i_clicnat_sld {
 	 * @return instance DOMDocument
 	 **/
 	public static function liste_espaces_attrs_min_max($liste_espaces, $regexp_param, $resolution, $teinte=120, $saturation=0.8, $valeur=0.9, $methode="repartie") {
-		require_once(OBS_DIR.'couleurs.php');
-		$style = array(
-			"styles" => array(),
+		$style = [
+			"styles" => [],
 			"layername" => "liste_espace_{$liste_espaces->id_liste_espace}"
-		);
+		];
 		$resolution_init = $resolution;
 		$teinte_init = $teinte%360;
 		foreach ($liste_espaces->attributs() as $attr) {
@@ -51,7 +50,7 @@ class clicnat_sld_rampe extends clicnat_sld implements i_clicnat_sld {
 			if (!preg_match($regexp_param, $attr['name']))
 				continue;
 
-			$sattr = array('rules' => array(), 'property' => $attr['name'] , 'titre' => $attr['name']);
+			$sattr = ['rules' => array(), 'property' => $attr['name'] , 'titre' => $attr['name']];
 
 			switch ($methode) {
 				default:

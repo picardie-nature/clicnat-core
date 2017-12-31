@@ -758,8 +758,6 @@ class clicnat_utilisateur extends bobs_element {
 			$extraction->autorise_utilisateur($this->id_utilisateur, $position);
 		}
 
-		require_once(OBS_DIR.'chr.php');
-
 		foreach (bobs_chr::get_list($this->db) as $t_chr) {
 			$chr = get_chr($this->db, $t_chr);
 			$membre = false;
@@ -953,8 +951,7 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function listes_especes() {
-		require_once('liste_espece.php');
-		$r = array();
+		$r = [];
 		$t = clicnat_listes_especes::liste($this->db, $this->id_utilisateur);
 		foreach ($t as $l) {
 			$r[] = new clicnat_listes_especes($this->db, $l);
@@ -963,8 +960,7 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function listes_espaces() {
-		require_once('liste_espace.php');
-		$r = array();
+		$r = [];
 		$t = clicnat_listes_espaces::liste($this->db, $this->id_utilisateur);
 		foreach ($t as $l) {
 			$r[] = new clicnat_listes_espaces($this->db, $l);
@@ -1003,12 +999,13 @@ class clicnat_utilisateur extends bobs_element {
 	public function selection_get($id_selection) {
 		$id_selection = sprintf("%d", $id_selection);
 
-		if (empty($id_selection))
+		if (empty($id_selection)) {
 			throw new InvalidArgumentException();
-
+		}
 		$selection = new bobs_selection($this->db, sprintf("%s", $id_selection));
-		if ($selection->get_id_utilisateur() != $this->id_utilisateur)
+		if ($selection->get_id_utilisateur() != $this->id_utilisateur) {
 			throw new exception('pas propriétaire de la sélection');
+		}
 
 		return $selection;
 	}
@@ -1290,8 +1287,7 @@ class clicnat_utilisateur extends bobs_element {
 	 * @param $signature signature texte du mail
 	 */
 	public function envoi_mot_de_passe($base_url, $mail_support, $signature) {
-		require_once(OBS_DIR.'pwgen.class.php');
-		$pwgen = new PWGen();
+		$pwgen = new \PWGen();
 		$vars = [
 			"username" => $this->username,
 			"nom" => $this->nom,
@@ -1303,8 +1299,9 @@ class clicnat_utilisateur extends bobs_element {
 		$this->set_password($vars['mot_de_passe']);
 
 
-		if (empty($vars['mot_de_passe']) || empty($this->username))
-			throw new Exception('Identifiant ou mot de passe vide');
+		if (empty($vars['mot_de_passe']) || empty($this->username)) {
+			throw new \Exception('Identifiant ou mot de passe vide');
+		}
 
 		$headers = "From: $mail_support\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n";
 		$msg_tpl = clicnat_textes::par_nom($this->db, 'base/inscription/mail_mdp')->texte;
@@ -1314,7 +1311,7 @@ class clicnat_utilisateur extends bobs_element {
 		$msg = self::mini_template($msg_tpl, $vars);
 
 		if (!mail($this->mail, $sujet, $msg, $headers, "-f$mail_support")) {
-			throw new Exception('Message pas envoyé');
+			throw new \Exception('Message pas envoyé');
 		}
 
 		return true;
@@ -1773,27 +1770,22 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function taches_en_attente() {
-		require_once('taches.php');
 		return clicnat_tache::en_attente($this->db, $this->id_utilisateur);
 	}
 
 	public function taches_en_cours() {
-		require_once('taches.php');
 		return clicnat_tache::en_cours($this->db, $this->id_utilisateur);
 	}
 
 	public function taches_terminees() {
-		require_once('taches.php');
 		return clicnat_tache::dernieres_terminees($this->db, $this->id_utilisateur);
 	}
 
 	public function taches_planifiees() {
-		require_once('taches.php');
 		return clicnat_tache::planif($this->db, $this->id_utilisateur);
 	}
 
 	public function fichiers() {
-		require_once('entrepot.php');
 		$entrepot = entrepot::db();
 		$grid = $entrepot->getGridFs();
 		$t = [];
@@ -1807,7 +1799,6 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function fichier_enregistrer($fichier, $lib, $content_type) {
-		require_once('entrepot.php');
 		$entrepot = entrepot::db();
 		$grid = $entrepot->getGridFs();
 		$id = $grid->storeFile($fichier, array(
@@ -1821,7 +1812,6 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function fichier($id) {
-		require_once('entrepot.php');
 		$entrepot = entrepot::db();
 		$grid = $entrepot->getGridFs();
 		$fichier = $grid->findOne(array(
@@ -1853,6 +1843,7 @@ class clicnat_utilisateur extends bobs_element {
 		}
 		return $docs;
 	}
+
 	public function inbox_doc_suppr($doc_id) {
 		self::cls($doc_id, self::except_si_vide);
 		return $q = bobs_qm()->query($this->db, 'd_ibox_del', self::sql_doc_inbox_del, [$this->id_utilisateur,$doc_id]);

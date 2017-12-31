@@ -13,7 +13,6 @@ class bobs_ext_c_liste_especes extends bobs_extractions_conditions {
 
 	public function __toString() {
 		$db = $this->extraction->get_db();
-		require_once(OBS_DIR.'liste_espece.php');
 		$liste = new clicnat_listes_especes($db, $this->id_liste_espece);
 		return "Liste d'espèces : {$liste}";
 	}
@@ -23,7 +22,7 @@ class bobs_ext_c_liste_especes extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('listes_especes_data');
+		return ['listes_especes_data'];
 	}
 
 	public static function new_by_array($t) {

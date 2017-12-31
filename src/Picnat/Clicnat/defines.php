@@ -1,6 +1,6 @@
 <?php
 namespace Picnat\Clicnat;
-
+$context = 'general';
 define('DB_RESOURCE_TYPE', 'pgsql link');
 
 define('DATE_M', 'mois');

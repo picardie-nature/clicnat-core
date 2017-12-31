@@ -769,6 +769,7 @@ class bobs_selection extends bobs_element {
 	 * Le fichier est directement envoyé au navigateur
 	 */
 	public function extract_xls() {
+			// TODO
 	    require_once('Spreadsheet/Excel/Writer.php');
 	    $n = 0;
 	    $i = 0;
@@ -777,8 +778,8 @@ class bobs_selection extends bobs_element {
 	    $sheet =& $workbook->addWorksheet($this->nom_selection);
 
 	    foreach (bobs_citation::get_ligne_array_titre() as $v) {
-			$sheet->write(0, $i, $v);
-			$i++;
+				$sheet->write(0, $i, $v);
+				$i++;
 	    }
 
 	    $sql = 'select citations.*
@@ -1431,7 +1432,6 @@ class bobs_selection_extraction_nicheurs extends bobs_selection_action {
 
 	public function execute() {
 		ob_start();
-		require_once('aonfm.php');
 		$s_possible = new bobs_selection($this->db, $this->selection_possible);
 		$s_probable = new bobs_selection($this->db, $this->selection_probable);
 		$s_certain = new bobs_selection($this->db, $this->selection_certain);

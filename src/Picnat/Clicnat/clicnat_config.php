@@ -91,7 +91,6 @@ class clicnat_config extends DOMDocument {
 	 * </cartographie>
 	 */
 	public function extent($srid_dest) {
-		require_once(OBS_DIR.'cartographie.php');
 		$exts = $this->query('/clicnat/cartographie/extent');
 		foreach ($exts as $ext) continue;
 		$srid = $ext->getAttribute('srid');

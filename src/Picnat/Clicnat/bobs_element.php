@@ -352,9 +352,3 @@ class bobs_element extends bobs_tests {
 		return $this->db;
 	}
 }
-
-
-$context = 'general';
-
-require_once(OBS_DIR.'tags.php');
-require_once(OBS_DIR.'commentaires.php');

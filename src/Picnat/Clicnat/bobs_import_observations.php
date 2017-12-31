@@ -153,7 +153,6 @@ class bobs_import_observations extends bobs_element {
 	}
 
 	public function set_espace_d($latitude, $longitude) {
-		require_once(OBS_DIR.'/espace.php');
 		$import = $this->get_import();
 		$id_point = bobs_espace_point::insert($this->db, [
 			'id_utilisateur' => $import->id_utilisateur,
