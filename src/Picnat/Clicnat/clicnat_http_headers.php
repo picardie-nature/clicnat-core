@@ -4,9 +4,7 @@ namespace Picnat\Clicnat;
 trait clicnat_http_headers {
 	public static function header_csv($filename,$size=0) {
 		header("Content-type: text/csv; charset=UTF-8");
-		//header("Content-Type: application/octet-stream");
 		header("Content-Disposition: attachment; filename=\"$filename\";" );
-		//header("Content-Transfer-Encoding: binary");
 	}
 
 	public static function header_json() {
@@ -60,10 +58,10 @@ trait clicnat_http_headers {
 	public static function header_cacheable($expiration_en_secondes=86400) {
 		// pour tester la validité des entetes
 		// http://redbot.org
-		$h = new Datetime("now");
-		$h->setTimeZone(new DateTimeZone('Europe/London'));
-		$h->add(new DateInterval(sprintf("PT%dS",$expiration_en_secondes)));
-		header("Expires: ".str_replace('+0000','GMT',$h->format(DateTime::RFC1123)));
+		$h = new \Datetime("now");
+		$h->setTimeZone(new \DateTimeZone('Europe/London'));
+		$h->add(new \DateInterval(sprintf("PT%dS",$expiration_en_secondes)));
+		header("Expires: ".str_replace('+0000','GMT',$h->format(\DateTime::RFC1123)));
 		header(sprintf('Cache-control: public, max-age=%d', $expiration_en_secondes));
 		header_remove('Set-Cookie');
 		header_remove('X-Powered-By');
