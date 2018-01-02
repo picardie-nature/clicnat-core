@@ -18,6 +18,7 @@
       "roderik/pwgen-php": "^0.1.7",
       "smarty/smarty": "^3.1",
       "ezyang/htmlpurifier": "^4.9",
-      "michelf/php-markdown": "^1.7"
+      "michelf/php-markdown": "^1.7",
+      "phpunit/phpunit": "^6.5"
    }
 }
