@@ -19,21 +19,19 @@ class bobs_ext_c_auteur extends bobs_extractions_conditions {
 		return sprintf('observations.id_utilisateur=%d', $this->id_utilisateur);
 	}
 
-	public function get_tables()
-	{
+	public function get_tables() {
 		return array('observations');
 	}
 
-	public static function new_by_array($t)
-	{
+	public static function new_by_array($t) {
 		return new bobs_ext_c_auteur($t['id_utilisateur']);
 	}
 
 	public function  __toString() {
 		try {
-			$u = get_utilisateur($this->extraction->get_db(), $this->id_utilisateur);
+			$u = \Picnat\Clicnat\get_utilisateur($this->extraction->get_db(), $this->id_utilisateur);
 			return "Saisie par : $u";
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return "Erreur dans ".__FILE__.' ligne '.__LINE__;
 		}
 	}

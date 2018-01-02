@@ -13,6 +13,7 @@ class bobs_extractionsTests extends TestCase {
 			$this->assertNotEmpty($titre);
 			$this->assertTrue(is_subclass_of($conditionClass, bobs_extractions_conditions::class));
 		}
+		bobs_extractions::get_conditions_dispo(true);
 		return $conditions;
 	}
 }

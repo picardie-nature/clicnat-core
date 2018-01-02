@@ -315,8 +315,9 @@ class bobs_extractions extends bobs_tests {
 	public function autorise_utilisateur($id_utilisateur,$position=0) {
 		self::cli($id_utilisateur);
 
-		if (!$this->ready())
+		if (!$this->ready()) {
 			return false;
+		}
 
 		$sql = "insert into utilisateur_citations_ok (id_utilisateur,id_citation)
 				select $id_utilisateur, citations.id_citation
@@ -336,9 +337,11 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public function ready($n=0) {
-		if (is_array($this->conditions))
-			if (count($this->conditions) > $n)
+		if (is_array($this->conditions)) {
+			if (count($this->conditions) > $n) {
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -394,10 +397,12 @@ class bobs_extractions extends bobs_tests {
 
 				$table_dependante = $deps[$table];
 
-				if (empty($table))
-				throw new Exception('table vide');
-
-				if (is_null($table_dependante)) continue;
+				if (empty($table)) {
+					throw new \Exception('table vide');
+				}
+				if (is_null($table_dependante)) {
+					continue;
+				}
 
 				if (in_array($deps[$table], $this->tables) === false) {
 					$not_done = true;
@@ -513,7 +518,7 @@ class bobs_extractions extends bobs_tests {
 	 * Donne la liste des conditions disponnibles
 	 * @return array
 	 */
-	static public function get_conditions_dispo() {
+	static public function get_conditions_dispo($forcer_chargement_classes=false) {
 		$t = [];
 		$second_pass = false;
 		while (count($t) == 0) {
@@ -522,8 +527,11 @@ class bobs_extractions extends bobs_tests {
 					$t[] = $classe;
 				}
 			}
-			if (count($t) == 0) {
+			if (count($t) == 0 || $forcer_chargement_classes) {
 				if ($second_pass) {
+					if ($forcer_chargement_classes && count($t) > 0) {
+						break;
+					}
 					throw new \Exception("can't preload conditions");
 				}
 				$second_pass = true;
