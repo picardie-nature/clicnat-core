@@ -119,12 +119,14 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public function dans_selection($selection) {
-		if (is_int($selection))
+		if (is_int($selection)) {
 			$selection = get_selection($this->db, $selection);
+		}
 		$selection->change_extraction_xml($this->sauve_xml($selection->nom));
 
-		if (!$this->ready())
+		if (!$this->ready()) {
 			return false;
+		}
 
 		bobs_element::cli($id_selection);
 
