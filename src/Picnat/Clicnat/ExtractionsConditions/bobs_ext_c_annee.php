@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_annee extends bobs_extractions_conditions {
 	protected $annee;
@@ -8,8 +9,9 @@ class bobs_ext_c_annee extends bobs_extractions_conditions {
 	function __construct($annee) {
 		parent::__construct();
 		bobs_element::cli($annee);
-		if (empty($annee))
-			throw new Exception("année vide");
+		if (empty($annee)) {
+			throw new \Exception("année vide");
+		}
 		$this->arguments[] = 'annee';
 		$this->annee = $annee;
 	}
@@ -27,7 +29,7 @@ class bobs_ext_c_annee extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('observations');
+		return ['observations'];
 	}
 
 	public static function new_by_array($t) {
