@@ -106,7 +106,7 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function partage_opts_champs() {
-		return array(
+		return [
 			'transmettre_nom_avec_donnees',
 			'diffusion_restreinte',
 			'ma_localisation',
@@ -115,7 +115,7 @@ class clicnat_utilisateur extends bobs_element {
 			'journal',
 			'pas_de_mail_utilisateurs',
 			'pas_de_mail_interaction'
-		);
+		];
 	}
 
 	const sql_l_obs_loc_pub = 'select pseudo,id_utilisateur,st_x(the_geom) as x,st_y(the_geom) as y from utilisateur where localisation_visible=\'tous\' and the_geom is not null';

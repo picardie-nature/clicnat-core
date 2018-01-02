@@ -606,6 +606,28 @@ function bobs_reseaux_liste($db) {
 	return clicnat_reseau::liste_reseaux($db);
 }
 
+function get_bobs_utilisateur($db, $id_or_array) {
+	return get_clicnat_utilisateur($db, $id_or_array);
+}
+
+/**
+ * @brief permet d'accéder aux instances d'utilisateurs
+ * @deprecated utiliser get_utilisateur()
+ *
+ * @return bobs_reseau
+ */
+function get_clicnat_utilisateur($db, $id_or_array) {
+	static $utilisateurs;
+	if (!isset($utilisateurs)) {
+		$utilisateurs = array();
+	}
+	$id = is_array($id_or_array)?$r['id_utilisateur']:$id_or_array;
+	if (!array_key_exists($id, $utilisateurs)) {
+		$utilisateurs[$id] = new bobs_utilisateur($db, $id_or_array);
+	}
+	return $utilisateurs[$id];
+}
+
 /**
  * @return bobs_utilisateur
  */
