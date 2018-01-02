@@ -1,6 +1,7 @@
 <?php
 namespace Picnat\Clicnat;
 
+use Picnat\Clicnat\ExtractionsConditions\bobs_extractions_conditions;
 /**
  * @brief Recherche de citations
  */
@@ -412,8 +413,9 @@ class bobs_extractions extends bobs_tests {
 	protected function get_tables() {
 		$this->solve_table_deps();
 		$r = '';
-		foreach ($this->tables as $table)
+		foreach ($this->tables as $table) {
 			$r .= $table.',';
+		}
 		return trim($r, ',');
 	}
 
@@ -425,7 +427,9 @@ class bobs_extractions extends bobs_tests {
 		$r = '';
 		$this->solve_table_deps();
 		foreach ($this->tables as $table) {
-			if (!empty($r)) $r .= ' and ';
+			if (!empty($r)) {
+				$r .= ' and ';
+			}
 			$r .= $this->get_table_jointure($table)."\n";
 		}
 		return $r;
@@ -436,7 +440,7 @@ class bobs_extractions extends bobs_tests {
 	 * @return string
 	 */
 	protected function get_conditions() {
-		$t = array();
+		$t = [];
 		foreach ($this->conditions as $condition) {
 			$classe = get_class($condition);
 			if (!isset($t[$classe]))
@@ -508,17 +512,32 @@ class bobs_extractions extends bobs_tests {
 	 * @return array
 	 */
 	static public function get_conditions_dispo() {
-		$t = array();
-		foreach (get_declared_classes() as $classe) {
-			if (is_subclass_of($classe, 'bobs_extractions_conditions')) {
-				$t[] = $classe;
+		$t = [];
+		$second_pass = false;
+		while (count($t) == 0) {
+			foreach (get_declared_classes() as $classe) {
+				if (is_subclass_of($classe, bobs_extractions_conditions::class)) {
+					$t[] = $classe;
+				}
+			}
+			if (count($t) == 0) {
+				if ($second_pass) {
+					throw new \Exception("can't preload conditions");
+				}
+				$second_pass = true;
+				foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
+					require_once($f);
+				}
 			}
 		}
-		$tr = array();
+
+		$tr = [];
+
 		foreach ($t as $c) {
 			if (eval("return $c::qg;"))
 				$tr[$c] = eval('return '.$c.'::get_titre();');
 		}
+
 		return $tr;
 	}
 

@@ -1,6 +1,9 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
 
+use Picnat\Clicnat\i_clicnat_tests;
+use Picnat\Clicnat\clicnat_tests;
+
 class bobs_ext_c_espece extends bobs_extractions_conditions implements i_clicnat_tests {
 	use clicnat_tests;
 
