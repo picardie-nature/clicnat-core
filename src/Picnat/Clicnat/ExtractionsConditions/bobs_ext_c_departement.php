@@ -16,13 +16,13 @@ class bobs_ext_c_departement extends bobs_extractions_conditions {
 			case 'id_espace':
 				return $this->id_espace;
 			default:
-				throw new Exception('propriété inconnue');
+				throw new \Exception('propriété inconnue');
 		}
 	}
 
 	public function  __toString() {
 		$db = $this->extraction->get_db();
-		$dept = get_espace_departement($db, $this->id_espace);
+		$dept = \Picnat\Clicnat\get_espace_departement($db, $this->id_espace);
 		return "Département : <b>{$dept->nom}</b>";
 	}
 
@@ -49,7 +49,7 @@ class bobs_ext_c_departement extends bobs_extractions_conditions {
 		$l_deps = explode(',', DEPARTEMENTS);
 		$r = "<select name='id_espace'>";
 		foreach ($l_deps as $id) {
-			$d = new bobs_espace_departement(get_db(), $id);
+			$d = new \Picnat\Clicnat\bobs_espace_departement(get_db(), $id);
 			$r .= "<option value={$id}>{$d}</option>";
 		}
 

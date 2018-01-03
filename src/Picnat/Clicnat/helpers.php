@@ -641,3 +641,22 @@ function get_utilisateur($db, $id_or_array) {
 		return null;
 	}
 }
+
+/**
+ * @brief permet d'accéder aux instances de réseaux
+ *
+ * @return bobs_reseau
+ */
+function get_bobs_reseau($db, $nc) {
+        static $reseaux;
+
+        if (!isset($reseaux)) {
+                $reseaux = [];
+        }
+
+        if (!array_key_exists($nc, $reseaux)) {
+                $reseaux[$nc] = new bobs_reseau($db, $nc);
+        }
+
+        return $reseaux[$nc];
+}

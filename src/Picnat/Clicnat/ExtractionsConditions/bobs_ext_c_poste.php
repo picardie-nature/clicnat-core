@@ -25,7 +25,7 @@ class bobs_ext_c_poste extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('citations');
+		return ['citations'];
 	}
 
 	public function sauve_xml($doc, $ele) {

@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_esp_comite_homolog extends bobs_extractions_conditions {
 	private $id_comite;

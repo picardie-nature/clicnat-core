@@ -26,6 +26,9 @@ class bobs_extractions extends bobs_tests {
 		$this->limite = 0;
 	}
 
+	/**
+	 * @param integer $n
+	 */
 	public function limite($n) {
 		$this->limite = abs((int)$n);
 	}
@@ -521,6 +524,7 @@ class bobs_extractions extends bobs_tests {
 	public static function get_conditions_dispo($forcer_chargement_classes=false) {
 		static $conditions = [];
 		if (empty($conditions)) {
+			$t = [];
 			foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
 				require_once($f);
 			}

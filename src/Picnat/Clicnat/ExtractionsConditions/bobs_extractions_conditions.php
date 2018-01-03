@@ -49,6 +49,10 @@ abstract class bobs_extractions_conditions {
 		$this->extraction = $extraction;
 	}
 
+	/**
+	 * @param \DOMDocument $doc
+	 * @param \DOMElement $element
+	 */
 	public function sauve_xml($doc, $element) {
 		$condition = $doc->createElement('condition');
 		$className = end(explode("\\", get_class($this)));

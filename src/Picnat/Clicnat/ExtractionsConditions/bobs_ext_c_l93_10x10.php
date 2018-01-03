@@ -13,7 +13,7 @@ class bobs_ext_c_l93_10x10 extends bobs_ext_c_poly {
 	}
 
 	public static function new_by_array($t) {
-		return new bobs_ext_c_l93_10x10($t['id_espace']);
+		return new \Picnat\Clicnat\bobs_ext_c_l93_10x10($t['id_espace']);
 	}
 
 	public function __toString() {
