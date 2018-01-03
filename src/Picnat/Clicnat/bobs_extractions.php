@@ -518,37 +518,25 @@ class bobs_extractions extends bobs_tests {
 	 * Donne la liste des conditions disponnibles
 	 * @return array
 	 */
-	static public function get_conditions_dispo($forcer_chargement_classes=false) {
-		$t = [];
-		$second_pass = false;
-		while (count($t) == 0) {
+	public static function get_conditions_dispo($forcer_chargement_classes=false) {
+		static $conditions = [];
+		if (empty($conditions)) {
+			foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
+				require_once($f);
+			}
 			foreach (get_declared_classes() as $classe) {
 				if (is_subclass_of($classe, bobs_extractions_conditions::class)) {
 					$t[] = $classe;
 				}
 			}
-			if (count($t) == 0 || $forcer_chargement_classes) {
-				if ($second_pass) {
-					if ($forcer_chargement_classes && count($t) > 0) {
-						break;
-					}
-					throw new \Exception("can't preload conditions");
-				}
-				$second_pass = true;
-				foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
-					require_once($f);
+
+			foreach ($t as $c) {
+				if (eval("return $c::qg;")) {
+					$conditions[$c] = eval('return '.$c.'::get_titre();');
 				}
 			}
 		}
-
-		$tr = [];
-
-		foreach ($t as $c) {
-			if (eval("return $c::qg;"))
-				$tr[$c] = eval('return '.$c.'::get_titre();');
-		}
-
-		return $tr;
+		return $conditions;
 	}
 
 	public function get_db() {
@@ -560,7 +548,7 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public function sauve_xml($nom_extraction) {
-		$doc = new DOMDocument('1.0');
+		$doc = new \DOMDocument('1.0');
 		$doc->formatOutput = true;
 		$ext = $doc->createElement('extraction');
 		$ext->setAttribute('version', '1.0');
@@ -580,10 +568,10 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public static function extrait_nom_xml($xml) {
-		$doc = new DOMDocument('1.0');
+		$doc = new \DOMDocument('1.0');
 		$doc->loadXML($xml);
 
-		$xpath = new DOMXPath($doc);
+		$xpath = new \DOMXPath($doc);
 		$entries = $xpath->query('//extraction/nom');
 		foreach ($entries as $e) {
 			return $e->nodeValue;
@@ -606,10 +594,10 @@ class bobs_extractions extends bobs_tests {
 				$extraction = new bobs_extractions_poste($db, $id_utilisateur);
 			}
 		}
-		$doc = new DOMDocument('1.0');
+		$doc = new \DOMDocument('1.0');
 		$doc->loadXML($xml);
 
-		$xpath = new DOMXPath($doc);
+		$xpath = new \DOMXPath($doc);
 		$entries = $xpath->query('//extraction/conditions/condition');
 		foreach ($entries as $entry) {
 			$classe = null;
@@ -623,12 +611,14 @@ class bobs_extractions extends bobs_tests {
 					$arguments[$k] = $v;
 				}
 			}
-			if (!is_subclass_of($classe, 'bobs_extractions_conditions'))
-				throw new Exception('classe pas autorisée : '.$classe);
+			if (!is_subclass_of($classe, 'bobs_extractions_conditions')) {
+				throw new \Exception('classe pas autorisée : '.$classe);
+			}
 			$obj_ext = false;
 			eval("\$obj_ext = $classe::new_by_array(\$arguments);");
-			if ($obj_ext)
+			if ($obj_ext) {
 				$extraction->ajouter_condition($obj_ext);
+			}
 		}
 		return $extraction;
 	}

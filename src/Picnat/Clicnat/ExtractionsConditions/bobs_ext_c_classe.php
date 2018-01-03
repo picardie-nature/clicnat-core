@@ -1,5 +1,7 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_espece;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_classe extends bobs_extractions_conditions {
 	protected $classe;

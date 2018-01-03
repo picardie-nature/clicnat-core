@@ -27,7 +27,7 @@ class bobs_ext_c_brouillard extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('observations');
+		return ['observations'];
 	}
 
 	public static function new_by_array($t) {

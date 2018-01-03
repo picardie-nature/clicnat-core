@@ -16,7 +16,7 @@ class bobs_ext_c_commune extends bobs_extractions_conditions {
 
 	public function  __toString() {
 		$db = $this->extraction->get_db();
-		$commune = get_espace_commune($db, $this->id_espace);
+		$commune = \Picnat\Clicnat\get_espace_commune($db, $this->id_espace);
 		return "Commune de <b>{$commune->nom}</b>";
 	}
 

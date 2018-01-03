@@ -25,7 +25,7 @@ abstract class bobs_extractions_conditions {
 		return true;
 	}
 
-	static public function get_titre() {
+	public static function get_titre() {
 		return 'inconnu';
 	}
 
@@ -38,11 +38,11 @@ abstract class bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array();
+		return [];
 	}
 
 	public static function new_by_array($t) {
-		throw new Exception('doit être réimplémentée');
+		throw new \Exception('doit être réimplémentée');
 	}
 
 	public function set_extraction($extraction) {
@@ -51,7 +51,8 @@ abstract class bobs_extractions_conditions {
 
 	public function sauve_xml($doc, $element) {
 		$condition = $doc->createElement('condition');
-		$condition->appendChild($doc->createElement('classe', get_class($this)));
+		$className = end(explode("\\", get_class($this)));
+		$condition->appendChild($doc->createElement('classe', $className));
 		if (count($this->arguments) > 0) {
 			foreach ($this->arguments as $arg) {
 				$xarg = $doc->createElement('argument', $this->$arg);

@@ -23,6 +23,6 @@ class bobs_ext_c_a_document extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('citations_documents');
+		return ['citations_documents'];
 	}
 }

@@ -20,7 +20,7 @@ class bobs_ext_c_annee extends bobs_extractions_conditions {
 		return 'Année '.$this->annee;
 	}
 
-	static public function get_titre() {
+	public static function get_titre() {
 		return 'Année';
 	}
 

@@ -28,7 +28,7 @@ class bobs_ext_c_commentaire extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('citations');
+		return ['citations'];
 	}
 
 	public static function new_by_array($t) {
