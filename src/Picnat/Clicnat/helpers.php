@@ -278,8 +278,9 @@ function get_structure($db, $id_or_array) {
 
 //JBH Get structure by name
 function get_structure_by_name($db, $ref) {
-	if (empty($ref))
-		throw new InvalidArgumentException('$ref est vide');
+	if (empty($ref)) {
+		throw new \InvalidArgumentException('$ref est vide');
+	}
 	$q = bobs_qm()->query($db, 'structure_by_name', 'select id_structure from structures where nom=$1', array($ref));
 	$r = bobs_element::fetch($q);
   $id_structure = $r['id_structure'];
@@ -298,8 +299,9 @@ function smarty_modifier_markdown_txt($txt) {
   */
 function get_selection($db, $id_or_array) {
 	static $mngr;
-	if (!isset($mngr))
+	if (!isset($mngr)) {
 		$mngr = new bobs_single_mngr(bobs_selection::class, 'id_selection');
+	}
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
@@ -552,7 +554,7 @@ function get_observation($db, $id_or_array) {
 		$mngr = new bobs_single_mngr(bobs_observation::class, 'id_observation');
 	try {
 		return $mngr->get($db, $id_or_array);
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		return null;
 	}
 }
@@ -648,15 +650,33 @@ function get_utilisateur($db, $id_or_array) {
  * @return bobs_reseau
  */
 function get_bobs_reseau($db, $nc) {
-        static $reseaux;
+	static $reseaux;
 
-        if (!isset($reseaux)) {
-                $reseaux = [];
-        }
+	if (!isset($reseaux)) {
+		$reseaux = [];
+	}
+	if (!array_key_exists($nc, $reseaux)) {
+		$reseaux[$nc] = new bobs_reseau($db, $nc);
+	}
+	return $reseaux[$nc];
+}
 
-        if (!array_key_exists($nc, $reseaux)) {
-                $reseaux[$nc] = new bobs_reseau($db, $nc);
-        }
+function bobs_log($msg) {
+	global $context;
+	$sid = session_id();
+	$f = fopen(BOBS_LOG_FILE, "a+");
 
-        return $reseaux[$nc];
+	if (!$f) {
+		throw new \Exception('open log file failed '.BOBS_LOG_FILE);
+	}
+
+	flock($f, LOCK_EX);
+	fprintf($f, "%s bobs-%s (sid=%s) %s\n",
+		strftime("%Y-%m-%d %H:%M:%S", mktime()),
+		$context,
+		$sid,
+		$msg
+	);
+	flock($f, LOCK_UN);
+	fclose($f);
 }
