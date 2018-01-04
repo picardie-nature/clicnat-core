@@ -1470,13 +1470,13 @@ class bobs_espece extends bobs_abstract_espece {
 	 * @brief suppression d'une espèce
 	 */
 	public function supprimer() {
-	    self::cli($this->id_espece);
-	    if ($this->get_nb_citations(self::nb_citations_toutes) == 0) {
-			bobs_qm()->query($this->db, 'espece-del1', self::sql_del1, array($this->id_espece));
-			bobs_qm()->query($this->db, 'espece-del2', self::sql_del2, array($this->id_espece));
+		self::cli($this->id_espece);
+		if ($this->get_nb_citations(self::nb_citations_toutes) == 0) {
+			bobs_qm()->query($this->db, 'espece-del1', self::sql_del1, [$this->id_espece]);
+			bobs_qm()->query($this->db, 'espece-del2', self::sql_del2, [$this->id_espece]);
 			return true;
-	    }
-	    return false;
+		}
+		return false;
 	}
 
 	/**
@@ -1491,8 +1491,9 @@ class bobs_espece extends bobs_abstract_espece {
 	public function change_citations_id_espece($id_espece) {
 		self::cli($this->id_espece);
 		self::cli($id_espece);
-		if ($this->id_espece == $id_espece)
-			throw new Exception('identiques !');
+		if ($this->id_espece == $id_espece) {
+			throw new \Exception('identiques !');
+		}
 		self::query($this->db, 'begin');
 		try {
 			$sql = 'select * from citations where id_espece=$1 for update nowait';
@@ -1505,7 +1506,7 @@ class bobs_espece extends bobs_abstract_espece {
 
 			$sql = "update referentiel_especes_tiers set id_espece=$2 where id_espece=$1";
 			$q = bobs_qm()->query($this->db, 'change_id_sp_u2', $sql, array($this->id_espece, $id_espece));
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			self::query($this->db, 'rollback');
 			throw $e;
 		}
@@ -1531,12 +1532,11 @@ class bobs_espece extends bobs_abstract_espece {
 				and extract('year' from date_observation) between extract('year' from now())-15 and extract('year' from now())-1
 				group by extract('year' from date_observation)
 				order by extract('year' from date_observation)";
-		$q = bobs_qm()->query($this->db, 'esp_borne_chant', $sql, array($this->id_espece));
+		$q = bobs_qm()->query($this->db, 'esp_borne_chant', $sql, [$this->id_espece]);
 		return self::fetch_all($q);
 	}
 
-	public function bornes_moyenne_chanteurs()
-	{
+	public function bornes_moyenne_chanteurs() {
 		$sql = "select avg(premiere_date) as moy_premiere_date ,avg(derniere_date) as moy_derniere_date
 				from
 				(select trunc(extract('doy' from min(date_observation))) as premiere_date,
@@ -1558,8 +1558,7 @@ class bobs_espece extends bobs_abstract_espece {
 		return self::fetch($q);
 	}
 
-	public function citations_chanteurs_par_semaine()
-	{
+	public function citations_chanteurs_par_semaine() {
 		$sql = "select trunc(extract('doy' from date_observation)/7)+1 as semaine,count(distinct c.id_citation) as n
 					from observations o,citations c,citations_tags ct,tags t
 					where o.id_observation=c.id_observation
@@ -1575,8 +1574,7 @@ class bobs_espece extends bobs_abstract_espece {
 		return self::fetch_all($q);
 	}
 
-	public function citations_n_moyen_par_semaine()
-	{
+	public function citations_n_moyen_par_semaine() {
 		$sql = "select avg(n) as moy from
 					(select  trunc(extract('doy' from date_observation)/7) as dw,
         				count(distinct c.id_citation) as n
@@ -1722,8 +1720,12 @@ class bobs_espece extends bobs_abstract_espece {
 	public function distribution_observations_semaines() {
 		$t = self::fetch_all(bobs_qm()->query($this->db, 'esp_distrib_annee', self::sql_distrib_obs_semaine, array($this->id_espece)));
 		$total = 0;
-		foreach ($t as $v) $total += $v['n'];
-		foreach ($t as $k=>$v) $t[$k]['p'] += 100*$v['n']/$total;
+		foreach ($t as $v) {
+			$total += $v['n'];
+		}
+		foreach ($t as $k=>$v) {
+			$t[$k]['p'] += 100*$v['n']/$total;
+		}
 		return $t;
 	}
 
@@ -1756,7 +1758,7 @@ class bobs_espece extends bobs_abstract_espece {
 
 	public function atlas_repartition_kml($srid, $pas) {
 		$q = bobs_qm()->query($this->db, "idx_atlas_kml", self::sql_index_repartition_kml, [$this->id_espece,$srid,$pas]);
-		$doc = new DOMDocument();
+		$doc = new \DOMDocument();
 		$doc->formatOutput = true;
 		$kml = $doc->createElement('kml');
 		$kml->setAttribute('xmlns', "http://www.opengis.net/kml/2.2");
@@ -1791,7 +1793,7 @@ class bobs_espece extends bobs_abstract_espece {
 			$placemark = $doc->createElement('Placemark');
 			$name = $doc->createElement('name', "E{$r['x0']}N{$r['y0']}");
 			$placemark->appendChild($name);
-			$doc_geom = new DOMDocument();
+			$doc_geom = new \DOMDocument();
 			$doc_geom->loadXML($r['kml']);
 			$placemark->appendChild($doc->importNode($doc_geom->firstChild, true));
 			$exd = $doc->createElement("ExtendedData");
@@ -1860,7 +1862,7 @@ class bobs_espece extends bobs_abstract_espece {
 		);
 		foreach ($resolutions as $params) {
 			if (!bobs_qm()->query($this->db, 'maj_atlas5', "select repartition_espece($1, $2, $3);", $params))
-				throw new Exception("échec maj atlas $this #{$this->id_espece} - {$params[1]} {$params[2]}");
+				throw new \Exception("échec maj atlas $this #{$this->id_espece} - {$params[1]} {$params[2]}");
 		}
 	}
 
@@ -1870,7 +1872,7 @@ class bobs_espece extends bobs_abstract_espece {
 	 * @brief Mise à jour de l'effectif moyen pour les données de validation
 	 */
 	public function validation_maj_effectif_moyen() {
-		$t = array();
+		$t = [];
 		$extraction  = new bobs_extractions($this->db);
 		$extraction->ajouter_condition(new bobs_ext_c_espece($this->id_espece));
 		$compte = $extraction->compte();
@@ -1933,28 +1935,31 @@ class bobs_espece extends bobs_abstract_espece {
 	 */
 	private function validation_extraction_decades($n_decades) {
 		try {
-			$extraction=new bobs_extractions($this->db);
+			$extraction = new bobs_extractions($this->db);
 			$extraction->ajouter_condition(new bobs_ext_c_espece($this->id_espece));
 			$annee_max = strftime("%Y");
 			for ($i=1;$i<=$n_decades+1;$i++) {
 				$extraction->ajouter_condition(new bobs_ext_c_annee($annee_max-$i));
 			}
-			$t = array();
+			$t = [];
 			foreach($extraction->get_citations() as $citation) {
-				if($citation->invalide())
+				if($citation->invalide()) {
 					continue;
+				}
 
 				$observation = $citation->get_observation();
 				// passe si la précision de la date d'observation est supérieur à +- 5 jours
-				if ($observation->precision_date >= 5)
+				if ($observation->precision_date >= 5) {
 					continue;
+				}
 
 				$annee = strftime("%Y",strtotime($observation->date_observation));
 
 				$decade = self::decade($observation->date_observation);
 
-				if (!isset($t[$annee][$decade]))
+				if (!isset($t[$annee][$decade])) {
 					$t[$annee][$decade] = 0;
+				}
 
 				$t[$annee][$decade]++;
 			}
