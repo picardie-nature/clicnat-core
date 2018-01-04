@@ -11,6 +11,7 @@ class bobs_calendrier extends bobs_element {
 	public $date_sortie;
 	public $commentaire;
 	public $tag;
+	public $date_sortie_tstamp;
 
 	const tag_max_length = 10;
 
@@ -144,8 +145,9 @@ class bobs_calendrier extends bobs_element {
 	public static function get_dates($db, $espace_table) {
 		$q = bobs_qm()->query($db, 'cal_get_dates', self::sql_dates, [$espace_table]);
 		$t = [];
-		while ($r = self::fetch($q))
+		while ($r = self::fetch($q)) {
 			$t[] = new bobs_calendrier($db, $r);
+		}
 		return $t;
 	}
 
@@ -160,10 +162,11 @@ class bobs_calendrier extends bobs_element {
 	public static function get_dates_espace($db, $espace_table, $id_espace) {
 		self::cls($espace_table, self::except_si_vide);
 		self::cli($id_espace, self::except_si_inf_1);
-		$t = array();
+		$t = [];
 		$q = bobs_qm()->query($db, 'cal_get_dates_espaces', self::sql_dates_espace, array($espace_table,$id_espace));
-		while ($r = self::fetch($q))
+		while ($r = self::fetch($q)) {
 			$t[] = $r['id_date'];
+		}
 		return new clicnat_iterateur_calendrier($db, $t);
 
 	}
