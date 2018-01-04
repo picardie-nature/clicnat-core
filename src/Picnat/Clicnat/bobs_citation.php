@@ -4,6 +4,21 @@ namespace Picnat\Clicnat;
 /**
  * @brief Citation
  * @see bobs_observation
+ * @property-read $id_citation
+ * @property-read $id_observation
+ * @property-read $id_espece
+ * @property-read $sexe
+ * @property-read $age
+ * @property-read $nb
+ * @property-read $nb_min
+ * @property-read $nb_max
+ * @property-read $commentaire
+ * @property-read $indice_qualite
+ * @property-read $ref_import
+ * @property-read $resultat_enquete
+ * @property-read $date_modif
+ * @property-read $guid
+ * @property-read $nb_txt
  */
 class bobs_citation extends bobs_element_commentaire {
 	protected $id_citation;
@@ -95,11 +110,10 @@ class bobs_citation extends bobs_element_commentaire {
 	 * est fournit
 	 */
 	public function ajoute_tag($id_tag, $intval=null, $textval=null, $id_utilisateur=false) {
-		$r = $this->__ajoute_tag(BOBS_TBL_TAG_CITATION, 'id_citation', $id_tag, $this->id_citation, $intval, $textval);
+		$this->__ajoute_tag(BOBS_TBL_TAG_CITATION, 'id_citation', $id_tag, $this->id_citation, $intval, $textval);
 		if ($id_utilisateur) {
 			$this->ajoute_commentaire('attr', $id_utilisateur, "tag +$id_tag");
 		}
-		return $r;
 	}
 
 	/**
@@ -111,11 +125,11 @@ class bobs_citation extends bobs_element_commentaire {
 	 * est fournit
 	 */
 	public function supprime_tag($id_tag, $id_utilisateur=false) {
-	    $this->__supprime_tag(BOBS_TBL_TAG_CITATION, 'id_citation', $id_tag, $this->id_citation);
+		$this->__supprime_tag(BOBS_TBL_TAG_CITATION, 'id_citation', $id_tag, $this->id_citation);
 		if ($id_utilisateur) {
 			$this->ajoute_commentaire('attr', $id_utilisateur, "tag -$id_tag");
 		}
-	    $this->get_tags();
+		$this->get_tags();
 	}
 
 	public function get_commentaires() {
@@ -672,7 +686,6 @@ class bobs_citation extends bobs_element_commentaire {
 	 * @return integer
 	 */
 	public static function nombre_citations($db) {
-		$sql = "select count(*) as n from citations";
 		$q = bobs_qm()->query($db, "nb_citations_t", self::sql_n_citations, []);
 		$r = self::fetch($q);
 		return $r['n'];
@@ -936,14 +949,15 @@ class bobs_citation extends bobs_element_commentaire {
 		$u = get_utilisateur($this->db, $id_utilisateur);
 
 		// quelqu'un qui a accès au qg peut faire des modifs
-		if ($u->acces_qg_ok())
+		if ($u->acces_qg_ok()) {
 			return true;
+		}
 
 		// si tete de reseau
 		$reseau = $this->get_espece()->get_reseau();
-		if ($reseau)
+		if ($reseau) {
 			return $reseau->est_coordinateur($u->id_utilisateur);
-
+		}
 		return false;
 	}
 
@@ -951,14 +965,17 @@ class bobs_citation extends bobs_element_commentaire {
 		$u = get_utilisateur($this->db, $id_utilisateur);
 
 		// quelqu'un qui a accès au qg peut faire des modifs
-		if ($u->acces_qg_ok())
+		if ($u->acces_qg_ok()) {
 			return true;
+		}
 
 		// si tete de reseau
 		$reseau = $this->get_espece()->get_reseau();
-		if ($reseau)
-			if ($reseau->est_coordinateur($u->id_utilisateur))
+		if ($reseau) {
+			if ($reseau->est_coordinateur($u->id_utilisateur)) {
 				return true;
+			}
+		}
 
 		$obs = $this->get_observation();
 
@@ -1078,7 +1095,6 @@ class bobs_citation extends bobs_element_commentaire {
 			}
 		}
 
-		$resultats = array();
 		foreach ($tests as $test) {
 			$r = $test->evaluer();
 			if (!$r['passe']) {

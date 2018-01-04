@@ -20,10 +20,12 @@ class bobs_import extends bobs_element {
 		parent::__construct($db, 'imports', 'id_import', $id);
 		$this->prep_import_ligne_insert = false;
 		$this->prep_import_ligne_get = false;
-		if (!array_key_exists(IMPORT_SESSION_N, $_SESSION))
-			$_SESSION[IMPORT_SESSION_N] = array();
-		if (!array_key_exists('cols', $_SESSION[IMPORT_SESSION_N]))
-			$_SESSION[IMPORT_SESSION_N]['cols'] = array();
+		if (!array_key_exists(IMPORT_SESSION_N, $_SESSION)) {
+			$_SESSION[IMPORT_SESSION_N] = [];
+		}
+		if (!array_key_exists('cols', $_SESSION[IMPORT_SESSION_N])) {
+			$_SESSION[IMPORT_SESSION_N]['cols'] = [];
+		}
 		$this->restaure_colonnes();
 	}
 
@@ -50,21 +52,21 @@ class bobs_import extends bobs_element {
 	 * @param $args un tableau associatifs des valeurs de création
 	 * @return le numéro d'import
 	 */
-	public static function nouveau($db, $args)
-	{
+	public static function nouveau($db, $args) {
 		$args['id_utilisateur'] = sprintf('%d', $args['id_utilisateur']);
 		$args['id_auteur'] = sprintf('%d', $args['id_auteur']);
 		$args['libelle'] = trim($args['libelle']);
 
-		if (empty($args['id_utilisateur']) or empty($args['id_auteur']) or empty($args['libelle']))
-		throw new InvalidArgumentException('au moins un des arguments manquant');
+		if (empty($args['id_utilisateur']) || empty($args['id_auteur']) || empty($args['libelle']))
+		throw new \InvalidArgumentException('au moins un des arguments manquant');
 
 		$args['id_import'] = self::nextval($db, 'imports_id_import_seq');
 
-		$keys = array('id_utilisateur', 'id_auteur', 'id_import', 'libelle');
-		$vals = array();
-		foreach ($keys as $k)
-		$vals[$k] = $args[$k];
+		$keys = ['id_utilisateur', 'id_auteur', 'id_import', 'libelle'];
+		$vals = [];
+		foreach ($keys as $k) {
+			$vals[$k] = $args[$k];
+		}
 
 		self::insert($db, 'imports', $vals);
 
@@ -75,8 +77,7 @@ class bobs_import extends bobs_element {
 	 * @brief retourne le dernier numéro de ligne de l'import
 	 * @return 0 si aucun sinon le dernier numéro
 	 */
-	public function dernier_numero_de_ligne_db()
-	{
+	public function dernier_numero_de_ligne_db() {
 		$r = $this->query_assoc($this->db, sprintf('
 			select coalesce(max(num_ligne), 0) as n
 			from imports_lignes where id_import=%d',
@@ -88,10 +89,9 @@ class bobs_import extends bobs_element {
 	 * @brief ajoute une ligne a l'import
 	 * @param $cols un tableau (simple) des colonnes
 	 */
-	public function ajoute_ligne($cols)
-	{
+	public function ajoute_ligne($cols) {
 		if (!is_array($cols))
-		throw new InvalidArgumentException('$cols doit être un tableau');
+		throw new \InvalidArgumentException('$cols doit être un tableau');
 
 		$sql = "
 			insert into imports_lignes (
@@ -117,21 +117,22 @@ class bobs_import extends bobs_element {
 				$38, $39
 			)
 			";
-		$values = array();
+		$values = [];
 		$values[] = $this->id_import;
 		$dernier_numero = $this->dernier_numero_de_ligne_db() + 1;
 		$values[] = $dernier_numero;
 
-		for ($i=0; $i<IMPORT_MAX_COL; $i++)
-		$values[] = self::cls($cols[$i]);
+		for ($i=0; $i<IMPORT_MAX_COL; $i++) {
+			$values[] = self::cls($cols[$i]);
+		}
 
-		if (!$this->prep_import_ligne_insert)
-		$this->prep_import_ligne_insert = pg_prepare($this->db, 'import_ligne_insert', $sql);
-
+		if (!$this->prep_import_ligne_insert) {
+			$this->prep_import_ligne_insert = pg_prepare($this->db, 'import_ligne_insert', $sql);
+		}
 		try {
 			pg_execute($this->db, 'import_ligne_insert', $values);
-		} catch (Exception $e) {
-			var_dump($values);
+		} catch (\Exception $e) {
+			error_log("can't import values : ".join("/", $values));
 			throw $e;
 		}
 
@@ -141,8 +142,7 @@ class bobs_import extends bobs_element {
 	/**
 	 * @brief extrait une ligne de la base de données
 	 */
-	public function ligne($numero)
-	{
+	public function ligne($numero) {
 		$sql = 	'select * from imports_lignes '.
 			'where id_import = $1 '.
 			'and num_ligne = $2';
@@ -150,8 +150,7 @@ class bobs_import extends bobs_element {
 		return pg_fetch_assoc($q);
 	}
 
-	public function charge_fichier($fichier, $length=0, $delimiteur=',', $enclosure='"')
-	{
+	public function charge_fichier($fichier, $length=0, $delimiteur=',', $enclosure='"') {
 		$n = 0;
 		$f = fopen($fichier, 'r');
 		while ($r = fgetcsv($f, $length, $delimiteur, $enclosure)) {
@@ -420,7 +419,7 @@ class bobs_import extends bobs_element {
 	}
 
 	public function extract_observateurs_str($ligne) {
-	    	$str = '';
+		$str = '';
 		foreach ($this->liste_colonnes($this->db) as $c) {
 			if (array_key_exists($c, $_SESSION[IMPORT_SESSION_N]['cols'])) {
 				if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_OBS_OBSERV) {
@@ -454,29 +453,7 @@ class bobs_import extends bobs_element {
 		}
 		return $r;
 	}
-/*
-	private function __extract_effectif2($chaine) {
-	    $effectif = 0;
-	    $genre = '';
-	    $r = array();
-	    foreach (str_split($chaine.'!') as $c) {
-		$n = ord($c);
-		// si c'est un chiffre
-		if ($n >= 48 && $n <= 57) {
-		    $effectif = $effectif * 10 + intval($c);
-		} else if ($n == 32 || $n == 43 || $n == 33 || $n == 45) {
-		    if ($effectif > 0 && !empty($genre)) {
-			$r[] = array("effectif"=>$effectif, "genre"=>strtoupper($genre));
-			$effectif = 0;
-			$genre = '';
-		    }
-		} else {
-		    $genre = $c;
-		}
-	    }
-	    return $r;
-	}
-*/
+
 	public function extract_effectifs($ligne) {
 		$nb = 0;
 		$genre = '';
@@ -495,13 +472,13 @@ class bobs_import extends bobs_element {
 
 			}
 		}
-		return array(
-			array(
-				'effectif'=>$nb,
-				'genre'=>$genre,
-				'age'=>$age
-			)
-		);
+		return [
+			[
+				'effectif' => $nb,
+				'genre'    => $genre,
+				'age'      => $age
+			]
+		];
 	}
 
 	/**
@@ -555,68 +532,71 @@ class bobs_import extends bobs_element {
 	 * @param string $str
 	 */
 	public function update_espece_str($ligne, $str) {
-	    foreach ($this->liste_colonnes($this->db) as $c) {
-		if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_CIT_ESPECE) {
-		    $sql = sprintf('update imports_lignes set %s=$1 where id_import=$2 and num_ligne=$3', $c);
-		    return bobs_qm()->query($this->db, 'update_imp_esp'.$c, $sql, array($str, $this->id_import, $ligne));
+		foreach ($this->liste_colonnes($this->db) as $c) {
+			if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_CIT_ESPECE) {
+				$sql = sprintf('update imports_lignes set %s=$1 where id_import=$2 and num_ligne=$3', $c);
+				return bobs_qm()->query($this->db, 'update_imp_esp'.$c, $sql, array($str, $this->id_import, $ligne));
+			}
 		}
-	    }
 	}
 
 	public function extract_tags($ligne) {
-	    $t = array();
-	    foreach ($this->liste_colonnes($this->db) as $c) {
-		    if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_CODE_FNAT) {
-			self::cls($ligne[$c]);
-			if (!empty($ligne[$c]))
-			    $t[] = bobs_tags::by_ref($this->db, $ligne[$c]);
-		    }
-	    }
-	    return $t;
+		$t = [];
+		foreach ($this->liste_colonnes($this->db) as $c) {
+			if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_CODE_FNAT) {
+				self::cls($ligne[$c]);
+				if (!empty($ligne[$c])) {
+					$t[] = bobs_tags::by_ref($this->db, $ligne[$c]);
+				}
+			}
+		}
+		return $t;
 	}
 
 	public function extract_commentaire($ligne) {
-	    $commentaire = '';
-	    foreach ($this->liste_colonnes($this->db) as $c) {
-		    if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_COMMENTAIRE) {
-			self::cls($ligne[$c]);
-			if (!empty($ligne[$c]))
-			    $commentaire .= $ligne[$c]."\n";
-		    }
-	    }
-	    return trim($commentaire);
+		$commentaire = '';
+		foreach ($this->liste_colonnes($this->db) as $c) {
+			if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_COMMENTAIRE) {
+				self::cls($ligne[$c]);
+				if (!empty($ligne[$c])) {
+					$commentaire .= $ligne[$c]."\n";
+				}
+			}
+		}
+		return trim($commentaire);
 	}
 
 	public function extract_heure($ligne) {
-	    foreach ($this->liste_colonnes($this->db) as $c) {
-		    if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_HEURE) {
-			self::cls($ligne[$c]);
-			if (!empty($ligne[$c])) {
-			    $h = strtolower($ligne[$c]);
-			    $h = str_replace(' ', '', $h);
-			    if (preg_match('/([0-9].*)h([0-9].*)/', $h, $matches)) {
-				return sprintf('%02d:%02d:00', $matches[1], $matches[2]);
-			    } else if (preg_match('/([0-9].*):([0-9].*):([0-9].*)/', $h, $matches)) {
-				return sprintf('%02d:%02d:%02d', $matches[1], $matches[2], $matches[3]);
-			    } else if (preg_match('/([0-9].*)h$/', $h, $matches)) {
-				return sprintf('%02d:00:00', $matches[1]);
-			    }
-			    return $ligne[$c];
+		foreach ($this->liste_colonnes($this->db) as $c) {
+			if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_HEURE) {
+				self::cls($ligne[$c]);
+				if (!empty($ligne[$c])) {
+					$h = strtolower($ligne[$c]);
+					$h = str_replace(' ', '', $h);
+					if (preg_match('/([0-9].*)h([0-9].*)/', $h, $matches)) {
+						return sprintf('%02d:%02d:00', $matches[1], $matches[2]);
+					} else if (preg_match('/([0-9].*):([0-9].*):([0-9].*)/', $h, $matches)) {
+						return sprintf('%02d:%02d:%02d', $matches[1], $matches[2], $matches[3]);
+					} else if (preg_match('/([0-9].*)h$/', $h, $matches)) {
+						return sprintf('%02d:00:00', $matches[1]);
+					}
+					return $ligne[$c];
+				}
 			}
-		    }
-	    }
-	    return '';
+		}
+		return '';
 	}
 
 	public function extract_duree($ligne) {
-	    foreach ($this->liste_colonnes($this->db) as $c) {
-		    if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_DUREE) {
-			self::cls($ligne[$c]);
-			if (!empty($ligne[$c]))
-			    return $ligne[$c];
-		    }
-	    }
-	    return '';
+		foreach ($this->liste_colonnes($this->db) as $c) {
+			if ($_SESSION[IMPORT_SESSION_N]['cols'][$c] == IMPORT_COL_DUREE) {
+				self::cls($ligne[$c]);
+				if (!empty($ligne[$c])) {
+					return $ligne[$c];
+				}
+			}
+		}
+		return '';
 	}
 
 	public function extract_wkt($ligne) {
@@ -638,8 +618,9 @@ class bobs_import extends bobs_element {
 				}
 			}
 		}
-		if (empty($latitude_d) or empty($longitude_d))
+		if (empty($latitude_d) or empty($longitude_d)) {
 			return false;
+		}
 		$latitude_d = str_replace(",",".",$latitude_d);
 		$longitude_d = str_replace(",",".",$longitude_d);
 		echo "$longitude_d $latitude_d";
@@ -661,11 +642,15 @@ class bobs_import extends bobs_element {
 			}
 		}
 
-		if (empty($latitude_dms) || empty($longitude_dms))
+		if (empty($latitude_dms) || empty($longitude_dms)) {
 			return false;
+		}
 		$latitude_dms = str_replace(",",".",$latitude_dms);
 		$longitude_dms = str_replace(",",".",$longitude_dms);
-		return array('latitude_dms' => $latitude_dms, 'longitude_dms' => $longitude_dms);
+		return [
+			'latitude_dms' => $latitude_dms,
+			'longitude_dms' => $longitude_dms
+		];
 	}
 
 	const sql_del_observations = 'delete from imports_observations where id_import=$1';

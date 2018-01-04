@@ -55,7 +55,7 @@ class bobs_espece extends bobs_abstract_espece {
 	const table_tags = 'especes_tags';
 	const table_commentaires = 'especes_commentaires';
 
-	function __construct($db, $id) {
+	public function __construct($db, $id) {
 		try {
 			parent::__construct($db, 'especes', 'id_espece', $id);
 		} catch (clicnat_exception_pas_trouve $e) {
@@ -63,7 +63,7 @@ class bobs_espece extends bobs_abstract_espece {
 		}
 	}
 
-	function __get($c) {
+	public function __get($c) {
 		switch ($c) {
 			case 'id_espece':
 				return $this->id_espece;
@@ -101,11 +101,10 @@ class bobs_espece extends bobs_abstract_espece {
 				return $this->borne_a;
 			case 'borne_b':
 				return $this->borne_b;
-
 		}
 	}
 
-	function  __toString() {
+	public function  __toString() {
 		self::cls($this->nom_f);
 		if (empty($this->nom_f)) {
 			if (empty($this->nom_s)) {
@@ -258,7 +257,7 @@ class bobs_espece extends bobs_abstract_espece {
 	/**
 	 * @brief rechercher dans les synonymes de taxref
 	 * @param $critere texte
-	 * @return array(id_espece, nom_sc) nom_sc = synonyme (et pas le nom sc de l'objet correspondant à l'id_espece)
+	 * @return array (id_espece, nom_sc) nom_sc = synonyme (et pas le nom sc de l'objet correspondant à l'id_espece)
 	 */
 	public static function synonymes_nom_sc_inpn($db, $critere) {
 		$critere = str_replace("%"," ",$critere);
@@ -1321,59 +1320,7 @@ class bobs_espece extends bobs_abstract_espece {
 		return $tab;
 	}
 
-	// TODO SUPPRIMER
-	public function __get_atlas_lib_path()
-	{
-		self::cli($this->id_espece);
-		return sprintf('%s/%s/%d', BOBS_LIBDIR, 'atlas', $this->id_espece);
-	}
-
-	// TODO SUPPRIMER
-	private function __set_atlas($value)
-	{
-		$f = fopen($this->get_atlas_lib_path(), 'w');
-		if (!$f)
-		    throw new Exception("can't open definition file");
-		fwrite($f, $value);
-		fclose($f);
-	}
-
-	// TODO SUPPRIMER
-	public function __make_atlas($force=false)
-	{
-		self::cli($this->id_espece);
-		$oldwd = getcwd();
-		/*
-		 * Script a exécuter : /usr/local/bin/atlas
-		 * il va créer le shp /atlas/ID_ESPECE/atlas.shp
-		 * arg 1 : id_espece
-		 * arg 2 : id_espece ou (id_espece,id_espece,id_espece) pour les sp et groupes
-		 * arg 3 : atlas_dir le chemin du répertoire où se trouve les atlas
-		 */
-		$cmd = sprintf('atlas %d %d %s', $this->id_espece, $this->id_espece, ATLAS_DIR);
-		shell_exec($cmd);
-
-		$im = bobmap_get_atlas_espece($this->id_espece);
-		bobs_maps_image::archive(sprintf("atlas-%d", $this->id_espece),
-			$this->nom_f.' '.$this->nom_s , $im);
-		$map = new bobs_maps_image(sprintf("atlas-%d", $this->id_espece));
-		$map->ajoute_fond();
-		chdir($oldwd);
-		return true;
-	}
-
-
-	// TODO SUPPRIMER
-	public function __get_atlas_img()
-	{
-		if ($this->get_atlas()) {
-		    $bm = new bobs_maps_image(sprintf('atlas-%d', $this->id_espece));
-		    $bm->get_image_fond();
-		}
-	}
-
-	public function est_dans_date_nidif($yyyy_mm_dd)
-	{
+	public function est_dans_date_nidif($yyyy_mm_dd) 	{
 	    $tstamp = strtotime($yyyy_mm_dd);
 	    $year = strftime('%Y', $tstamp);
 	    $d1 = strtotime(sprintf('%s-%02d-%02d', $year, $this->mois_debut_nidif, $this->jour_debut_nidif));
@@ -1381,78 +1328,75 @@ class bobs_espece extends bobs_abstract_espece {
 	    return (($d1 <= $tstamp) and ($tstamp <= $d2));
 	}
 
-	public function est_dans_date_hivernage($yyyy_mm_dd)
-	{
-	    $tstamp = strtotime($yyyy_mm_dd);
-	    $month = intval(strftime('%m', $tstamp));
-	    if ($this->ordre == 'Chiroptères') {
-		// du 15 novembre au 15 avril
-		$j = intval(strftime('%d', $tstamp));
-		if ($month == 12) return true;
-		if ($month == 11 && $j >= 15) return true;
-		if ($month < 4) return true;
-		if ($month == 4 && $j<= 15) return true;
-		return false;
-	    } else if ($this->classe == 'O') { // les Oiseaux
-		if ($month == 12 or $month == 1) {
-		    return true;
+	public function est_dans_date_hivernage($yyyy_mm_dd) 	{
+		$tstamp = strtotime($yyyy_mm_dd);
+		$month = intval(strftime('%m', $tstamp));
+		if ($this->ordre == 'Chiroptères') {
+			// du 15 novembre au 15 avril
+			$j = intval(strftime('%d', $tstamp));
+			if ($month == 12) return true;
+			if ($month == 11 && $j >= 15) return true;
+			if ($month < 4) return true;
+			if ($month == 4 && $j<= 15) return true;
+			return false;
+	  } else if ($this->classe == 'O') { // les Oiseaux
+			if ($month == 12 or $month == 1) {
+	 			return true;
+			}
+		} else {
+			// du 1er décembre au 20 février
+			if ($month == 12 || $month == 1) {
+				return true;
+			} elseif ($month == 2) {
+				return intval(strftime('%d', $tstamp)) <= 20;
+			}
 		}
-	    } else {
-		// du 1er décembre au 20 février
-		if ($month == 12 or $month == 1) {
-		    return true;
-		} elseif ($month == 2) {
-		    return intval(strftime('%d', $tstamp)) <= 20;
-		}
-	    }
 	}
 
-	public function get_carres_hivernant($annee)
-	{
-	    self::cli($annee);
-	    $date_deb = sprintf("%04d-12-01", $annee);
-	    $date_fin = sprintf("%04d-01-31", $annee+1);
+	public function get_carres_hivernant($annee) 	{
+		self::cli($annee);
+		$date_deb = sprintf("%04d-12-01", $annee);
+		$date_fin = sprintf("%04d-01-31", $annee+1);
 
-	    $sql = '
-		select distinct espace_l93_10x10.nom, astext(espace_l93_10x10.the_geom) as wkt
-		from observations,citations,espace_point,espace_l93_10x10
-		where date_observation between $1 and $2
-		    and observations.brouillard = false
-		    and observations.id_observation=citations.id_observation
-		    and id_espece=$4
-		    and observations.id_espace=espace_point.id_espace
-		    and espace_table=$3
-		    and espace_point.l93_10x10_id_espace=espace_l93_10x10.id_espace
-			and citations.id_citation not in (select id_citation from citations_tags where id_tag in (591,126))
-			and ((citations.indice_qualite >= 3) or citations.indice_qualite is null)
-			and coalesce(citations.nb,0)>=0
-		order by nom';
-	    $args = array(
-			$date_deb, $date_fin,
-			'espace_point',
-			$this->id_espece
-		    );
-	    $q = bobs_qm()->query($this->db, 'espece_hivernant', $sql, $args);
-	    return self::fetch_all($q);
-
+		$sql = '
+			select distinct espace_l93_10x10.nom, astext(espace_l93_10x10.the_geom) as wkt
+			from observations,citations,espace_point,espace_l93_10x10
+			where date_observation between $1 and $2
+				and observations.brouillard = false
+				and observations.id_observation=citations.id_observation
+				and id_espece=$4
+				and observations.id_espace=espace_point.id_espace
+				and espace_table=$3
+				and espace_point.l93_10x10_id_espace=espace_l93_10x10.id_espace
+				and citations.id_citation not in (select id_citation from citations_tags where id_tag in (591,126))
+				and ((citations.indice_qualite >= 3) or citations.indice_qualite is null)
+				and coalesce(citations.nb,0)>=0
+			order by nom';
+	    $args = [
+				$date_deb, $date_fin,
+				'espace_point',
+				$this->id_espece
+			];
+			$q = bobs_qm()->query($this->db, 'espece_hivernant', $sql, $args);
+			return self::fetch_all($q);
 	}
 
 	public static function liste_oiseaux_hivernant_2009_a_2011($db) {
-	    $sql = "select distinct especes.*
-		    from citations,observations,especes
-		    where citations.id_observation=observations.id_observation
-		    and especes.id_espece=citations.id_espece
-		    and classe='O'
-		    and extract(year from date_observation) in (2009,2010,2011,2012,2013)
-		    and extract(month from date_observation) in (1,12)
+		$sql = "select distinct especes.*
+			from citations,observations,especes
+			where citations.id_observation=observations.id_observation
+			and especes.id_espece=citations.id_espece
+			and classe='O'
+			and extract(year from date_observation) in (2009,2010,2011,2012,2013)
+			and extract(month from date_observation) in (1,12)
 			and date_observation >= '2009-12-01'
-		    and observations.brouillard = false
+			and observations.brouillard = false
 			and citations.id_citation not in (select id_citation from citations_tags where id_tag in (591,126))
 			and ((citations.indice_qualite >= 3) or citations.indice_qualite is null)
 			and coalesce(citations.nb,0)>=0
-		    order by nom_f";
-	    $q = bobs_qm()->query($db, "l_hiv_2009_11", $sql, array());
-	    return self::fetch_all($q);
+			order by nom_f";
+		$q = bobs_qm()->query($db, "l_hiv_2009_11", $sql, array());
+		return self::fetch_all($q);
 	}
 
 	/**
@@ -1464,8 +1408,7 @@ class bobs_espece extends bobs_abstract_espece {
 	 *
 	 * les colonnes du tableau retourné : ordre,md5
 	 */
-	public static function get_ordres_for_classe($db, $classe)
-	{
+	public static function get_ordres_for_classe($db, $classe) {
 		$classe = new bobs_classe($db, $classe);
 		return $classe->get_ordres();
 	}

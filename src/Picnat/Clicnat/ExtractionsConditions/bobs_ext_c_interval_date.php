@@ -31,10 +31,10 @@ class bobs_ext_c_interval_date extends bobs_extractions_conditions {
 	}
 
 	public static function new_by_array($t) {
-		return new bobs_ext_c_interval_date($t['date_a'], $t['date_b']);
+		return new self($t['date_a'], $t['date_b']);
 	}
 
 	public function get_tables() {
-		return array('observations');
+		return ['observations'];
 	}
 }
