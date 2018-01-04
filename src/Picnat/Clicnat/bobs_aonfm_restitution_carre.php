@@ -14,7 +14,7 @@ class bobs_aonfm_restitution_carre {
 
 	public static function trois_annees($db, $id_espace_carre) {
 		// 4 dans les faits
-		$t = array();
+		$t = [];
 		$especes = array();
 		for ($y=2009;$y<=2012;$y++) {
 			$arc = new bobs_aonfm_restitution_carre($db, $id_espace_carre, $y);
@@ -32,15 +32,14 @@ class bobs_aonfm_restitution_carre {
 			if (empty($esp)) continue;
 			$requis_abondance[$esp->id_espece] = bobs_aonfm_choix_resp_tps_abond::requis($db, $esp);
 		}
-		$t = array(
+		$t = [
 			'especes' => $especes,
 			'resultats' => $t,
 			'requis_abond' => $requis_abondance,
 			'fourchette_large' => bobs_aonfm_choix_resp_tps_abond::liste_classes_large(),
 			'fourchette_precise' => bobs_aonfm_choix_resp_tps_abond::liste_classes_precise (),
 			'resultats_abond' => bobs_aonfm_choix_resp_tps_abond::get_resultats($db, $id_espace_carre)
-		);
-		//echo "<pre style='text-align:left;'>"; print_r($t); echo "</pre>";
+		];
 		return $t;
 	}
 
@@ -52,7 +51,7 @@ class bobs_aonfm_restitution_carre {
 
 	public function get_resultats_structure($structure) {
 		$q = bobs_qm()->query($this->db, 'aonfm_structure_1', self::sql_aonfm_structure, array($structure,$this->annee, $this->get_espace()->nom));
-		$r = array();
+		$r = [];
 		while ($l = bobs_element::fetch($q)) {
 			$statut = null;
 			switch($l['statut']) {
@@ -66,10 +65,10 @@ class bobs_aonfm_restitution_carre {
 					$statut = NICHEUR_POSSIBLE;
 					break;
 			}
-			$r[] = array(
+			$r[] = [
 				'id_espece' => $l['id_espece'],
 				'statut_n' => $statut
-			);
+			];
 		}
 		return $r;
 	}
@@ -78,19 +77,19 @@ class bobs_aonfm_restitution_carre {
 		$sql = "select * from referentiel_especes_tiers where tiers='visionature'";
 
 		$q = bobs_qm()->query($this->db, 'aonfm_visio_gesv', $sql, array());
-		$referentiel = array();
+		$referentiel = [];
 		while ($e = bobs_element::fetch($q)) {
 			$referentiel[$e['id_tiers']] = $e['id_espece'];
 		}
-		$statut_nicheurs = array(
-			'nicheur certain' => NICHEUR_CERTAIN,
+		$statut_nicheurs = [
+			'nicheur certain'  => NICHEUR_CERTAIN,
 			'nicheur probable' => NICHEUR_PROBABLE,
 			'nicheur possible' => NICHEUR_POSSIBLE
-		);
-		$t = array();
+		];
+		$t = [];
 		$sql = 'select * from aonfm_visionature where carre_atlas=$1 and annee=$2';
 		$c = $this->get_espace();
-		$param = array($c->nom, $this->annee);
+		$param = [$c->nom, $this->annee];
 		$q = bobs_qm()->query($this->db, 'aonfm_visio', $sql, $param);
 		while ($r = bobs_element::fetch($q)) {
 			$r['id_espece'] = $referentiel[$r['id_espece_vnat']];
@@ -107,7 +106,7 @@ class bobs_aonfm_restitution_carre {
 		$r = bobs_element::fetch($q);
 		if ($statut < 1) $statut = 0;
 		if ($statut > 3) throw new \Exception('pas possible');
-		$params = array(
+		$params = [
 			$this->id_espace,
 			$this->annee,
 			$id_espece,
@@ -115,8 +114,8 @@ class bobs_aonfm_restitution_carre {
 			$classe,
 			strftime("%Y-%m-%d %H:%M:%S"),
 			$utilisateur->id_utilisateur
-		);
-		if ($r) {
+		];
+		if (empty($r)) {
 			if (!$uniquement_insertion) {
 				$sql = 'update aonfm_choix_responsables set n_statut=$4, classe=$5, dmaj=$6, id_utilisateur_maj=$7
 					where id_espace=$1 and annee=$2 and id_espece=$3';
@@ -196,7 +195,6 @@ class bobs_aonfm_restitution_carre {
 		}
 
 		uasort($resultats, 'aonfm_tri_sys2');
-	//	echo" <pre style='text-align:left;'>"; print_r($resultats); echo "</pre>";
 		return $resultats;
 	}
 }
