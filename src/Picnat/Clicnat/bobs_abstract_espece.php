@@ -24,7 +24,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 			throw new \InvalidArgumentException('pas de nom');
 		}
 
-		// $this->table, $colque des minuscules
+		// que des minuscules
 		$nom = strtolower($nom);
 
 		// on coupe au nom de l'autorité
@@ -36,7 +36,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 		static $subst_chars;
 
 		if (!isset($subst_chars)) {
-			$defs = array(
+			$defs = [
 				'  ' => ' ',
 				'y' => 'i',
 				'yy' => 'i',
@@ -54,7 +54,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 				'È' => 'e',
 				'î' => 'i',
 				'ï' => 'i'
-			);
+			];
 
 			$subst_chars = [
 				array_keys($defs),

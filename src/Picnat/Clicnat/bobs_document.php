@@ -189,13 +189,10 @@ class bobs_document {
 		switch ($doc->get_type()) {
 			case 'image':
 				return new bobs_document_image($doc_id, $db);
-				break;
 			case 'audio':
 				return new bobs_document_audio($doc_id, $db);
-				break;
 			case 'pdf':
 				return new bobs_document_pdf($doc_id, $db);
-				break;
 
 			default:
 				$type = $doc->get_type();
@@ -292,7 +289,6 @@ class bobs_document {
 	}
 
 	public function a_un_backup() {
-		$f_back = $this->f_blob.'.back';
-		return file_exists($f_back);
+		return file_exists($this->f_blob.'.back');
 	}
 }

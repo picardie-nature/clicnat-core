@@ -38,8 +38,7 @@ class bobs_classe extends bobs_tests {
 	 * @return un tableau de lettres
 	 */
 	public static function get_classes() {
-		$db = get_db();
-		return get_db_type_enum($db, self::classe_type);
+		return get_db_type_enum(get_db(), self::classe_type);
 	}
 
 	const en_francais = true;
@@ -64,24 +63,40 @@ class bobs_classe extends bobs_tests {
 	 * @return le libellé de la classe
 	 */
 	public static function get_classe_lib_par_lettre($lettre, $fra=true) {
-		$fra = $fra == true;
+		$fra = $fra === true;
 		switch ($lettre) {
-			case 'A': return $fra?'Arachnides':'Arachnida';
-			case 'B': return $fra?'Amphibiens':'Amphibia';
-			case 'R': return $fra?'Reptiles':'Reptilia';
-			case 'O': return $fra?'Oiseaux':'Aves';
-			case 'M': return $fra?'Mammifères':'Mammalia';
-			case 'I': return $fra?'Insectes':'Insecta';
-			case 'P': return $fra?'Poissons':'Actinopterygii';
-			case 'L': return $fra?'Bivalves':'Bivalvia';
-			case 'N': return $fra?'Annélides':'Annelida';
-			case 'C': return $fra?'Crustacés':'Crustacea';
-			case 'H': return $fra?'Hydrozoaires':'Hydrozoa';
-			case 'S': return $fra?'Chilopodes':'Chilopoda';
-			case 'D': return $fra?'Diplopodes':'Diplopoda';
-			case 'G': return $fra?'Gastéropodes':'Gastropoda';
-			case 'E': return $fra?'Collemboles':'Collembola';
-			case '_': return $fra?'Non applicable':'Non applicable';
+			case 'A':
+				return $fra?'Arachnides':'Arachnida';
+			case 'B':
+				return $fra?'Amphibiens':'Amphibia';
+			case 'R':
+				return $fra?'Reptiles':'Reptilia';
+			case 'O':
+				return $fra?'Oiseaux':'Aves';
+			case 'M':
+				return $fra?'Mammifères':'Mammalia';
+			case 'I':
+				return $fra?'Insectes':'Insecta';
+			case 'P':
+				return $fra?'Poissons':'Actinopterygii';
+			case 'L':
+				return $fra?'Bivalves':'Bivalvia';
+			case 'N':
+				return $fra?'Annélides':'Annelida';
+			case 'C':
+				return $fra?'Crustacés':'Crustacea';
+			case 'H':
+				return $fra?'Hydrozoaires':'Hydrozoa';
+			case 'S':
+				return $fra?'Chilopodes':'Chilopoda';
+			case 'D':
+				return $fra?'Diplopodes':'Diplopoda';
+			case 'G':
+				return $fra?'Gastéropodes':'Gastropoda';
+			case 'E':
+				return $fra?'Collemboles':'Collembola';
+			case '_':
+				return $fra?'Non applicable':'Non applicable';
 		}
 		throw new \InvalidArgumentException('pas de conversion pour classe "'.$lettre.'"');
 	}
@@ -136,7 +151,7 @@ class bobs_classe extends bobs_tests {
 	 * @brief Liste les especes avec le nom du tag
 	 * @return un tableau associatif
 	 */
-	function liste_especes_nom_simple() {
+	public function liste_especes_nom_simple() {
 		$tag = $this->a_classement_simple();
 		if (!$tag) {
 			return [];
