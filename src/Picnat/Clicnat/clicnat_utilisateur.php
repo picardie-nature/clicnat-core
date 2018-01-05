@@ -1,5 +1,8 @@
 <?php
 namespace Picnat\Clicnat;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_ordre;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_interval_date;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_esp_comite_homolog;
 
 /**
  * @brief Classe de gestion des utilisateurs et observateurs
@@ -80,8 +83,9 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function partage_opts($opt) {
-		if (empty($this->partage_opts))
+		if (empty($this->partage_opts)) {
 			return false;
+		}
 
 		$opts = json_decode($this->partage_opts, true);
 
@@ -99,10 +103,11 @@ class clicnat_utilisateur extends bobs_element {
 		}
 		$this->update_field('partage_opts', json_encode($opts), true);
 
-		if ($this->partage_opts('ma_localisation') != false)
+		if ($this->partage_opts('ma_localisation') != false) {
 			$this->update_field('localisation_visible', 'tous');
-		else
+		} else {
 			$this->update_field('localisation_visible', 'restreint');
+		}
 	}
 
 	public function partage_opts_champs() {
@@ -185,12 +190,14 @@ class clicnat_utilisateur extends bobs_element {
 
 	function __construct($db, $id) {
 		parent::__construct($db, 'utilisateur', 'id_utilisateur', $id);
-		if (empty($this->id_utilisateur))
-			throw new Exception('id_utilisateur vide (utilisateur inexistant ?)');
+		if (empty($this->id_utilisateur)) {
+			throw new \Exception('id_utilisateur vide (utilisateur inexistant ?)');
+		}
 		$this->virtuel = !($this->virtuel == 'f');
 		$this->diffusion_restreinte = !($this->diffusion_restreinte == 'f');
-		if (!is_null($this->reglement_date_sig))
+		if (!is_null($this->reglement_date_sig)) {
 			$this->reglement_date_sig_tstamp = strtotime($this->reglement_date_sig);
+		}
 		$this->acces_poste = $this->acces_poste == 't';
 		$this->acces_chiros = $this->acces_chiros == 't';
 		$this->acces_qg = $this->acces_qg == 't';
@@ -209,7 +216,7 @@ class clicnat_utilisateur extends bobs_element {
 	/**
 	 * @brief nom et prénom
 	 */
-	function  __toString() {
+	public function  __toString() {
 	    return trim("{$this->prenom} {$this->nom}");
 	}
 
@@ -243,9 +250,9 @@ class clicnat_utilisateur extends bobs_element {
 	 */
 	static public function nouveau($db, $args) {
 		$args['nom'] = trim($args['nom']);
-		if (empty($args['nom']))
-			throw new InvalidArgumentException('pas de nom');
-
+		if (empty($args['nom'])) {
+			throw new \InvalidArgumentException('pas de nom');
+		}
 		$champs = ['nom','prenom','username','tel','port','mail'];
 		$values = [];
 		foreach ($champs as $c) {
@@ -301,34 +308,29 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	static public function rechercher_import($db, $str) {
-	    self::cls($str);
-	    if (preg_match('/.*\((.*)\)/',$str,$m)) {
-		$str = str_replace("({$m[1]})", "", $str);
-	    }
-	    $str = str_replace(
-	    	array("(",")","'"),
-		array(" "," "," "),
-		$str
-	    );
-	    $q = bobs_qm()->query($db,'urechercher2', 'select * from bob_recherche_import_observateur_nom($1)', array($str));
-	    $resultat = array();
-	    while ($r = self::fetch($q)) {
+		self::cls($str);
+		if (preg_match('/.*\((.*)\)/',$str,$m)) {
+			$str = str_replace("({$m[1]})", "", $str);
+		}
+		$str = str_replace(
+			["(",")","'"],
+			[" "," "," "],
+			$str
+		);
+		$q = bobs_qm()->query($db,'urechercher2', 'select * from bob_recherche_import_observateur_nom($1)', array($str));
+		$resultat = [];
+		while ($r = self::fetch($q)) {
 			$resultat[] = get_utilisateur($db, $r);
-	    }
-	    return $resultat;
+		}
+		return $resultat;
 	}
 
 
 	const sql_obs_proche = 'select utilisateur.id_utilisateur,nom,prenom,count(id_observation) from observations_observateurs,utilisateur where observations_observateurs.id_observation in (select id_observation from observations_observateurs where id_utilisateur=$1) and observations_observateurs.id_utilisateur=utilisateur.id_utilisateur and utilisateur.id_utilisateur!=$2 group by utilisateur.id_utilisateur,nom,prenom having count(id_observation) > 2 order by count(id_observation) desc';
 
 	public function observateurs_proche() {
-		$q = bobs_qm()->query($this->db, 'u_observ_prox', self::sql_obs_proche, array($this->id_utilisateur, $this->id_utilisateur));
-	    	/*$resultat = array();
-		while ($r = self::fetch($q)) {
-			$resultat[] = get_utilisateur($this->db, $r);
-		}*/
+		$q = bobs_qm()->query($this->db, 'u_observ_prox', self::sql_obs_proche, [$this->id_utilisateur, $this->id_utilisateur]);
 		return self::fetch_all($q);
-		return $resultat;
 	}
 
 	/**
@@ -340,10 +342,10 @@ class clicnat_utilisateur extends bobs_element {
 		$q = self::query($db,
 				'select * from utilisateur where diffusion_restreinte=true '.
 				'order by nom,prenom');
-		$resultat = array();
-		while ($r = self::fetch($q))
+		$resultat = [];
+		while ($r = self::fetch($q)) {
 			$resultat[] = get_utilisateur($db, $r);
-
+		}
 		return $resultat;
 	}
 
@@ -353,22 +355,25 @@ class clicnat_utilisateur extends bobs_element {
 	 * @return array
 	 */
 	static public function liste_reglement_ok($db) {
-	    $tr = array();
-	    $sql = 'select * from utilisateur where reglement_date_sig is not null order by nom,prenom';
-	    $q = bobs_qm()->query($db, 'ul_reglmt_ok', $sql, array());
-	    while ($r = self::fetch($q))
+		$sql = 'select * from utilisateur where reglement_date_sig is not null order by nom,prenom';
+		return $this->fetchAllAsUtilisateur(
+			bobs_qm()->query($db, 'ul_reglmt_ok', $sql, [])
+		);
+	}
+
+	private function fetchAllAsUtilisateur($q) {
+		$tr = [];
+		while ($r = self::fetch($q)) {
 			$tr[] = get_utilisateur($db, $r);
-	    return $tr;
+		}
+		return $tr;
 	}
 
 	static public function derniers_comptes($db, $limite=30) {
 		self::cli($limite);
-		$tr = array();
-	    $sql = 'select * from utilisateur order by id_utilisateur desc limit $1';
-	    $q = bobs_qm()->query($db, 'ul_derniers', $sql, array($limite));
-	    while ($r = self::fetch($q))
-			$tr[] = get_utilisateur($db, $r);
-	    return $tr;
+		$sql = 'select * from utilisateur order by id_utilisateur desc limit $1';
+		$q = bobs_qm()->query($db, 'ul_derniers', $sql, array($limite));
+		return $this->fetchAllAsUtilisateur($q);
 	}
 
 	const sql_select_uname = 'select * from utilisateur where username=$1';
@@ -378,17 +383,17 @@ class clicnat_utilisateur extends bobs_element {
 	 * @return clicnat_utilisateur
 	 */
 	static public function par_identifiant($db, $login) {
-	    self::cls($login, self::except_si_vide);
+		self::cls($login, self::except_si_vide);
 
-	    $q = bobs_qm()->query($db, 'u_by_login', self::sql_select_uname, array($login));
-	    $r = self::fetch($q);
+		$q = bobs_qm()->query($db, 'u_by_login', self::sql_select_uname, array($login));
+		$r = self::fetch($q);
 
-	    if (!$r) {
+		if (!$r) {
 			bobs_log('pas trouvé '.$login);
 			return false;
 		}
 
-	    return get_utilisateur($db, $r);
+		return get_utilisateur($db, $r);
 	}
 
 	const sql_by_mail = 'select * from utilisateur where mail=$1';
@@ -398,17 +403,17 @@ class clicnat_utilisateur extends bobs_element {
 	 * @return bobs_utilisateur
 	 */
 	static public function by_mail($db, $mail) {
-		if (!is_resource($db))
-			throw new Exception('$db est pas une ressource');
-
+		if (!is_resource($db)) {
+			throw new \Exception('$db est pas une ressource');
+		}
 		self::cls($mail, self::except_si_vide);
 
 		$q = bobs_qm()->query($db, 'u_by_mail',self::sql_by_mail, array($mail));
 		$r = self::fetch($q);
 
-		if (!$r)
+		if (!$r) {
 			throw new clicnat_exception_pas_trouve("pas de compte a cette adresse");
-
+		}
 		return get_utilisateur($db, $r);
 	}
 
@@ -429,29 +434,21 @@ class clicnat_utilisateur extends bobs_element {
 		#cherche le résultat contenu dans $q
 		$r = self::fetch($q);
 
-		if (empty($r)) return false;
+		if (empty($r)) {
+			return false;
+		}
+
 		#retourne un id
 		return get_utilisateur($db, $r);
 	}
-
-	/*
-	 * @deprecated
-	 *
-	static public function by_id_csnp($db, $id_csnp) {
-		return self::by_id_tiers($db, 'cenp', $id_csnp);
-	}
-	*/
 
 	/**
 	 * @brief retourne la liste de tous les utilisateurs
 	 * @return un tableau d'objet bobs_utilisateurs
 	 */
 	static public function tous($db) {
-		$t = array();
 		$q = self::query($db, 'select * from utilisateur order by nom,prenom');
-		while ($r = pg_fetch_assoc($q))
-			$t[] = get_utilisateur($db, $r);
-		return $t;
+		return $this->fetchAllAsUtilisateur($q);
 	}
 
 	const sql_update_last_login = 'update utilisateur set last_login=now() where id_utilisateur=$1';
@@ -498,8 +495,8 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public static function liste_chiro($db) {
-	    $sql = 'select * from utilisateur where acces_chiros=true order by nom,prenom';
-	    return self::query_fetch_all($db, $sql);
+		$sql = 'select * from utilisateur where acces_chiros=true order by nom,prenom';
+		return self::query_fetch_all($db, $sql);
 	}
 
 	/**
