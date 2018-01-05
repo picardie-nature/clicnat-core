@@ -1,6 +1,8 @@
 <?php
 namespace Picnat\Clicnat;
 
+use Michelf\Markdown;
+
 /**
  * @brief classe de base pour les "controleurs" des sites de saisies
  */
@@ -150,7 +152,7 @@ abstract class clicnat_smarty extends \Smarty {
 		}
 		try {
 			$texte = clicnat_textes::par_nom($this->db, $nom);
-			return $htmlpurifier->purify(Markdown(trim($texte->texte))."<span title=\"{$nom}\">&bull;</span>");
+			return $htmlpurifier->purify(Markdown::defaultTransform(trim($texte->texte))."<span title=\"{$nom}\">&bull;</span>");
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
