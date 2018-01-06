@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_precision_date_max extends bobs_extractions_conditions {
 	protected $pmax;

@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_commentaire extends bobs_extractions_conditions {
 	const poste = true;
@@ -9,8 +10,9 @@ class bobs_ext_c_commentaire extends bobs_extractions_conditions {
 	function __construct($mot) {
 		$this->mot = $mot;
 		bobs_element::cls($this->mot);
-		if (empty($this->mot))
-			throw new Exception('oops');
+		if (empty($this->mot)) {
+			throw new \Exception('oops');
+		}
 		parent::__construct();
 		$this->arguments[] = 'mot';
 	}
@@ -32,6 +34,6 @@ class bobs_ext_c_commentaire extends bobs_extractions_conditions {
 	}
 
 	public static function new_by_array($t) {
-		return new bobs_ext_c_commentaire($t['mot']);
+		return new self($t['mot']);
 	}
 }

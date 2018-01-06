@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_tests;
 
 /**
  * @brief Citations pas évaluées par l'utilisateur

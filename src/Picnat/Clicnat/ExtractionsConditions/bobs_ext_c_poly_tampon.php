@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_poly_tampon extends bobs_ext_c_poly {
 	const clicnat1 = true;

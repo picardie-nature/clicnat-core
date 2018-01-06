@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_tests;
 
 class bobs_ext_c_auteur extends bobs_extractions_conditions {
 	protected $id_utilisateur;

@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 /**
  * @brief Citations reliées à une enquête
@@ -22,7 +23,7 @@ class bobs_ext_c_enquete_version extends bobs_extractions_conditions {
 	}
 
 	public function get_tables() {
-		return array('citations');
+		return ['citations'];
 	}
 
 	public static function new_by_array($t) {

@@ -1,5 +1,7 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
+use Picnat\Clicnat\bobs_tests;
 
 class bobs_ext_c_poly2 extends bobs_extractions_conditions {
 	protected $espace_po_table;
