@@ -1,5 +1,6 @@
 <?php
 namespace Picnat\Clicnat\ExtractionsConditions;
+use Picnat\Clicnat\bobs_element;
 
 class bobs_ext_c_interval_date extends bobs_extractions_conditions {
 	protected $date_a;
@@ -8,7 +9,7 @@ class bobs_ext_c_interval_date extends bobs_extractions_conditions {
 	private $sql_date_b;
 	const poste = true;
 
-	function __construct($date_a, $date_b) {
+	public function __construct($date_a, $date_b) {
 		$this->date_a = $date_a;
 		$this->date_b = $date_b;
 		$this->sql_date_a = bobs_element::date_fr2sql($this->date_a);
