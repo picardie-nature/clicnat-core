@@ -12,7 +12,9 @@ define('BOBS_NEXTVAL_QUERY_SUFFIX', '_nextval_b');
 define('BOBS_SELECT_QUERY_SUFFIX', '_select_b');
 define('BOBS_LIBDIR', '/var/lib/bobs/');
 define('BOBS_CLI_NO_EX', false);
-define('BOBS_LOG_FILE',  '/var/log/bobs.log');
+
+if (!defined('BOBS_LOG_FILE')) define('BOBS_LOG_FILE',  '/var/log/bobs.log');
+
 define('BOBS_ERR_NOTFOUND', 404);
 
 if (!defined('CLICNAT_MAIL_EXPEDITEUR')) {
