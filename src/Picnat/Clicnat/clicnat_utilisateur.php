@@ -1,11 +1,38 @@
 <?php
 namespace Picnat\Clicnat;
+
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_ordre;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_interval_date;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_esp_comite_homolog;
 
 /**
- * @brief Classe de gestion des utilisateurs et observateurs
+ * Classe de gestion des utilisateurs et observateurs
+ *
+ * @property-read $id_utilisateur
+ * @property-read $nom
+ * @property-read $prenom
+ * @property-read $username
+ * @property-read $date_naissance
+ * @property-read $tel
+ * @property-read $port
+ * @property-read $fax
+ * @property-read $mail
+ * @property-read $url
+ * @property-read $commentaires
+ * @property-read $acces_qg
+ * @property-read $acces_poste
+ * @property-read $acces_chiros
+ * @property-read $reglement_date_sig
+ * @property-read $diffusion_restreinte
+ * @property-read $last_login
+ * @property-read $last_ip
+ * @property-read $id_csnp
+ * @property-read $peut_ajouter_espece
+ * @property-read $expert
+ * @property-read $id_extraction_utilisateur_flux
+ * @property-read $props
+ * @property-read $pseudo
+ * @property-read $partage_opts
  */
 class clicnat_utilisateur extends bobs_element {
 	use clicnat_mini_template;
@@ -148,7 +175,7 @@ class clicnat_utilisateur extends bobs_element {
 			case 'date_naissance' :
 				return $this->date_naissance;
 			case 'password':
-				throw new Exception('pas directement');
+				throw new \Exception('pas directement');
 			case 'tel':
 				return $this->tel;
 			case 'port':
@@ -1511,36 +1538,43 @@ class clicnat_utilisateur extends bobs_element {
 	/** @see bobs_utilisateur::get_reseaux */
 	private $reseaux_nc;
 
-	const gdtc_sql_adresse = 'select address1,address2,address3,zip_code,city from person where actor_id=%d';
+	const gdtc_sql_adresse = 'select address1,address2,address3,zip_code,city from person where actor_id=:actor_id';
 
-	private function get_gdtc_db() {
-		if (strlen(GDTC_MYSQL_HOST) == 0) return false;
-		$my_db = mysql_connect(GDTC_MYSQL_HOST, GDTC_MYSQL_USER, GDTC_MYSQL_PASSWD);
-		if (!$my_db) {
-			throw new Exception('échec de mysql_connect');
+	/**
+	 * GDTC database
+	 * @return \PDO
+	 */
+	private static function gdtc_db() {
+		static $db;
+
+		if (!isset($db)) {
+			$db = new \PDO('mysql:host='.GDTC_MYSQL_HOST.';dbname='.GDTC_MYSQL_DB, GDTC_MYSQL_USER, GDTC_MYSQL_PASSWD);
 		}
-		if (!mysql_select_db(GDTC_MYSQL_DB, $my_db)) {
-			throw new Exception('échec de mysql_select_db');
-		}
-		return $my_db;
+
+		return $db;
 	}
 
 	public function get_adresse() {
-		$my_db = $this->get_gdtc_db();
-		if (!$my_db) return array();
-		$sql = sprintf(self::gdtc_sql_adresse, $this->id_gdtc);
-		$q = mysql_query($sql, $my_db);
-		if (!$q)
-			echo mysql_error();
-		return mysql_fetch_assoc($q);
+		try {
+			$query = $this->gdtc_db()->prepare(self::gdtc_sql_adresse);
+			$query->execute([
+				":actor_id" => (int)$this->actor_id
+			]);
+			return $query->fetchAll(PDO::FETCH_ASSOC);
+		} catch (\Exception $e) {
+			error_log("gdtc: failed to get actor_id {$this->actor_id}");
+			return [];
+		}
 	}
 
 	private $reseaux_cache;
 
 	public function reseaux() {
-		// todo après avoir déconnecté gdtc retirer le merge
+		// TODO après avoir déconnecté gdtc retirer le merge
 		return array_merge(clicnat2_reseau::liste_reseaux_membre($this->db, $this), $this->reseaux_gdtc());
 	}
+
+	const sql_gdtc_reseau_actor = 'select distinct group_id from groupes where actor_id=:actor_id and date_end is null and en_attente=0';
 
 	public function reseaux_gdtc() {
 		if (!isset($this->reseaux_cache)) {
@@ -1551,19 +1585,15 @@ class clicnat_utilisateur extends bobs_element {
 				$this->id_gdtc = $tiers_id_gdtc;
 
 			if (empty($this->id_gdtc)) {
-				return $tr;
+				return [];
 			}
-			try {
-				$my_db = $this->get_gdtc_db();
-			} catch (Exception $e) {
-				// en cas d'échec de la connection ne retourne
-				// aucun réseau
-				bobs_log("bobs_utilisateur::get_reseaux() ERREUR impossible de se connecter à la base de GDTC");
-				return array();
-			}
-			$sql = sprintf('select distinct group_id from groupes where actor_id=%d and date_end is null and en_attente=0', $this->id_gdtc);
-			$q = mysql_query($sql, $my_db);
-			while ($r = mysql_fetch_assoc($q)) {
+
+			$query = $this->gdtc_db()->prepare(self::sql_gdtc_reseau_actor);
+			$query->execute([
+				":actor_id" => (int)$this->actor_id
+			]);
+
+			while ($r = $query->fetchAll(PDO::FETCH_ASSOC)) {
 				$nom_reseau = '';
 				switch ($r['group_id']) {
 					case 5: $nom_reseau = 'cs'; break;
@@ -1584,7 +1614,7 @@ class clicnat_utilisateur extends bobs_element {
 					$this->reseaux_nc .= $nom_reseau.',';
 				}
 			}
-			mysql_close($my_db);
+
 			$this->reseaux_nc = trim($this->reseaux_nc, ',');
 			$this->reseaux_cache = $tr;
 		}
@@ -1592,12 +1622,15 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function membre_reseau($reseau) {
-		if (empty($reseau))
-			throw new Exception('quel reseau ?');
-		if (strlen($reseau) != 2)
-			throw new Exception('nom sur 2 caractères');
-		if (empty($this->reseaux_nc))
+		if (empty($reseau)) {
+			throw new \InvalidArgumentException('quel reseau ?');
+		}
+		if (strlen($reseau) != 2) {
+			throw new \InvalidArgumentException('nom sur 2 caractères');
+		}
+		if (empty($this->reseaux_nc)) {
 			$this->get_reseaux();
+		}
 		return !(strpos($this->reseaux_nc, $reseau) === false);
 	}
 
