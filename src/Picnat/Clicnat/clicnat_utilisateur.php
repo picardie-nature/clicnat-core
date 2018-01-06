@@ -1560,7 +1560,7 @@ class clicnat_utilisateur extends bobs_element {
 			$query->execute([
 				":actor_id" => (int)$this->actor_id
 			]);
-			return $query->fetchAll(PDO::FETCH_ASSOC);
+			return $query->fetchAll(\PDO::FETCH_ASSOC);
 		} catch (\Exception $e) {
 			error_log("gdtc: failed to get actor_id {$this->actor_id}");
 			return [];
@@ -1593,7 +1593,7 @@ class clicnat_utilisateur extends bobs_element {
 				":actor_id" => (int)$this->actor_id
 			]);
 
-			while ($r = $query->fetchAll(PDO::FETCH_ASSOC)) {
+			while ($r = $query->fetchAll(\PDO::FETCH_ASSOC)) {
 				$nom_reseau = '';
 				switch ($r['group_id']) {
 					case 5: $nom_reseau = 'cs'; break;
