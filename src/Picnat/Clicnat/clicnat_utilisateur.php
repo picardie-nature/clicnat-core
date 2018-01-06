@@ -354,17 +354,17 @@ class clicnat_utilisateur extends bobs_element {
 	 * @param ressource $db
 	 * @return array
 	 */
-	static public function liste_reglement_ok($db) {
+	public static function liste_reglement_ok($db) {
 		$sql = 'select * from utilisateur where reglement_date_sig is not null order by nom,prenom';
-		return $this->fetchAllAsUtilisateur(
+		return self::fetchAllAsUtilisateur(
 			bobs_qm()->query($db, 'ul_reglmt_ok', $sql, [])
 		);
 	}
 
-	private function fetchAllAsUtilisateur($q) {
+	private static function fetchAllAsUtilisateur($q) {
 		$tr = [];
 		while ($r = self::fetch($q)) {
-			$tr[] = get_utilisateur($db, $r);
+			$tr[] = get_utilisateur(get_db(), $r);
 		}
 		return $tr;
 	}
