@@ -1,5 +1,6 @@
 create language plpgsql;
 create extension hstore;
+create extension postgis;
 
 \i clc.sql
 \i utilisateur.sql
