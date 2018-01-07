@@ -1,6 +1,15 @@
 language: php
 php:
-  - '7.0'
   - nightly
 install:
   - composer install --dev
+
+services:
+  - postgresql
+
+before_script:
+  - psql -U postgres -c 'create database travis_ci_test;'
+  - psql -U postgres -c 'create extension postgis;'
+
+addons:
+  postgresql: "9.4"
