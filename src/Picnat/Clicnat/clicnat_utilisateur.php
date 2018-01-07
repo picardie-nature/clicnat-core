@@ -1202,17 +1202,24 @@ class clicnat_utilisateur extends bobs_element {
 		return $cit;
 	}
 
+	/**
+	 * Accepte le réglement intérieur
+	 * @param bool $diffusion_restreinte true si observateur en diffusion restreinte
+	 */
 	public function accept_rules($diffusion_restreinte) {
 		self::cli($this->id_utilisateur);
-		$this->reglement_date_sig = strftime('%Y-%m-%d %T', mktime());
+		$this->reglement_date_sig = strftime('%Y-%m-%d %T', time());
 		$this->diffusion_restreinte = $diffusion_restreinte == 1;
 		bobs_qm()->query($this->db, 'utl_accept_rules',
 			'update utilisateur set reglement_date_sig=now(), diffusion_restreinte=$2 where id_utilisateur=$1',
-			array($this->id_utilisateur, $diffusion_restreinte==1?'true':'false'));
+			[
+				$this->id_utilisateur,
+				$diffusion_restreinte==1?'true':'false'
+			]
+		);
 	}
 
 	public function agreed_the_rules() {
-		self::cli($this->id_utilisateur);
 		return !is_null($this->reglement_date_sig);
 	}
 
