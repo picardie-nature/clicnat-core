@@ -36,8 +36,7 @@ class bobs_commune extends bobs_poly {
 	 * @todo prendre en charge les chiros
 	 * @return bobs_observation[]
 	 */
-	public function get_observations()
-	{
+	public function get_observations() {
 		$sql = "select o.*
 			from observations o,espace_point pt
 			where o.id_espace=pt.id_espace
@@ -45,10 +44,11 @@ class bobs_commune extends bobs_poly {
 			and commune_id_espace=".$this->id_espace."
 			order by date_observation desc";
 		$t = self::query_fetch_all($this->db, $sql);
-		$rt = array();
+		$rt = [];
 		if (is_array($t) && count($t) > 0) {
-			foreach ($t as $obs)
+			foreach ($t as $obs) {
 				$rt[] = get_observation($this->db, $obs);
+			}
 		}
 		return $rt;
 	}

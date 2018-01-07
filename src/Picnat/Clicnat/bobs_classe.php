@@ -3,6 +3,7 @@ namespace Picnat\Clicnat;
 
 /**
  * @brief les Classes d'espèces
+ * @property-read $classe
  */
 class bobs_classe extends bobs_tests {
 	protected $db;

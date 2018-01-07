@@ -14,10 +14,11 @@ abstract class clicnat_smarty extends \Smarty {
 
 	const k_s_alertes = '__alertes';
 
-	function __construct($db, $template_dir=null, $compile_dir=null, $config_dir=null, $cache_dir='/tmp/clicnat_cache_dfl') {
+	public function __construct($db, $template_dir=null, $compile_dir=null, $config_dir=null, $cache_dir='/tmp/clicnat_cache_dfl') {
 		parent::__construct();
-		if (!defined('LOCALE'))
+		if (!defined('LOCALE')) {
 			define('LOCALE','fr_FR');
+		}
 		setlocale(LC_ALL, LOCALE);
 		if (defined('CLICNAT2')) {
 			// c'est déjà fait

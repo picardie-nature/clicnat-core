@@ -19,7 +19,7 @@ class bobs_extractions extends bobs_tests {
 	 *
 	 * @param ressource $db
 	 */
-	function __construct($db) {
+	public function __construct($db) {
 		$this->db = $db;
 		$this->tables = array('citations', 'observations');
 		$this->conditions = array();
@@ -94,9 +94,9 @@ class bobs_extractions extends bobs_tests {
 	}
 
 	public function mois_et_annees() {
-		if (!$this->ready())
+		if (!$this->ready()) {
 			return false;
-
+		}
 		$sql = "select extract(year from date_observation) as y,extract(month from date_observation) as m
 				from {$this->get_tables()}
 				where {$this->get_jointures()}
@@ -104,7 +104,7 @@ class bobs_extractions extends bobs_tests {
 				group by extract(year from date_observation),extract(month from date_observation)
 				order by extract(year from date_observation),extract(month from date_observation)";
 		$q = $this->query($sql);
-		$annees = array();
+		$annees = [];
 		while ($r = self::fetch($q)) {
 			if (!isset($annees[$r['y']]))
 				$annees[$r['y']] = array($r['m']);
@@ -146,13 +146,15 @@ class bobs_extractions extends bobs_tests {
 				from {$this->get_tables()}
 				where {$this->get_jointures()}
 				{$this->get_conditions()}";
-		if ($this->limite > 0)
+		if ($this->limite > 0) {
 			$sql .= " limit $n";
+		}
 
 		$q = $this->query($sql);
 
-		if ($i_commit)
+		if ($i_commit) {
 			$this->query('commit');
+		}
 	}
 
 	public function carres($srid, $pas) {
@@ -221,8 +223,9 @@ class bobs_extractions extends bobs_tests {
 				from {$this->get_tables()}
 				where {$this->get_jointures()}
 				{$this->get_conditions()}";
-		if ($this->limite > 0)
+		if ($this->limite > 0) {
 			$sql .= " limit {$this->limite}";
+		}
 		return $sql;
 	}
 
@@ -261,8 +264,9 @@ class bobs_extractions extends bobs_tests {
 	 * @return int
 	 */
 	public function compte() {
-		if (!$this->ready())
+		if (!$this->ready()) {
 			return false;
+		}
 		return $this->compte_ready();
 	}
 
@@ -273,7 +277,7 @@ class bobs_extractions extends bobs_tests {
 	 */
 	public function dans_table_temporaire($table) {
 		if (pg_transaction_status($this->db) != PGSQL_TRANSACTION_INTRANS) {
-			throw new Exception('doit être utilisé dans une transaction');
+			throw new \Exception('doit être utilisé dans une transaction');
 		}
 
 		$sql = "select distinct citations.id_citation into temporary $table
@@ -297,7 +301,7 @@ class bobs_extractions extends bobs_tests {
 		self::cli($position);
 
 		if (pg_transaction_status($this->db) != PGSQL_TRANSACTION_INTRANS) {
-			throw new Exception('doit être utilisé dans une transaction');
+			throw new \Exception('doit être utilisé dans une transaction');
 		}
 
 		$sql = "insert into utilisateur_citations_ok (id_utilisateur,id_citation)
@@ -605,7 +609,7 @@ class bobs_extractions extends bobs_tests {
 		$entries = $xpath->query('//extraction/conditions/condition');
 		foreach ($entries as $entry) {
 			$classe = null;
-			$arguments = array();
+			$arguments = [];
 			foreach ($entry->childNodes as $prop) {
 				if ($prop->nodeName == 'classe') {
 					$classe = $prop->nodeValue;
