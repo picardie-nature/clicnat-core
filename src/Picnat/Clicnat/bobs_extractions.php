@@ -146,8 +146,9 @@ class bobs_extractions extends bobs_tests {
 				from {$this->get_tables()}
 				where {$this->get_jointures()}
 				{$this->get_conditions()}";
+
 		if ($this->limite > 0) {
-			$sql .= " limit $n";
+			$sql .= " limit {$this->limite}";
 		}
 
 		$q = $this->query($sql);
@@ -526,9 +527,10 @@ class bobs_extractions extends bobs_tests {
 	 * @return array
 	 */
 	public static function get_conditions_dispo($forcer_chargement_classes=false) {
-		static $conditions = [];
-		if (empty($conditions)) {
+		static $conditions;
+		if (!isset($conditons) || $forcer_chargement_classes) {
 			$t = [];
+			// on veut voir toutes les classes donc on va forcer le chargement
 			foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
 				require_once($f);
 			}
@@ -539,8 +541,16 @@ class bobs_extractions extends bobs_tests {
 			}
 
 			foreach ($t as $c) {
-				if (eval("return $c::qg;")) {
-					$conditions[$c] = eval('return '.$c.'::get_titre();');
+				// test si visible dans le QG
+				$conditionClass = new \ReflectionClass($c);
+				if ($conditionClass->getConstant("qg")) {
+					$get_titre_method = new \ReflectionMethod($c , "get_titre");
+					if (!$get_titre_method) {
+						$conditions[$c] = "sans titre (missing get_titre())";
+					} else {
+						$get_titre = $get_titre_method->getClosure();
+						$conditions[$c] = $get_titre();
+					}
 				}
 			}
 		}
