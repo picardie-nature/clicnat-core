@@ -20,7 +20,6 @@ create extension postgis;
 \i enquetes.sql
 \i repartition.sql
 \i structures.sql
-\i taches.sql
 \i travaux.sql
 \i validation.sql
 \i reseau.sql

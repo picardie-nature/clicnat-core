@@ -4,8 +4,7 @@ create table structures (
 	type_mad varchar(100),
 	data text,
 	date_creation timestamp default now(),
-	date_modif timestamp,
-	date_execution timestamp
+	date_modif timestamp
 );
 
 create table structures_membres (
@@ -22,7 +21,7 @@ create table structures_diff_restreintes (
 
 create table structures_log_mad (
 	id_structure integer references structures(id_structure),
-	date_excecution timestamp default now(),
+	date_execution timestamp default now(),
 	temps_execution integer,
 	n_citations_dispo integer,
 	primary key (id_structure, date_execution)
