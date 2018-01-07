@@ -529,20 +529,17 @@ class bobs_extractions extends bobs_tests {
 	public static function get_conditions_dispo($forcer_chargement_classes=false) {
 		static $conditions;
 		if (!isset($conditions) || $forcer_chargement_classes) {
-			$t = [];
 			// on veut voir toutes les classes donc on va forcer le chargement
 			foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
 				require_once($f);
 			}
-			foreach (get_declared_classes() as $classe) {
-				if (is_subclass_of($classe, bobs_extractions_conditions::class)) {
-					$t[] = $classe;
-				}
-			}
 
-			foreach ($t as $c) {
+			foreach (get_declared_classes() as $c) {
 				// test si visible dans le QG
 				$conditionClass = new \ReflectionClass($c);
+				if (!$conditionClass->isSubclassOf(bobs_extractions_conditions::class)) {
+					continue;
+				}
 				if ($conditionClass->getConstant("qg")) {
 					$get_titre_method = new \ReflectionMethod($c , "get_titre");
 					if (!$get_titre_method) {
