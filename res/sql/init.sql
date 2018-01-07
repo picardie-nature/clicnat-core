@@ -1,6 +1,7 @@
 create language plpgsql;
 create extension hstore;
 create extension postgis;
+create extension fuzzystrmatch;
 
 \i clc.sql
 \i utilisateur.sql

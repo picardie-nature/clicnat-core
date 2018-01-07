@@ -105,7 +105,9 @@ class clicnat_utilisateur extends bobs_element {
 	 */
 	public function set_pseudo($pseudo) {
 		self::cls($pseudo);
-		if (empty($pseudo)) $this->update_field_null('pseudo', true);
+		if (empty($pseudo)) {
+			$this->update_field_null('pseudo', true);
+		}
 		else $this->update_field('pseudo', $pseudo);
 	}
 
@@ -215,7 +217,7 @@ class clicnat_utilisateur extends bobs_element {
 		}
 	}
 
-	function __construct($db, $id) {
+	public function __construct($db, $id) {
 		parent::__construct($db, 'utilisateur', 'id_utilisateur', $id);
 		if (empty($this->id_utilisateur)) {
 			throw new \Exception('id_utilisateur vide (utilisateur inexistant ?)');
@@ -275,7 +277,7 @@ class clicnat_utilisateur extends bobs_element {
 	 * - fax
 	 * - mail
 	 */
-	static public function nouveau($db, $args) {
+	public static function nouveau($db, $args) {
 		$args['nom'] = trim($args['nom']);
 		if (empty($args['nom'])) {
 			throw new \InvalidArgumentException('pas de nom');
@@ -292,7 +294,13 @@ class clicnat_utilisateur extends bobs_element {
 			) values (
 				$1,$2,$3,$4,$5,$6
 			)";
-		pg_prepare($db, 'utilisateur_nouveau', $sql);
+
+		static $prepared;
+
+		if (!isset($prepared)) {
+			pg_prepare($db, 'utilisateur_nouveau', $sql);
+			$prepared = true;
+		}
 		return pg_execute($db, 'utilisateur_nouveau', $values);
 	}
 
@@ -324,7 +332,7 @@ class clicnat_utilisateur extends bobs_element {
 
 	const sql_recherche_utilisateur = "select * from bob_recherche_observateur_nom($1) order by levenshtein(trim(lower($2)), trim(lower(nom||' '||prenom)))";
 
-	static public function rechercher2($db, $str) {
+	public static function rechercher2($db, $str) {
 		self::cls($str);
 		$q = bobs_qm()->query($db, 'urcherche2.1', self::sql_recherche_utilisateur, [$str,$str]);
 		$resultat = [];
@@ -334,7 +342,7 @@ class clicnat_utilisateur extends bobs_element {
 		return $resultat;
 	}
 
-	static public function rechercher_import($db, $str) {
+	public static function rechercher_import($db, $str) {
 		self::cls($str);
 		if (preg_match('/.*\((.*)\)/',$str,$m)) {
 			$str = str_replace("({$m[1]})", "", $str);
@@ -365,7 +373,7 @@ class clicnat_utilisateur extends bobs_element {
 	 * @param ressource $db
 	 * @return array
 	 */
-	static public function restreint($db) {
+	public static function restreint($db) {
 		$q = self::query($db,
 				'select * from utilisateur where diffusion_restreinte=true '.
 				'order by nom,prenom');
@@ -399,7 +407,7 @@ class clicnat_utilisateur extends bobs_element {
 	static public function derniers_comptes($db, $limite=30) {
 		self::cli($limite);
 		$sql = 'select * from utilisateur order by id_utilisateur desc limit $1';
-		$q = bobs_qm()->query($db, 'ul_derniers', $sql, array($limite));
+		$q = bobs_qm()->query($db, 'ul_derniers', $sql, [$limite]);
 		return $this->fetchAllAsUtilisateur($q);
 	}
 
@@ -412,7 +420,7 @@ class clicnat_utilisateur extends bobs_element {
 	static public function par_identifiant($db, $login) {
 		self::cls($login, self::except_si_vide);
 
-		$q = bobs_qm()->query($db, 'u_by_login', self::sql_select_uname, array($login));
+		$q = bobs_qm()->query($db, 'u_by_login', self::sql_select_uname, [$login]);
 		$r = self::fetch($q);
 
 		if (!$r) {
@@ -435,7 +443,7 @@ class clicnat_utilisateur extends bobs_element {
 		}
 		self::cls($mail, self::except_si_vide);
 
-		$q = bobs_qm()->query($db, 'u_by_mail',self::sql_by_mail, array($mail));
+		$q = bobs_qm()->query($db, 'u_by_mail',self::sql_by_mail, [$mail]);
 		$r = self::fetch($q);
 
 		if (!$r) {
