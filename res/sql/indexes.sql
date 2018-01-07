@@ -1,0 +1,10 @@
+create index ind_esp_line_geom on espace_line using GIST ( the_geom  );
+create index ind_esp_point_geom on espace_point using GIST ( the_geom );
+create index ind_esp_polygon_geom on espace_polygon using GIST ( the_geom );
+create index ind_esp_commune_geom on espace_commune using GIST ( the_geom );
+create index on espace_commune(nom);
+create index ind_esp_route on espace_route using GIST ( the_geom );
+create index ind_espe_classe on especes ( classe );
+create index ind_toponyme on espace_toponyme using GIST ( the_geom );
+create index ind_toponyme_93 on espace_toponyme using GIST ( the_geom_rgf93 );
+create index on citations ((validation_avis_positif || validation_avis_negatif || validation_sans_avis));

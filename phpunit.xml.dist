@@ -4,6 +4,7 @@
 	bootstrap="tests/bootstrap.php">
 	<testsuites>
 		<testsuite name="main">
+			<file>tests/clicnat_utilisateur.php</file>
 			<file>tests/bobs_extractions.php</file>
 		</testsuite>
 	</testsuites>

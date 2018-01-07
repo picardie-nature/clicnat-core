@@ -672,7 +672,7 @@ function bobs_log($msg) {
 
 	flock($f, LOCK_EX);
 	fprintf($f, "%s bobs-%s (sid=%s) %s\n",
-		strftime("%Y-%m-%d %H:%M:%S", mktime()),
+		strftime("%Y-%m-%d %H:%M:%S", time()),
 		$context,
 		$sid,
 		$msg

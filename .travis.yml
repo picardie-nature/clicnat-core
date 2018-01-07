@@ -1,0 +1,21 @@
+language: php
+php:
+  - nightly
+install:
+  - composer install --dev
+
+services:
+  - postgresql
+
+env:
+  - POSTGRES_DB_TEST="postgres://postgres@localhost/travis_ci_test"
+
+before_script:
+  - psql -U postgres -c 'create database travis_ci_test;'
+  - cd res/sql && psql -U postgres -f init.sql travis_ci_test ; cd -
+
+addons:
+  postgresql: "9.4"
+  apt:
+    packages:
+      - postgresql-9.4-postgis-2.3

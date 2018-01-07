@@ -1,0 +1,20 @@
+Liste des fonctions de la base de données de bob. 
+
+bob_citations_observateurs_str(id_citation)
+  Retourne les noms des observateurs pour une citation.
+
+bob_selection_diffusion_restreinte(p_id_selection, p_id_utilisateurs[])
+  Retourne les lignes de la table citations présente dans la sélection
+  p_id_selection et dont les observations ont été faites uniquement par les
+  observateurs dans p_id_utilisateurs[].
+
+bob_recherche_observateur_nom(texte)
+  Retourne les lignes de la table utilisateurs où "texte" peut être associé au
+  nom et au prénom de l'observateur.
+
+bob_point_x(point)
+  Retourne l'abscisse du point.
+
+bob_point_y(point)
+  Retourne l'ordonnée du point.
+

@@ -13,7 +13,7 @@ define('BOBS_SELECT_QUERY_SUFFIX', '_select_b');
 define('BOBS_LIBDIR', '/var/lib/bobs/');
 define('BOBS_CLI_NO_EX', false);
 
-if (!defined('BOBS_LOG_FILE')) define('BOBS_LOG_FILE',  '/var/log/bobs.log');
+define('BOBS_LOG_FILE',  '/tmp/bobs.log');
 
 define('BOBS_ERR_NOTFOUND', 404);
 
