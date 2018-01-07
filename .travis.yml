@@ -8,7 +8,7 @@ services:
   - postgresql
 
 env:
-  - POSTGRES_DB_TEST="postgres://postgres/travis_ci_test"
+  - POSTGRES_DB_TEST="postgres://postgres:localhost/travis_ci_test"
 
 before_script:
   - psql -U postgres -c 'create database travis_ci_test;'
