@@ -1,0 +1,446 @@
+583	412	Programme de prospections	CAPR	f	f	f	t
+120	\N	nicheur	3001	f	f	f	t
+102	99	chante sous l'eau	2130	f	f	f	t
+100	99	chanteur isolé	2110	f	f	f	t
+101	99	chants simultanés	2120	f	f	f	t
+112	110	brame simultanés	2222	f	f	f	t
+106	105	cris de femelle	2201	f	f	f	t
+45	44	capturé au filet	1011	f	f	f	t
+107	105	cri de jeune	2202	f	f	f	t
+46	44	capturé au piège	1012	f	f	f	t
+111	110	brame isolé	2221	f	f	f	t
+49	47	bague colorée	1022	f	f	f	t
+94	93	atteint de la myxomatose	1421	f	f	f	t
+79	70	mort dans tube protecteur de feuillus	1311	f	f	f	t
+78	70	mort dans un poteau telecom métalique	1310	f	f	f	t
+81	70	mort de mort naturelle	1320	f	f	f	t
+73	70	mort mazouté	1303	f	f	f	t
+72	70	mort par collision avec une ligne électrique	1302	f	f	f	t
+76	70	mort par collision avec véhicule	1306	f	f	f	t
+71	70	mort par électrocution	1301	f	f	f	t
+80	70	mort par empoisonnement	1312	f	f	f	t
+74	70	mort par tire au fusil de chasse	1304	f	f	f	t
+77	70	mort suite à un choc contre une vitre	1307	f	f	f	t
+54	53	mue des rectrices	1141	f	f	f	t
+55	53	mue des rémiges	1142	f	f	f	t
+86	84	blessé par collision avec une ligne	1402	f	f	f	t
+85	84	blessé par électrocution	1401	f	f	f	t
+89	84	blessé par filet de pêche	1405	f	f	f	t
+91	84	blessé suite à une collision avec une vitre	1407	f	f	f	t
+90	84	blessé suite à une collision avec un véhicule	1406	f	f	f	t
+21	20	empreintes dans la boue	0361	f	f	f	t
+22	20	empreintes dans la neige	0362	f	f	f	t
+23	20	empreinte isolée	0363	f	f	f	t
+34	31	relief de repas : coquille d'oeufs de poule	0604	f	f	f	t
+35	31	relief de repas : fruit	0605	f	f	f	t
+36	31	relief de repas : micromammifères	0606	f	f	f	t
+33	31	relief de repas : oiseau	0602	f	f	f	t
+4	2	terrier abandonné	0112	f	f	f	t
+3	2	terrier occupé	0111	f	f	f	t
+116	115	claquements d'ailes	2410	f	f	f	t
+117	115	claquements de bec	2420	f	f	f	t
+70	411	mort	1300	f	f	f	t
+95	93	atteint de la rage	1422	f	f	f	t
+58	57	albinisme partiel	1211	f	f	f	t
+99	396	chant	2100	f	f	f	t
+98	396	enregistré	2001	f	f	f	t
+97	396	entendu	2000	f	f	f	t
+110	396	brame	2220	f	f	f	t
+115	396	claquements	2400	f	f	f	t
+118	468	détecteur ultra son	2500	f	f	f	t
+14	384	traces	0300	f	f	f	t
+103	99	imitation	2140	f	f	f	t
+1	384	Indice	0000	f	f	f	t
+38	384	lardoir	0620	f	f	f	t
+64	401	isabelle	1217	f	f	f	t
+113	396	aboiement	2230	f	f	f	t
+17	19	broutis	0330	f	f	f	t
+19	384	abroutissement	0350	f	f	f	t
+6	384	hutte	0130	f	f	f	t
+16	384	grattis	0320	f	f	f	t
+7	384	gîte	0140	f	f	f	t
+12	11	crotte seule	0210	f	f	f	t
+109	105	alarme	2210	f	f	f	t
+13	11	crottoir	0220	f	f	f	t
+11	384	excréments	0200	f	f	f	t
+57	402	albinisme	1210	f	f	f	t
+61	402	leucisme	1214	f	f	f	t
+60	59	mélanisme partiel	1213	f	f	f	t
+59	402	mélanisme	1212	f	f	f	t
+53	384	mue	1140	f	f	f	t
+123	120	nicheur certain	3004	f	f	f	t
+121	120	nicheur possible	3002	f	f	f	t
+122	120	nicheur probable	3003	f	f	f	t
+128	403	nid détruit	3013	f	f	f	t
+127	403	nid en construction	3012	f	f	f	t
+10	403	nid (mammifères)	0150	f	f	f	t
+126	403	nid vide	3011	f	f	f	t
+40	384	odeur caractéristique	0700	f	f	f	t
+39	384	oeuf de poule stockés	0650	f	f	f	t
+132	384	oeufs abandonnés	3032	f	f	f	t
+131	384	oeufs cassés	3031	f	f	f	t
+82	384	ossements	1380	f	f	f	t
+37	384	pelote de réjection	0610	f	f	f	t
+15	384	poils	0310	f	f	f	t
+28	384	plume	0410	f	f	f	t
+31	384	relief de repas	0600	f	f	f	t
+30	401	reste végétal	0500	f	f	f	t
+24	20	série d'empreintes	0364	f	f	f	t
+20	384	empreintes	0360	f	f	f	t
+26	384	frottis	0380	f	f	f	t
+63	401	flavisme	1216	f	f	f	t
+18	384	écorçage	0340	f	f	f	t
+87	84	mazouté (encore vivant)	1403	f	f	f	t
+9	384	bauge	0142	f	f	f	t
+65	405	phase claire	1221	f	f	f	t
+67	405	phase rousse	1223	f	f	f	t
+66	405	phase sombre	1222	f	f	f	t
+52	405	plumage d'éclipse	1130	f	f	f	t
+51	405	plumage nuptial	1110	f	f	f	t
+5	384	taupinière	0120	f	f	f	t
+2	384	terrier	0110	f	f	f	t
+92	93	empoisonné (encore vivant)	1410	f	f	f	t
+96	408	affaibli	1430	f	f	f	t
+29	384	bois retrouvé	0420	f	f	f	t
+68	405	forme brune	1230	f	f	f	t
+69	405	forme grise	1231	f	f	f	t
+104	468	repasse	2150	f	f	f	t
+8	384	couche	0141	f	f	f	t
+50	468	vu au phare	1030	f	f	f	t
+43	41	filmé	1002	f	f	f	t
+47	411	bagué	1020	f	f	f	t
+129	403	loge découverte	3020	f	f	f	t
+124	403	colonie de reproduction	3005	f	f	f	t
+134	453	mise bas	3040	f	f	f	t
+93	408	atteint d'une maladie	1420	f	f	f	t
+84	408	blessé	1400	f	f	f	t
+42	41	photographié	1001	f	f	f	t
+239	319	vol à basse altitude	5030	f	f	f	t
+221	319	vol à haute altitude	5010	f	f	f	t
+230	319	vol à moyenne altitude	5020	f	f	f	t
+245	239	vol à basse altitude vers le Nord-Est	5036	f	f	f	t
+243	239	vol à basse altitude vers le Nord-Ouest	5034	f	f	f	t
+246	239	vol à basse altitude vers l'Est	5037	f	f	f	t
+240	239	vol à basse altitude vers le Sud	5031	f	f	f	t
+247	239	vol à basse altitude vers le Sud-Est	5038	f	f	f	t
+241	239	vol à basse altitude vers le Sud-Ouest	5032	f	f	f	t
+242	239	vol à basse altitude vers l'Ouest	5033	f	f	f	t
+226	221	vol à haute altitude vers le Nord	5015	f	f	f	t
+225	221	vol à haute altitude vers le Nord-Ouest	5014	f	f	f	t
+228	221	vol à haute altitude vers l'Est	5017	f	f	f	t
+222	221	vol à haute altitude vers le Sud	5011	f	f	f	t
+229	221	vol à haute altitude vers le Sud-Est	5018	f	f	f	t
+223	221	vol à haute altitude vers le Sud-Ouest	5012	f	f	f	t
+224	221	vol à haute altitude vers l'Ouest	5013	f	f	f	t
+235	230	vol à moyenne altitude vers le Nord	5025	f	f	f	t
+236	230	vol à moyenne altitude vers le Nord-Est	5026	f	f	f	t
+237	230	vol à moyenne altitude vers l'Est	5027	f	f	f	t
+231	230	vol à moyenne altitude vers le Sud	5021	f	f	f	t
+238	230	vol à moyenne altitude vers le Sud-Est	5028	f	f	f	t
+232	230	vol à moyenne altitude vers le Sud-Ouest	5022	f	f	f	t
+233	230	vol à moyenne altitude vers l'Ouest	5023	f	f	f	t
+253	248	vol au ras du sol vers le Nord	5045	f	f	f	t
+254	248	vol au ras du sol vers le Nord-Est	5046	f	f	f	t
+252	248	vol au ras du sol vers le Nord-Ouest	5044	f	f	f	t
+255	248	vol au ras du sol vers l'Est	5047	f	f	f	t
+249	248	vol au ras du sol vers le Sud	5041	f	f	f	t
+250	248	vol au ras du sol vers le Sud-Ouest	5042	f	f	f	t
+251	248	vol au ras du sol vers l'Ouest	5043	f	f	f	t
+174	171	posé sur un arbre mort	4130	f	f	f	t
+193	192	posé sur une mare à hutte	4411	f	f	f	t
+197	191	posé sur une rivière	4440	f	f	f	t
+192	191	posé sur une mare	4410	f	f	f	t
+172	171	posé sur un résineux	4110	f	f	f	t
+183	177	posé sur une pierre	4250	f	f	f	t
+175	177	posé sur une souche	4140	f	f	f	t
+194	191	posé sur un étang	4420	f	f	f	t
+173	171	posé sur un feuillu	4120	f	f	f	t
+204	201	posé sur une antenne TV	4520	f	f	f	t
+203	201	posé sur une cheminée	4510	f	f	f	t
+202	201	posé sur un toit	4501	f	f	f	t
+148	403	en train de pondre	3130	f	f	f	t
+186	199	posé en mer	4280	f	f	f	t
+195	194	posé en queue d'étang	4421	f	f	f	t
+248	319	vol au ras du sol	5040	f	f	f	t
+187	168	posé sur un poteau	4300	f	f	f	t
+188	168	posé sur un piquet de clôture	4310	f	f	f	t
+209	168	posé sur un nid	4600	f	f	f	t
+205	168	posé sur un mur	4530	f	f	f	t
+189	168	posé sur un fil	4320	f	f	f	t
+190	168	posé sur une haie	4330	f	f	f	t
+201	168	posé sur une habitation	4500	f	f	f	t
+184	168	posé sur un chemin	4260	f	f	f	t
+171	168	posé sur un arbre	4100	f	f	f	t
+191	168	posé sur l'eau	4400	f	f	f	t
+180	168	posé sur la route	4230	f	f	f	t
+198	168	posé sur la glace	4450	f	f	f	t
+170	168	posés en groupe	4002	f	f	f	t
+169	168	posé isolé	4001	f	f	f	t
+199	168	posé en mer	4460	f	f	f	t
+185	168	posé en falaise	4270	f	f	f	t
+200	168	posé dans un port	4470	f	f	f	t
+206	168	posé dans un mur	4531	f	f	f	t
+182	168	posé dans une roselière	4241	f	f	f	t
+179	168	posé dans un champ	4220	f	f	f	t
+210	168	posé dans sa loge	4610	f	f	f	t
+153	149	ponte de remplacement	3144	f	f	f	t
+168	399	posé/trouvé	4000	f	f	f	t
+218	319	vol vers le Nord-Est	5006	f	f	f	t
+216	319	vol vers le Nord-Ouest	5004	f	f	f	t
+219	319	vol vers l'Est	5007	f	f	f	t
+213	319	vol vers le Sud	5001	f	f	f	t
+220	319	vol vers le Sud-Est	5008	f	f	f	t
+214	319	vol vers le Sud-Ouest	5002	f	f	f	t
+215	319	vol vers l'Ouest	5003	f	f	f	t
+150	149	1ere ponte	3141	f	f	f	t
+217	319	vol vers le Nord	5005	f	f	f	t
+151	149	2eme ponte	3142	f	f	f	t
+152	149	3eme ponte	3143	f	f	f	t
+155	154	1ere couvée	3151	f	f	f	t
+211	168	halte migratoire	4700	f	f	f	t
+156	154	2eme couvée	3152	f	f	f	t
+157	154	3eme couvée	3153	f	f	f	t
+159	403	nid garni avec poussin	3170	f	f	f	t
+139	453	parades	3111	f	f	f	t
+208	401	trouvé dans une cave	4550	f	f	f	t
+207	401	trouvé dans un grenier	4540	f	f	f	t
+147	145	forage de cavité	3122	f	f	f	t
+146	453	transport de matériaux	3121	f	f	f	t
+167	453	attitude de diversion	3360	f	f	f	t
+138	453	couple observé	3110	f	f	f	t
+212	399	en vol	5000	f	f	f	t
+463	0	Méthode	    	f	f	f	t
+141	139	offrande de matériaux	3113	f	f	f	t
+160	409	nourrissage de jeune	3200	f	f	f	t
+164	409	jeune à l'envol	3320	f	f	f	t
+165	409	jeune non émancipé	3330	f	f	f	t
+137	453	plaque incubatrice	3050	f	f	f	t
+143	453	accouplement	3115	f	f	f	t
+136	409	femelle allaitant	3042	f	f	f	t
+140	139	offrande de nourriture	3112	f	f	f	t
+149	403	ponte	3140	f	f	f	t
+135	453	placenta	3041	f	f	f	t
+144	453	Défense du territoire	3116	f	f	f	t
+154	403	couvaison	3150	f	f	f	t
+163	409	jeune non volant	3310	f	f	f	t
+585	412	Estivage	CEST	f	f	f	t
+316	309	vol de rétro-migration vers l'E	5307	f	f	f	t
+314	309	vol de rétro-migration vers le N	5305	f	f	f	t
+315	309	vol de rétro-migration vers le NE	5306	f	f	f	t
+313	309	vol de rétro-migration vers le NW	5304	f	f	f	t
+310	309	vol de rétro-migration vers le S	5301	f	f	f	t
+317	309	vol de rétro-migration vers le SE	5308	f	f	f	t
+311	309	vol de rétro-migration vers le SW	5302	f	f	f	t
+295	293	vol migratoire à basse altitude SW	5132	f	f	f	t
+300	293	vol migratoire à basse altitude vers l'E	5137	f	f	f	t
+298	293	vol migratoire à basse altitude vers le N	5135	f	f	f	t
+299	293	vol migratoire à basse altitude vers le NE	5136	f	f	f	t
+297	293	vol migratoire à basse altitude vers le NW	5134	f	f	f	t
+301	293	vol migratoire à basse altitude vers le SE	5138	f	f	f	t
+296	293	vol migratoire à basse altitude vers l'W	5133	f	f	f	t
+282	275	vol migratoire à haute altitude vers l'E	5117	f	f	f	t
+280	275	vol migratoire à haute altitude vers le N	5115	f	f	f	t
+279	275	vol migratoire à haute altitude vers le NW	5114	f	f	f	t
+276	275	vol migratoire à haute altitude vers le S	5111	f	f	f	t
+283	275	vol migratoire à haute altitude vers le SE	5118	f	f	f	t
+281	275	vol migratoire à haute altitude vers l'W	5116	f	f	f	t
+277	275	vol migratoire à haute alt. vers le SW	5112	f	f	f	t
+262	257	vol au ras de l'eau vers le Nord	5055	f	f	f	t
+264	257	vol au ras de l'eau vers l'Est	5057	f	f	f	t
+258	257	vol au ras de l'eau vers le Sud	5051	f	f	f	t
+265	257	vol au ras de l'eau vers le Sud-Est	5058	f	f	f	t
+259	257	vol au ras de l'eau vers le Sud-Ouest	5052	f	f	f	t
+260	257	vol au ras de l'eau vers l'Ouest	5053	f	f	f	t
+356	355	querelles ind. de  même espèce	9210	f	f	f	t
+357	355	querelles ind. d'espèce différente	9220	f	f	f	t
+368	367	se dissimule dans la végétation	9411	f	f	f	t
+361	360	se sèche ailes déployées	9311	f	f	f	t
+325	324	traverse un champ	6310	f	f	f	t
+327	324	traverse un chemin	6330	f	f	f	t
+326	324	traverse une route	6320	f	f	f	t
+329	324	traverse un étang	6350	f	f	f	t
+328	324	traverse un ruisseau	6340	f	f	f	t
+291	284	vol migratoire à moyenne altitude vers l'E	5127	f	f	f	t
+289	284	vol migratoire à moyenne altitude vers le N	5125	f	f	f	t
+290	284	vol migratoire à moyenne altitude vers le NE	5126	f	f	f	t
+288	284	vol migratoire à moyenne altitude vers le NW	5124	f	f	f	t
+285	284	vol migratoire à moyenne altitude vers le S	5121	f	f	f	t
+292	284	vol migratoire à moyenne altitude vers le SE	5128	f	f	f	t
+286	284	vol migratoire à moyenne altitude vers le SW	5122	f	f	f	t
+287	284	vol migratoire à moyenne altitude vers l'W	5123	f	f	f	t
+306	303	vol migratoire au ras de l'eau vers le N	5155	f	f	f	t
+307	303	vol migratoire au ras de l'eau vers le NE	5156	f	f	f	t
+305	303	vol migratoire au ras de l'eau vers le SW	5152	f	f	f	t
+271	266	vol migratoire vers le Nord	5105	f	f	f	t
+272	266	vol migratoire vers le Nord-Est	5106	f	f	f	t
+273	266	vol migratoire vers l'Est	5107	f	f	f	t
+267	266	vol migratoire vers le Sud	5101	f	f	f	t
+274	266	vol migratoire vers le Sud-Est	5108	f	f	f	t
+268	266	vol migratoire vers le Sud-Ouest	5102	f	f	f	t
+269	266	vol migratoire vers l'Ouest	5103	f	f	f	t
+302	266	vol migratoire au ras du sol	5140	f	f	f	t
+303	266	vol migratoire au ras de l'eau	5150	f	f	f	t
+284	266	vol migratoire à moyenne altitude	5120	f	f	f	t
+275	266	vol migratoire à haute altitude	5110	f	f	f	t
+293	266	vol migratoire à basse altitude	5130	f	f	f	t
+309	266	vol de rétro-migration	5300	f	f	f	t
+318	319	déplacement en vol erratique	5400	f	f	f	t
+321	168	s'envole	6100	f	f	f	t
+322	168	se pose	6200	f	f	f	t
+319	399	déplacement en vol local	5500	f	f	f	t
+342	401	Divers	9000	f	f	f	t
+257	319	vol aur ras de l'eau	5050	f	f	f	t
+308	266	migration active rampante	5200	f	f	f	t
+344	343	mange à la mangeoire	9101	f	f	f	t
+349	343	mange de la charogne	9106	f	f	f	t
+346	343	mange de la viande	9103	f	f	f	t
+350	343	mange des insectes	9107	f	f	f	t
+345	343	mange des proies	9102	f	f	f	t
+348	343	mange du poisson	9105	f	f	f	t
+365	364	toilette des plumes	9341	f	f	f	t
+353	352	à l'affût	9130	f	f	f	t
+351	352	pêche	9110	f	f	f	t
+338	410	sort de muches	6442	f	f	f	t
+334	410	sort descombles d'un château	6423	f	f	f	t
+333	410	sort des combles d'une église	6422	f	f	f	t
+331	410	sort d'un bâtiment	6420	f	f	f	t
+337	410	sort d'une carrière souterraine	6441	f	f	f	t
+335	410	sort d'une cave	6430	f	f	f	t
+336	410	sort d'une cavité souterraine	6440	f	f	f	t
+330	410	sort d'un terrier	6410	f	f	f	t
+324	411	traverse	6300	f	f	f	t
+320	\N	autres déplacements	6000	f	f	f	t
+355	411	querelles	9200	f	f	f	t
+363	411	ailes déployées	9330	f	f	f	t
+367	411	se dissimule	9410	f	f	f	t
+360	405	se sèche	9310	f	f	f	t
+366	411	bain	9350	f	f	f	t
+339	410	sort de blockhaus	6450	f	f	f	t
+323	453	entre dans un nichoir	6210	f	f	f	t
+354	411	boit	9140	f	f	f	t
+341	411	plonge	6600	f	f	f	t
+343	411	se nourrit	9100	f	f	f	t
+359	411	poursuite	9240	f	f	f	t
+352	411	chasse	9120	f	f	f	t
+340	168	nage	6500	f	f	f	t
+364	405	entretien du plumage	9340	f	f	f	t
+108	105	cri de contact	2203	f	f	f	t
+48	47	bague métallique	1021	f	f	f	t
+75	70	mort par filet de pêche	1305	f	f	f	t
+387	5	Taupinière	SH10	f	f	f	t
+244	239	vol à basse altitude vers le Nord	5035	f	f	f	t
+227	221	vol à haute altitude vers le Nord-Est	5016	f	f	f	t
+234	230	vol à moyenne altitude vers le Nord-Ouest	5024	f	f	f	t
+420	412	Type de site niveau 2	CTS2	f	f	f	t
+312	309	vol de rétro-migration vers l'W	5303	f	f	f	t
+88	84	blessé par tire au fusil de chasse	1404	f	f	f	t
+294	293	vol migratoire à basse altitude vers le S	5131	f	f	f	t
+278	275	vol migratoire à haute altitude vers l'W	5113	f	f	f	t
+263	257	vol au ras de l'eau vers le Nord-Est	5056	f	f	f	t
+261	257	vol au ras de l'eau vers le Nord-Ouest	5054	f	f	f	t
+32	31	relief de repas : coquilles de noisettes	0601	f	f	f	t
+375	372	rassemblement en harde	9630	f	f	f	t
+376	372	rassemblement en couple	9640	f	f	f	t
+369	367	se dissimule en se plaquant au sol	9412	f	f	f	t
+386	2	Terriers	SH09	f	f	f	t
+256	248	vol au ras du sol vers le Sud-Est	5048	f	f	f	t
+304	303	vol migratoire au ras de l'eau vers le S	5151	f	f	f	t
+270	266	vol migratoire vers le Nord-Ouest	5104	f	f	f	t
+586	412	Swarming	CSWA	f	f	f	t
+588	587	Détection / Transit	DTRA	f	f	f	t
+584	412	Hivernage	CHIV	f	f	f	t
+395	\N	contact visuel	CV  	t	f	f	t
+396	\N	contact sonore	CS  	t	f	f	t
+590	578	Référence Migraction	MIGR	f	f	f	t
+176	171	posé sur un arbuste ou un arbrisseau	4150	f	f	f	t
+196	191	posé sur une gravière	4430	f	f	f	t
+378	20	Empruntes	SH01	f	f	f	t
+56	453	contacté dans un milieu favorable	1150	f	f	f	t
+411	41	vu	VU  	f	f	f	t
+358	355	houspille une autre espèce	9230	f	f	f	t
+177	168	posé sur le sol	4200	f	f	f	t
+178	168	posé dans un pré	4210	f	f	f	t
+181	168	posé au bord de l'eau	4240	f	f	f	t
+266	399	vol migratoire (migration active)	5100	f	f	f	t
+162	161	transport de nourriture	3211	f	f	f	t
+105	396	cri	2200	f	f	f	t
+591	578	Invalide	INV!	f	f	f	t
+401	\N	XX	_X_X	t	f	f	t
+379	7	Gîtes	SH02	f	f	f	t
+381	11	Crotte	SH04	f	f	f	t
+83	384	crânes	1390	f	f	f	t
+382	70	Cadavre	SH05	f	f	f	t
+125	403	nid décourvert (sans précision)	3010	f	f	f	t
+158	403	nid garni avec oeuf	3160	f	f	f	t
+383	15	Poile	SH06	f	f	f	t
+27	401	reste animal	0400	f	f	f	t
+385	384	Galeries	SH08	f	f	f	t
+133	403	nichée détruite	3033	f	f	f	t
+347	343	mange un micromammifère	9104	f	f	f	t
+62	402	érythrisme	1215	f	f	f	t
+130	384	coquilles d'oeufs	3030	f	f	f	t
+25	384	coulée	0370	f	f	f	t
+410	411	sort d'un abri	ABRI	f	f	f	t
+403	453	nid	NID_	t	f	f	t
+388	401	comportements	    	t	f	f	t
+380	401	Observation visuel	SH03	f	f	f	t
+406	396	pas entendu	øENT	f	f	f	t
+407	395	pas vu	øVU 	f	f	f	t
+372	411	rassemblements	9600	f	f	f	t
+405	411	plumage	PLUM	t	f	f	t
+371	411	joue	9500	f	f	f	t
+384	411	Indices de présences	SH07	f	f	f	t
+374	319	ronde	9620	f	f	f	t
+402	411	Anomalies	ANOM	t	f	f	t
+114	99	tambourinage	2300	f	f	f	t
+362	405	se secoue	9320	f	f	f	t
+145	403	construction de nid	3120	f	f	f	t
+142	139	passage de proie	3114	f	f	f	t
+412	\N	Chiros	CHIR	t	f	f	t
+399	\N	Posé ou en vol	__OB	t	f	f	t
+408	411	blessé ou malade	BLMA	f	f	f	t
+425	401	comportement reproducteur	repr	f	f	f	t
+332	410	sort d'un clocher	6421	f	f	f	t
+370	167	oiseau simulant une blessure	9420	f	f	f	t
+373	372	dortoirs	9610	f	f	f	t
+166	409	crèche	3350	f	f	f	t
+413	412	Type de site niveau 1	CTS1	t	f	f	t
+161	453	transport de nourriture ou de sac fécaux	3210	f	f	f	t
+377	453	émergence	9650	f	f	f	t
+453	119	indice de reproduction	rep1	f	f	f	t
+409	453	jeunes	JEUN	f	f	f	t
+44	468	capturé	1010	f	f	f	t
+458	119	pas d'indice ou hors période de reproduction	ørep	f	f	f	t
+501	412	Reproduction	BREP	t	f	f	t
+495	412	Potentiel	BPOT	f	f	f	t
+119	\N	Reproduction	3000	f	f	f	t
+465	0	Méthode	    	f	f	f	t
+466	0	Méthode	    	f	f	f	t
+467	0	Coin	    	f	f	f	t
+468	\N	Méthode	    	f	f	f	t
+513	412	Dangerosité	BDAN	t	f	f	t
+518	412	Dimension	BDIM	f	f	f	t
+555	412	Accessibilité chiros	ACCC	f	f	f	t
+473	\N	Etude	    	f	f	f	t
+551	412	Accessibilité prospection	ACCP	t	f	f	t
+526	412	Aménagement	BAMN	f	f	f	t
+572	412	Information site	BINF	f	f	f	t
+540	412	Fonctionnalité	BFNC	t	f	f	t
+533	412	Intéret Swarming	ISWA	f	f	f	t
+545	412	Durée prospection	BDUR	f	f	f	t
+587	412	Détection	CDEC	f	f	f	t
+589	587	Détection / Chasse	DCHA	f	f	f	t
+41	395	contact direct (vu ou entendu)	1000	f	f	f	t
+592	578	Nouvel observateur	NEWO	f	f	f	t
+508	507	Assez élevé	    	f	f	f	t
+509	507	Faible	    	f	f	f	t
+510	507	Moyen	    	f	f	f	t
+511	507	Nul	    	f	f	f	t
+512	507	Très élevé	    	f	f	f	t
+559	412	Contractualisation	    	f	f	f	t
+577	\N	Nid fréquenté innaccessible	3014	f	f	f	t
+578	\N	Administratif	ADM0	t	f	f	t
+579	578	En attente de validation	ATTV	f	f	f	t
+580	578	Homologation nécessaire	LOGN	f	f	f	t
+581	578	Homologuée	LOGV	f	f	f	t
+582	412	Lien Obs CSNP	LOBS	f	f	f	t
