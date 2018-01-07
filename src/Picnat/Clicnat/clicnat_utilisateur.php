@@ -888,7 +888,7 @@ class clicnat_utilisateur extends bobs_element {
 					$n_ok++;
 				}
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 		}
 		if ($n_ok > 0) {
 			return $observation;
@@ -925,11 +925,11 @@ class clicnat_utilisateur extends bobs_element {
 					}
 				}
 			}
-			throw new Exception('id_citation pas trouvé ou inaccessible (1)');
+			throw new \Exception('id_citation pas trouvé ou inaccessible (1)');
 		}
 
 		if (!array_key_exists('id_citation', $r))
-			throw new Exception('id_citation pas trouvé ou inaccessible (2)');
+			throw new \Exception('id_citation pas trouvé ou inaccessible (2)');
 
 		return get_citation($this->db, $r);
 	}
@@ -1032,11 +1032,11 @@ class clicnat_utilisateur extends bobs_element {
 		$id_selection = sprintf("%d", $id_selection);
 
 		if (empty($id_selection)) {
-			throw new InvalidArgumentException();
+			throw new \InvalidArgumentException();
 		}
 		$selection = new bobs_selection($this->db, sprintf("%s", $id_selection));
 		if ($selection->get_id_utilisateur() != $this->id_utilisateur) {
-			throw new exception('pas propriétaire de la sélection');
+			throw new \Exception('pas propriétaire de la sélection');
 		}
 
 		return $selection;
@@ -1206,10 +1206,10 @@ class clicnat_utilisateur extends bobs_element {
 	 * Accepte le réglement intérieur
 	 * @param bool $diffusion_restreinte true si observateur en diffusion restreinte
 	 */
-	public function accept_rules($diffusion_restreinte) {
+	public function accept_rules(bool $diffusion_restreinte) {
 		self::cli($this->id_utilisateur);
 		$this->reglement_date_sig = strftime('%Y-%m-%d %T', time());
-		$this->diffusion_restreinte = $diffusion_restreinte == 1;
+		$this->diffusion_restreinte = $diffusion_restreinte;
 		bobs_qm()->query($this->db, 'utl_accept_rules',
 			'update utilisateur set reglement_date_sig=now(), diffusion_restreinte=$2 where id_utilisateur=$1',
 			[
@@ -1370,6 +1370,7 @@ class clicnat_utilisateur extends bobs_element {
 	    return self::fetch_all($q);
 	}
 
+	// FIXME utiliser pour les referentiel_tiers...
 	public function structure() {
 		switch ($this->id_utilisateur) {
 			case 2033:

@@ -21,8 +21,8 @@ class bobs_extractions extends bobs_tests {
 	 */
 	public function __construct($db) {
 		$this->db = $db;
-		$this->tables = array('citations', 'observations');
-		$this->conditions = array();
+		$this->tables = ['citations', 'observations'];
+		$this->conditions = [];
 		$this->limite = 0;
 	}
 
@@ -151,7 +151,7 @@ class bobs_extractions extends bobs_tests {
 			$sql .= " limit {$this->limite}";
 		}
 
-		$q = $this->query($sql);
+		$this->query($sql);
 
 		if ($i_commit) {
 			$this->query('commit');

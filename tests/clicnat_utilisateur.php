@@ -68,5 +68,28 @@ class bobs_utilisateurTests extends TestCase {
 		$u = bobs_utilisateur::by_mail(get_db(), "georges.pig@example.com");
 		$this->assertInstanceOf(clicnat_utilisateur::class, $u);
 		$this->assertEquals("georges.pig", $u->username);
+		return $u;
+	}
+
+	/**
+	 * @depends testParMail
+	 */
+	public function testReglement($utilisateur) {
+		$this->assertFalse($utilisateur->agreed_the_rules(), "vrai avant d'avoir accepté");
+		$utilisateur->accept_rules(false);
+		$this->assertTrue($utilisateur->agreed_the_rules(), "toujours faux après avoir accepté");
+	}
+
+	/**
+	 * @depends testParMail
+	 */
+	public function testMotDePasse($utilisateur) {
+		$utilisateur->set_password("ioSDOI9e__erEK");
+		$this->assertEmpty($utilisateur->last_login);
+		$u2 = new clicnat_utilisateur(get_db(), $utilisateur->id_utilisateur);
+		$this->assertTrue($u2->verifier_mot_de_passe("ioSDOI9e__erEK"));
+		$u3 = new clicnat_utilisateur(get_db(), $utilisateur->id_utilisateur);
+		$this->assertNotEmpty($u3->last_login);
+		$this->assertFalse($u3->verifier_mot_de_passe("ioSDO_erEK"));
 	}
 }
