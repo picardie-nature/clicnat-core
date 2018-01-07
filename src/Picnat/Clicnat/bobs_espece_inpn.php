@@ -30,7 +30,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 
 	protected $protections;
 
-	function __construct($db, $id) {
+	protected function __construct($db, $id) {
 		parent::__construct($db, 'taxref_inpn_especes', 'cd_nom', $id);
 		$this->protections = [];
 		// les protections ne sont pas à jour
@@ -56,9 +56,9 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 		$classe = $obj_espece->get_classe_lib_par_lettre($obj_espece->classe, false);
 		self::cls($classe);
 
-		if (empty($classe))
-		    throw new \Exception('Classe est vide nouvelle classe ?');
-
+		if (empty($classe)) {
+			throw new \Exception('Classe est vide nouvelle classe ?');
+		}
 		$sql = "select * from taxref_inpn_especes
 				where lower(lb_nom) like lower('%'||$1||'%')
 				and classe = $2
@@ -141,7 +141,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 	 * @see bobs_abstract_espece::index_recherche
 	 */
 	public static function index_recherche($db, $nom) {
-		$r = parent::index_recherche($db, $nom, 'taxref_inpn_especes_index', 'id_taxref_inpn_especes', 'bobs_espece_inpn');
+		$r = parent::__index_recherche($db, $nom, 'taxref_inpn_especes_index', 'id_taxref_inpn_especes', 'bobs_espece_inpn');
 		$ks = [];
 		$es = [];
 		foreach ($r['especes'] as $k => $v) {

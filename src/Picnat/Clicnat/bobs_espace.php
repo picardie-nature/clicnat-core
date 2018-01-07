@@ -14,11 +14,12 @@ class bobs_espace extends bobs_element_espace_commentaire {
 	// liste des champs pour l'export en JSON
 	protected $champs_export_json;
 
-	function __construct($db, $id, $table=false) {
-		if (!$table or empty($table))
+	public function __construct($db, $id, $table=false) {
+		if (!$table or empty($table)) {
 			throw new \Exception(
 					'Il ne faut pas instancier bobs_espace '.
 					'mais une de ses classes dérivées '.$table);
+		}
 		parent::__construct($db, $table, 'id_espace', $id);
 		$this->champs_export_json = array('nom','reference','id_espace');
 	}

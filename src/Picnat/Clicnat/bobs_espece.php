@@ -969,7 +969,7 @@ class bobs_espece extends bobs_abstract_espece {
 	 *
 	 */
 	public static function index_recherche($db, $nom) {
-		return parent::index_recherche($db, $nom, 'especes_index', 'id_espece', 'bobs_espece');
+		return parent::__index_recherche($db, $nom, 'especes_index', 'id_espece', 'bobs_espece');
 	}
 
 	/**

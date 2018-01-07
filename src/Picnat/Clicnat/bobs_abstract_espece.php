@@ -76,7 +76,7 @@ class bobs_abstract_espece extends bobs_element_commentaire {
 		 * @param $pk la clé primaire du résultat
 		 * @param $classe la classe de l'objet résultat dont on va créer une instance.
 		 */
-		public static function index_recherche($db, $nom, $table, $pk, $classe) {
+		protected static function __index_recherche($db, $nom, $table, $pk, $classe) {
 			$mots = self::index_nom($nom);
 			$especes_id = array();
 			$premier = true;

@@ -1,13 +1,13 @@
 <?php
-namespace \Picnat\Clicnat;
+namespace Picnat\Clicnat;
 
 /**
  * @brief Itérateur d'objet bobs_espace_*
  */
-class clicnat_iterateur_espaces implements Iterator {
+class clicnat_iterateur_espaces implements \Iterator {
 	private $db;
 	private $position;
-	private $ids = array();
+	private $ids = [];
 
 	const sql_g_esp_table = 'select id_espace,table_espace from espace where id_espace=$1';
 
@@ -58,9 +58,9 @@ class clicnat_iterateur_espaces implements Iterator {
 
 
 			}
-			throw new Exception("Position: {$this->position} table:'{$this->ids[$this->position]['espace_table']}'");
+			throw new \Exception("Position: {$this->position} table:'{$this->ids[$this->position]['espace_table']}'");
 		} else {
-			throw new Exception("Index vide");
+			throw new \Exception("Index vide");
 		}
 	}
 

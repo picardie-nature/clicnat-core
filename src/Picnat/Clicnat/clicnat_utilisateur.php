@@ -1461,7 +1461,7 @@ class clicnat_utilisateur extends bobs_element {
 		);
 		$id_espace = bobs_espace_point::insert($this->db, $data);
 		if (!$id_espace) {
-			throw new Exception('problème pour créer le point');
+			throw new \Exception('problème pour créer le point');
 		}
 		return $this->repertoire_ajoute('espace_point', $id_espace);
 	}
