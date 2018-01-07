@@ -528,7 +528,7 @@ class bobs_extractions extends bobs_tests {
 	 */
 	public static function get_conditions_dispo($forcer_chargement_classes=false) {
 		static $conditions;
-		if (!isset($conditons) || $forcer_chargement_classes) {
+		if (!isset($conditions) || $forcer_chargement_classes) {
 			$t = [];
 			// on veut voir toutes les classes donc on va forcer le chargement
 			foreach (glob(__DIR__."/ExtractionsConditions/bobs_ext_c*.php") as $f) {
