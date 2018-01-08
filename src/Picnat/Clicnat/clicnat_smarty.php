@@ -111,6 +111,7 @@ abstract class clicnat_smarty extends \Smarty {
 						$params['commentaire'] = "effectif modifié : $v1 remplace $v2";
 						break;
 					case 'id_espece':
+						$db = get_db();
 						$e1 = get_espece($db, $v1);
 						$e2 = get_espece($db, $v2);
 						$e1 = $e1?$e1:$v1;

@@ -30,7 +30,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 
 	protected $protections;
 
-	protected function __construct($db, $id) {
+	public function __construct($db, $id) {
 		parent::__construct($db, 'taxref_inpn_especes', 'cd_nom', $id);
 		$this->protections = [];
 		// les protections ne sont pas à jour

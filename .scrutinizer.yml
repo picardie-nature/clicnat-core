@@ -1,4 +1,5 @@
 checks:
     php: true
-excluded_paths:
-    - tests/*
+filter:
+    excluded_paths:
+        - tests/*
