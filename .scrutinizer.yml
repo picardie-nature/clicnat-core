@@ -1,4 +1,4 @@
 checks:
     php: true
-    excluded_paths:
-        - tests/*
+excluded_paths:
+    - tests/*
