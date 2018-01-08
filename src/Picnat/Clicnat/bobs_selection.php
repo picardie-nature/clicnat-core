@@ -3,6 +3,13 @@ namespace Picnat\Clicnat;
 
 /**
  * @brief Sélection de citations (voir ça comme un panier)
+ * @property-read id_selection
+ * @property-read id_utilisateur
+ * @property-read nom_selection
+ * @property-read nom
+ * @property-read date_creation
+ * @property-read partage_qg
+ * @property-read extraction_xml
  */
 class bobs_selection extends bobs_element {
 	protected $id_selection;
@@ -13,16 +20,16 @@ class bobs_selection extends bobs_element {
 	protected $extraction_xml;
 	protected $date_modif;
 
-	function __construct($db, $id) {
+	public function __construct($db, $id) {
 		parent::__construct($db, 'selection', 'id_selection', $id);
 		$this->champ_date_maj = 'date_modif';
 	}
 
-	function __toString() {
+	public function __toString() {
 		return $this->nom_selection;
 	}
 
-	function __get($prop) {
+	public function __get($prop) {
 		switch ($prop) {
 			case 'id_selection':
 				return $this->id_selection;
@@ -38,7 +45,7 @@ class bobs_selection extends bobs_element {
 			case 'extraction_xml':
 				return $this->extraction_xml;
 			default:
-				throw new Exception('propriétée inconnue ou inaccessible "'.$prop.'"');
+				throw new \Exception('propriétée inconnue ou inaccessible "'.$prop.'"');
 		}
 	}
 
@@ -164,10 +171,10 @@ class bobs_selection extends bobs_element {
 		self::cls($tri);
 
 		if (empty($id_utilisateur) or empty($tri))
-			throw new InvalidArgumentException();
+			throw new \InvalidArgumentException();
 
 		if (!in_array($tri, array('date_creation', 'nom', 'id_selection')))
-			throw new InvalidArgumentException();
+			throw new \InvalidArgumentException();
 
 		if (in_array($tri, array('date_creation','id_selection')))
 			$tri .= ' desc';
@@ -406,7 +413,7 @@ class bobs_selection extends bobs_element {
 				$s_in .= intval($id_citation).',';
 			}
 			$s_in = '('.trim($s_in,',').')';
-			$q_nom = md5($q_nom.$in);
+			$q_nom = md5($q_nom.$s_in);
 			$sql .= ' and c.id_citation in '.$s_in;
 		}
 		$sort = false;
