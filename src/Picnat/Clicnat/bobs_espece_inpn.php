@@ -236,7 +236,7 @@ class bobs_espece_inpn extends bobs_abstract_espece {
 			$args['classe'] = '_';
 //			throw new Exception('pas de classe pour '.$this->classe);
 
-		$id_espece = bobs_espece::insert($this->db, $args);
+		$id_espece = bobs_espece::insertEspece($this->db, $args);
 		$espece = get_espece($this->db, $id_espece);
 		$espece->ajoute_reference_tiers('taxref', $this->cd_nom);
 		return $id_espece;

@@ -7,36 +7,36 @@ namespace Picnat\Clicnat;
  * mal nommée espece cette classe permet de décrire des taxons
  */
 class bobs_espece extends bobs_abstract_espece {
-	public $id_espece;
-	public $espece;
-	public $classe;
-	public $type_fiche;
-	public $systematique;
-	public $ordre;
-	public $commentaire;
-	public $famille;
-	public $nom_f;
-	public $nom_s;
-	public $nom_a;
+	protected $id_espece;
+	protected $espece;
+	protected $classe;
+	protected $type_fiche;
+	protected $systematique;
+	protected $ordre;
+	protected $commentaire;
+	protected $famille;
+	protected $nom_f;
+	protected $nom_s;
+	protected $nom_a;
 	protected $nom_pic;
 	protected $nom_bzh;
 	protected $nom_corse;
 	protected $nom_occi;
 	protected $nom_alsace;
-	public $taxref_inpn_especes;
-	public $jour_debut_nidif;
-	public $jour_fin_nidif;
-	public $mois_debut_nidif;
-	public $mois_fin_nidif;
-	public $taxref_dreal;
+	protected $taxref_inpn_especes;
+	protected $jour_debut_nidif;
+	protected $jour_fin_nidif;
+	protected $mois_debut_nidif;
+	protected $mois_fin_nidif;
+	protected $taxref_dreal;
 	protected $determinant_znieff;
-	public $habitat;
-	public $menace;
-	public $action_conservation;
-	public $commentaire_statut_menace;
+	protected $habitat;
+	protected $menace;
+	protected $action_conservation;
+	protected $commentaire_statut_menace;
 	protected $invasif;
-	public $id_chr;
-	public $niveaux_restitutions;
+	protected $id_chr;
+	protected $niveaux_restitutions;
 	protected $textes_valides;
 	protected $n_citations;
 	protected $expert;
@@ -101,7 +101,12 @@ class bobs_espece extends bobs_abstract_espece {
 				return $this->borne_a;
 			case 'borne_b':
 				return $this->borne_b;
+			default:
+				if (isset($this->$k)) {
+					return $this->$k;
+				}
 		}
+		throw new \InvalidArgumentException("unknown property $k");
 	}
 
 	public function  __toString() {
@@ -1135,8 +1140,7 @@ class bobs_espece extends bobs_abstract_espece {
 		);
 	}
 
-	public static function liste_etat_conservation()
-	{
+	public static function liste_etat_conservation() {
 		return array(
 			'défavorable',
 			'favorable',
@@ -1144,8 +1148,7 @@ class bobs_espece extends bobs_abstract_espece {
 		);
 	}
 
-	public static function liste_priorite_conservation()
-	{
+	public static function liste_priorite_conservation() {
 		return array(
 			'fortement prioritaire',
 			'fortement prioritaire conservé',
@@ -1157,8 +1160,7 @@ class bobs_espece extends bobs_abstract_espece {
 		);
 	}
 
-	public static function liste_fiabilite_prio_conservation()
-	{
+	public static function liste_fiabilite_prio_conservation() {
 		return array('bonne','incertitude','moyenne');
 	}
 
@@ -1166,8 +1168,7 @@ class bobs_espece extends bobs_abstract_espece {
 	 * @brief Test si l'espèce fait partie du référentiel régionale
 	 * @return boolean vrai s'il en fait parti
 	 */
-	public function referentiel_regionale_existe()
-	{
+	public function referentiel_regionale_existe() 	{
 		$sql = sprintf("select count(*) as n from referentiel_regional
 			where id_espece = %d", $this->id_espece);
 		$q = self::query($this->db, $sql);
@@ -1218,22 +1219,25 @@ class bobs_espece extends bobs_abstract_espece {
 		return $t;
 	}
 
-	public static function insert($db, $args) {
-		$cols = array('espece','classe','type_fiche','systematique',
+	/**
+	 * ajouter une espèce dans le réferentiel de Clicnat
+	 * @param ressource $db
+	 * @param array $args
+	 */
+	public static function insertEspece($db, $args) {
+		static $cols = ['espece','classe','type_fiche','systematique',
 			'ordre','commentaire','famille','nom_f','nom_s','nom_a',
-			'taxref_inpn_especes');
-		$ti = array();
+			'taxref_inpn_especes'];
+		$ti = [
+			'id_espece' => self::nextval($db, 'especes_id_espece_seq')
+		];
 		foreach ($cols as $k) {
-			if (array_key_exists($k, $args))
-				$v = $args[$k];
-			else
-				$v = null;
-			$ti[$k] = self::cls($v);
+			$ti[$k] = isset($args[$k])?self::cls($args[$k]):null;
 		}
-		$ti['id_espece'] = self::nextval($db, 'especes_id_espece_seq');
 	  // 20171103 - Francois
 	  // Pour eviter les erreurs d'insertion si nom_f ne rentre pas dans le VARCHAR(100);
 	  $ti['nom_f'] = substr($ti['nom_f'],0,99);
+
 		parent::insert($db, 'especes', $ti);
 		$esp = get_espece($db, $ti['id_espece']);
 		$esp->indexer_nom_scientifique_espece();
