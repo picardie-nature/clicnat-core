@@ -101,12 +101,19 @@ class bobs_espece extends bobs_abstract_espece {
 				return $this->borne_a;
 			case 'borne_b':
 				return $this->borne_b;
+			case 'nom_a':
+				return $this->nom_a;
+			case 'nom_s':
+				return $this->nom_s;
+			case 'nom_f':
+				return $this->nom_f;
 			default:
-				if (isset($this->$k)) {
-					return $this->$k;
+				// FIXME ReflectionObject
+				if (isset($this->$c)) {
+					return $this->$c;
 				}
 		}
-		throw new \InvalidArgumentException("unknown property $k");
+		throw new \InvalidArgumentException("unknown property $c");
 	}
 
 	public function  __toString() {
@@ -180,8 +187,9 @@ class bobs_espece extends bobs_abstract_espece {
 	 * @return false s'il n'y en a pas
 	 */
 	public function taxon_parent() {
-		if (empty($this->id_espece_parent))
+		if (empty($this->id_espece_parent)) {
 			return false;
+		}
 
 		return get_espece($this->db, $this->id_espece_parent);
 	}
