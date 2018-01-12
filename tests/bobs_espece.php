@@ -45,7 +45,32 @@ class bobs_especeTests extends TestCase {
 				'nom_a'        => '',
 				'taxref_inpn_especes' => '186206'
 			],
-
+			[
+				'espece'       => '',
+				'classe'       => 'M',
+				'type_fiche'   => '',
+				'systematique' => '',
+				'ordre'        => 'Rodentia',
+				'commentaire'  => '',
+				'famille'      => '',
+				'nom_f'        => 'Rongeurs',
+				'nom_s'        => 'Rodentia',
+				'nom_a'        => 'Rodents',
+				'taxref_inpn_especes' => '186251'
+			],
+			[
+				'espece'       => '',
+				'classe'       => 'M',
+				'type_fiche'   => '',
+				'systematique' => '',
+				'ordre'        => 'Muridae',
+				'commentaire'  => '',
+				'famille'      => '',
+				'nom_f'        => 'Souris, Campagnols, Mulots, Rats',
+				'nom_s'        => 'Muridae',
+				'nom_a'        => 'Murid rodents',
+				'taxref_inpn_especes' => '186259'
+			],
 		];
 		$id_espece = $id_prev = null;
 		foreach ($srcs as $src) {
