@@ -1987,9 +1987,8 @@ class bobs_espece extends bobs_abstract_espece {
 	private function validation_extraction_periodes($t) {
 		$n_decades = 10;
 		try {
-			$cpt_zero=0;
-			$cpt_nb_cases=370;
-			$i=0;
+			$cpt_zero = 0;
+			$cpt_nb_cases = 370;
 
 			// parcourt les cases du tableau et compte nb cases indefinies.
 			foreach ($t as $k=>$v) {
@@ -2000,56 +1999,60 @@ class bobs_espece extends bobs_abstract_espece {
 			}
 
 			// somme des n. obs par decades
-			$som=0;
-			$somme=array();
+			$somme = [];
 			foreach($t as $decades){
 				foreach($decades as $num_decade=>$nb){
-					if(!isset($somme[$num_decade]))
-						$somme[$num_decade]=0;
+					if(!isset($somme[$num_decade])) {
+						$somme[$num_decade] = 0;
+					}
 					$somme[$num_decade]+=$nb;
 				}
 			}
 
 			// calcul moyennes des n. obs par decades
-			$moyenne=array();
-			for($i=0;$i<37;$i++){
-				if(!isset($somme[$i]))
+			$moyenne = [];
+			for($i=0;$i<37;$i++) {
+				if(!isset($somme[$i])) {
 					$somme[$i]=0;
+				}
 				$moyenne[$i]=($somme[$i]/$n_decades);
 			}
 
 			// moyenne des sommes des obs par decades
 			$somme_somme=0;
-			foreach($somme as $v)
+			foreach($somme as $v) {
 				$somme_somme+=$v;
-			$moyenne_somme=($somme_somme/37);
+			}
+			$moyenne_somme = ($somme_somme/37);
 
 			//moyenne des moyennes des obs par decades
 			$somme_moyenne=0;
-			foreach($moyenne as $v)
+			foreach($moyenne as $v) {
 				$somme_moyenne+=$v;
+			}
 
-			if ($somme_moyenne == 0)
+			if ($somme_moyenne == 0) {
 				return false;
+			}
 
 			$moyenne_moyenne=($somme_moyenne/37);
 
-			if ($cpt_zero <= ((1/3)*$cpt_nb_cases)){             		//si 1/3 des cases ou moins sont a 0
-				if($cpt_zero<=((0.1)*$cpt_nb_cases)){     		//10% ou moins de 360 cases a 0.
+			if ($cpt_zero <= ((1/3)*$cpt_nb_cases)) {             		//si 1/3 des cases ou moins sont a 0
+				if ($cpt_zero <= ((0.1)*$cpt_nb_cases)) {     		//10% ou moins de 360 cases a 0.
 					//prendre decades jusqu'a 30%.
 					//faire pourcentages par rapport a la somme des obs par decades et la moyennes des sommes
-					$pourcent=array();
+					$pourcent = [];
 					for($i=0;$i<=36;$i++){
-						if (!isset($moyenne[$i]))
+						if (!isset($moyenne[$i])) {
 							$pourcent[$i]=0;
-						else
+						} else {}
 							$pourcent[$i]=($moyenne[$i]/$moyenne_moyenne)*100;
 					}
 
 					//prendre decades >=30%
-					$cpt=0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
-					$l=0;
-					$periode=array(array());
+					$cpt = 0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
+					$l = 0;
+					$periode=[[]];
 
 					for($i=0;$i<=36;$i++){              		//rempli un tableau $periode selon certaines conditions
 						if(($pourcent[$i]>=30)&&($cpt==0)){ 	//si le pourcentage >= 25 et le compteur a 0
@@ -2063,93 +2066,100 @@ class bobs_espece extends bobs_abstract_espece {
 						}
 					}
 
-					if($cpt>0)
+					if ($cpt>0) {
 						$periode[$l][1] = 36;
+					}
 				} else {
 					//prendre decades jusqu'a 50%.
 					//faire pourcentages par rapport a la somme des obs par decades et la moyennes des somme
-					$pourcent=array();
-					for($i=0;$i<=36;$i++){
-					if (!isset($moyenne[$i]))
+					$pourcent = [];
+					for ($i=0;$i<=36;$i++){
+						if (!isset($moyenne[$i])) {
 							$pourcent[$i]=0;
-						else
+						} else {
 							$pourcent[$i]=($moyenne[$i]/$moyenne_moyenne)*100;
+						}
 					}
 					//prendre decades >=50%
-					$cpt=0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
-					$l=0;
-					$periode=array(array());
-					for($i=0;$i<=36;$i++){              		//rempli un tableau $periode selon certaines conditions
-						if(($pourcent[$i]>=50)&&($cpt==0)){ 	//si le pourcentage >= 25 et le compteur a 0
-							$periode[$l][0]=$i;  		//met $i dans la case
+					$cpt = 0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
+					$l = 0;
+					$periode= [[]];
+					for ($i=0;$i<=36;$i++) {              		//rempli un tableau $periode selon certaines conditions
+						if (($pourcent[$i]>=50) && ($cpt==0)) { 	//si le pourcentage >= 25 et le compteur a 0
+							$periode[$l][0] = $i;  		//met $i dans la case
 							$cpt++; 			//ajoute 1 au cpt
 						}
-						if(($pourcent[$i]<50)&&($cpt>0)){  	//si le pourcentage est < 25 et cpt > 0
-							$periode[$l][1]=$i-1; 		//met la valeur $i inferieure
-							$cpt=0; 			//remet compteur a 0 pour pouvoir retourner dans la condition superieur
+						if (($pourcent[$i]<50) && ($cpt>0)) {  	//si le pourcentage est < 25 et cpt > 0
+							$periode[$l][1] = $i-1; 		//met la valeur $i inferieure
+							$cpt = 0; 			//remet compteur a 0 pour pouvoir retourner dans la condition superieur
 							$l++; 				//change de ligne
 						}
 					}
-					if($cpt>0)
-						$periode[$l][1]=36;
+					if ($cpt>0) {
+						$periode[$l][1] = 36;
+					}
 				}
 			} else {                                            		//plus d'un tier des cases a 0.
-				if($cpt_zero>=((0.7)*$cpt_nb_cases)){     		//si au moin 70% des cases sont a 0.
+				if ($cpt_zero>=((0.7)*$cpt_nb_cases)) {     		//si au moin 70% des cases sont a 0.
 					//faire pourcentages par rapport a la somme des obs par decades et la moyennes des somme
-					$pourcent=array();
-					for($i=0;$i<=36;$i++){
-						if (!isset($somme[$i]))
+					$pourcent = [];
+					for ($i=0;$i<=36;$i++) {
+						if (!isset($somme[$i])) {
 							$pourcent[$i] = 0;
-						else
+						} else {
 							$pourcent[$i] = ($somme[$i]/$moyenne_somme)*100;
+						}
 					}
 					//prendre decades >=25%
-					$cpt=0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
-					$l=0;
-					$periode=array(array());
-					for($i=0;$i<=36;$i++){              		//rempli un tableau $periode selon certaines conditions
-						if(($pourcent[$i]>=25)&&($cpt==0)){ 	//si le pourcentage >= 25 et le compteur a 0
+					$cpt = 0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
+					$l = 0;
+					$periode = [[]];
+					for ($i=0;$i<=36;$i++){              		//rempli un tableau $periode selon certaines conditions
+						if (($pourcent[$i]>=25) && ($cpt==0)) { 	//si le pourcentage >= 25 et le compteur a 0
 							$periode[$l][0]=$i;  		//met $i dans la case
 							$cpt++; 			//ajoute 1 au cpt
 						}
-						if(($pourcent[$i]<25)&&($cpt>0)){  	//si le pourcentage est < 25 et cpt > 0
+						if (($pourcent[$i]<25) && ($cpt>0)) {  	//si le pourcentage est < 25 et cpt > 0
 							$periode[$l][1]=$i-1; 		//met la valeur $i inferieure
 							$cpt=0; 			//remet compteur a 0 pour pouvoir retourner dans la condition superieur
 							$l++; 				//change de ligne
 						}
 					}
-					if($cpt>0)
-						$periode[$l][1]=36;
+					if ($cpt>0) {
+						$periode[$l][1] = 36;
+					}
 				} else {
 					//prendre decades >=25% pourcentages par rapport a la moyenne des obs par decades et moyenne generale des moyennes des obs par decades
 					//faire pourcentages par rapport a la somme des obs par decades et la moyennes des somme
-					$pourcent=array();
+					$pourcent = [];
 					for($i=0;$i<=36;$i++){
-						if (!isset($moyenne[$i]))
-							$pourcent[$i]=0;
-						else
-							$pourcent[$i]=($moyenne[$i]/$moyenne_moyenne)*100;
+						if (!isset($moyenne[$i])) {
+							$pourcent[$i] = 0;
+						} else {
+							$pourcent[$i] = ($moyenne[$i]/$moyenne_moyenne)*100;
+						}
 					}
 					//prendre decades >=25%
-					$cpt=0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
-					$l=0;
-					$periode=array(array());
+					$cpt = 0;						//le cpt est important il sert a eviter de rentrer une valeur et eviter un test
+					$l = 0;
+					$periode = [[]];
 					for($i=0;$i<=36;$i++){              		//rempli un tableau $periode selon certaines conditions
-						if(($pourcent[$i]>=25)&&($cpt==0)){ 	//si le pourcentage >= 25 et le compteur a 0
-							$periode[$l][0]=$i;  		//met $i dans la case
+						if (($pourcent[$i]>=25)&&($cpt==0)) { 	//si le pourcentage >= 25 et le compteur a 0
+							$periode[$l][0] = $i;  		//met $i dans la case
 							$cpt++; 			//ajoute 1 au cpt
 						}
-						if(($pourcent[$i]<25)&&($cpt>0)){  	//si le pourcentage est < 25 et cpt > 0
-							$periode[$l][1]=$i-1; 		//met la valeur $i inferieure
-							$cpt=0; 			//remet compteur a 0 pour pouvoir retourner dans la condition superieur
+						if (($pourcent[$i]<25)&&($cpt>0)){  	//si le pourcentage est < 25 et cpt > 0
+							$periode[$l][1] = $i-1; 		//met la valeur $i inferieure
+							$cpt = 0; 			//remet compteur a 0 pour pouvoir retourner dans la condition superieur
 							$l++; 				//change de ligne
 						}
 					}
-					if($cpt>0)
-						$periode[$l][1]=36;
+					if ($cpt>0) {
+						$periode[$l][1] = 36;
+					}
 				}
 			}
-			return($periode);
+			return $periode;
 		} catch (\Exception $e) {
 			return false;
 		}
