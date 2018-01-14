@@ -25,20 +25,23 @@ class bobs_element extends bobs_tests {
 		$this->teste_ressource();
 
 		if (is_array($id)) {
-			foreach ($id as $k => $v)
+			foreach ($id as $k => $v) {
 				$this->$k = $v;
+			}
 		} else {
 			if (!empty($id)) {
 				$qm = bobs_qm();
 				$sql = '';
-				if (!$qm->ready($table.BOBS_SELECT_QUERY_SUFFIX))
+				if (!$qm->ready($table.BOBS_SELECT_QUERY_SUFFIX)) {
 					$sql = sprintf('select * from %s where %s=$1', $this->table, $this->pk);
+				}
 				$q = $qm->query($db, $table.BOBS_SELECT_QUERY_SUFFIX, $sql, [$id]);
 				$t = $this->fetch($q);
-				if (!empty($t))
+				if (!empty($t)) {
 					foreach ($t as $k => $v) $this->$k = $v;
-				else
+				} else {
 					throw new clicnat_exception_pas_trouve('pas de résultat', BOBS_ERR_NOTFOUND);
+				}
 			}
 		}
 	}
@@ -47,7 +50,7 @@ class bobs_element extends bobs_tests {
 	 * @brief retourne le numéro de la décade d'une date
 	 * @param $date date compatible avec strtotime
 	 */
-	static function decade($date) {
+	public static function decade($date) {
 		return floor((int)strftime("%j", strtotime($date))/10);
 	}
 
@@ -208,13 +211,16 @@ class bobs_element extends bobs_tests {
 	 *
 	 * options : logmaj => enregistre la requêtre dans un fichier
 	 */
-	static function query($db, $sql, $opts=array()) {
-		if (get_resource_type($db) != DB_RESOURCE_TYPE)
+	public static function query($db, $sql, $opts=[]) {
+		if (get_resource_type($db) != DB_RESOURCE_TYPE) {
 			throw new \InvalidArgumentException('$db doit être une resource pgsql');
+		}
 
 		$q = @pg_query($db, $sql);
-		if (!$q)
+
+		if (!$q) {
 			throw new \Exception('Erreur base de données '.pg_last_error().'<br/>'.$sql);
+		}
 
 		return $q;
 	}
@@ -234,16 +240,17 @@ class bobs_element extends bobs_tests {
 	}
 
 	public static function fetch_all($q) {
-		if (!is_resource($q))
+		if (!is_resource($q)) {
 			throw new \Exception('$q est pas une ressource');
+		}
+
 		# retourne un tableau contenant toutes les lignes du resultat
 		$t = pg_fetch_all($q);
 
-		// probably no result, but return
-		// array for count and foreach loops
 		if (!$t) {
 			return [];
 		}
+
 		return $t;
 	}
 

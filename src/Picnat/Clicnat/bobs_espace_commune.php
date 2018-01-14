@@ -1,11 +1,18 @@
 <?php
 namespace Picnat\Clicnat;
 
+/**
+ * @property-read string $code_insee
+ * @property-read string $code_insee_txt
+ * @property-read string $nom
+ * @property-read string $nom2
+ * @property-read integer $id_pays
+ * @property-read integer $nombre_espece
+ */
 class bobs_espace_commune extends bobs_commune {
 	protected $code_insee;
 	protected $code_insee_txt;
 	protected $nom2;
-	protected $dept;
 	protected $id_pays;
 	protected $nombre_espece;
 
@@ -13,7 +20,7 @@ class bobs_espace_commune extends bobs_commune {
 
 	public function __construct($db, $id, $table='espace_commune') {
 		parent::__construct($db, $id, $table);
-		$this->__cache_annees_obs = array();
+		$this->__cache_annees_obs = [];
 	}
 
 	public function __get($c) {
@@ -23,12 +30,15 @@ class bobs_espace_commune extends bobs_commune {
 			case 'code_insee_txt':
 				return $this->code_insee_txt;
 			case 'nom2':
-				return $this->nom2;
+				return empty($this->nom2)?$this->nom:$this->nom2;
 			case 'id_pays':
 				return $this->id_pays;
 			case 'nombre_espece':
 				return $this->nombre_espece;
+			case 'dept':
+				return $this->dept;
 		}
+		return parent::__get($c);
 	}
 
 	/**
@@ -41,9 +51,10 @@ class bobs_espace_commune extends bobs_commune {
 		$n = 0;
 		static $sql = "
 			insert into espace_commune
-				(id_espace,reference,nom,the_geom,code_insee)
-			values ($1,$2,$3,st_setsrid(ST_GeomFromGeoJSON($4),4326),$5)
-			";
+				(id_espace,reference,nom,the_geom,code_insee,dept,code_insee_txt)
+			values
+			($1,$2,$3,st_setsrid(ST_GeomFromGeoJSON($4),4326),$5,$6,$7)
+		";
 
 		$src = file_get_contents($pathToSrc);
 
@@ -60,15 +71,17 @@ class bobs_espace_commune extends bobs_commune {
 				throw new \Exception('id_espace vide (échec nextval)');
 			}
 
-			$q = [
+			$params = [
 				$id_espace,
 				$feature["properties"]["insee"],
 				$feature["properties"]["nom"],
 				json_encode($feature["geometry"]),
-				$feature["properties"]["insee"]
+				substr($feature["properties"]["insee"],2,3),
+				substr($feature["properties"]["insee"],0,2),
+				sprintf("%05d",$feature["properties"]["insee"])
 			];
 
-			bobs_qm()->query($db, 'epcommune_insert_geojson', $sql, $q);
+			bobs_qm()->query($db, 'epcommune_insert_geojson', $sql, $params);
 
 			$n++;
 		}
@@ -81,8 +94,8 @@ class bobs_espace_commune extends bobs_commune {
 
 	public static function by_code_insee($db, $code) {
 		$sql = 'select * from espace_commune where trim(to_char(dept*1000+code_insee,\'09999\'))=$1';
-		$q = bobs_qm()->query($db, 'esp_com_insee', $sql, array($code));
-		return new bobs_espace_commune($db, self::fetch($q));
+		$q = bobs_qm()->query($db, 'esp_com_insee', $sql, [$code]);
+		return new self($db, self::fetch($q));
 	}
 
 	public function pays_statistique() {
@@ -130,7 +143,7 @@ class bobs_espace_commune extends bobs_commune {
 		$r = bobs_element::fetch_all($q);
 
 		foreach ($r as $ville) {
-		    echo "commune {$ville['id_espace']} a {$ville['n']} especes\n";
+		    error_log("commune {$ville['id_espace']} a {$ville['n']} especes");
 		    bobs_qm()->query($db, "upd_commune_n_esp" , 'update espace_commune set nombre_espece=$2 where id_espace=$1', array ($ville['id_espace'], $ville['n']));
 		}
 
@@ -261,14 +274,21 @@ class bobs_espace_commune extends bobs_commune {
 		return get_espece($this->db, $id_espece);
 	}
 
+	const sql_voisins = '
+		select a.*
+		from espace_commune a,espace_commune b
+		where b.id_espace=$1
+		and st_distance(a.the_geom, b.the_geom) = 0
+		order by nom2';
+
 	public function get_voisins() {
-	    $sql =  'select a.*
-		    from espace_commune a,espace_commune b
-		    where b.id_espace=$1
-		    and st_distance(a.the_geom, b.the_geom) = 0
-		    order by nom2';
-	    $q = bobs_qm()->query($this->db, 'esp_commune_voisins', $sql, array($this->id_espace));
-	    return self::fetch_all($q);
+		$q = bobs_qm()->query(
+			$this->db,
+			'esp_commune_voisins',
+			self::sql_voisins,
+			[$this->id_espace]
+		);
+		return bobs_element::fetch_all($q);
 	}
 
 	const sql_liste_ecoles = 'select * from espace_point ep,espace_tags et,espace_intersects ei
