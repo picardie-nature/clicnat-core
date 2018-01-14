@@ -7,8 +7,9 @@
 			<file>tests/clicnat_couleur.php</file>
 			<file>tests/clicnat_utilisateur.php</file>
 			<file>tests/bobs_espece.php</file>
-			<file>tests/bobs_extractions.php</file>
 			<file>tests/bobs_espace_commune.php</file>
+			<file>tests/bobs_observation.php</file>
+			<file>tests/bobs_extractions.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

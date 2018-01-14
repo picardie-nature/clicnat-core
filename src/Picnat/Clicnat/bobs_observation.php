@@ -1,6 +1,11 @@
 <?php
 namespace Picnat\Clicnat;
 
+use InvalidArgumentException;
+use Exception;
+use DateTime;
+use DateInterval;
+
 /**
  * @brief Observation
  *
@@ -29,7 +34,7 @@ class bobs_observation extends bobs_element_commentaire {
 
 	const table_commentaire = 'observations_commentaires';
 
-	function __construct($db, $id) {
+	public function __construct($db, $id) {
 		parent::__construct($db, 'observations', 'id_observation', $id);
 		$this->date_obs_tstamp = strtotime($this->date_observation);
 		$this->champ_date_maj = 'date_modif';
@@ -108,12 +113,14 @@ class bobs_observation extends bobs_element_commentaire {
 	/**
 	 * @brief obtenir l'observation par un numéro de citation
 	 * @param $id_citation le numéro de citation
+	 * @return bobs_observation|false
 	 */
 	public static function by_citation($db, $id_citation) {
 		$id_citation = sprintf('%d', $id_citation);
 
-		if (empty($id_citation))
+		if (empty($id_citation)) {
 			throw new InvalidArgumentException('$id_citation ne peut être vide');
+		}
 
 		$sql = sprintf("select observations.*
 						from observations obs,citations ci
@@ -123,10 +130,11 @@ class bobs_observation extends bobs_element_commentaire {
 		$q = self::query($db, $sql);
 		$r = self::fetch($q);
 
-		if ($r['id_observation'])
-			return get_observation($db, $r['id_observation']);
+		if (empty($r)) {
+			return false;
+		}
 
-		return false;
+		return get_observation($db, $r['id_observation']);
 	}
 
 	/**
@@ -150,7 +158,7 @@ class bobs_observation extends bobs_element_commentaire {
 				group by citations.id_espece,nom_s,nom_f,systematique
 				order by systematique';
 		$q = bobs_qm()->query($this->db, 'obs_get_species', $sql, array($this->id_observation));
-		$t = array();
+		$t = [];
 
 		while ($r = self::fetch($q)) {
 			$r['obj'] = get_espece($this->db, $r['id_espece']);
@@ -333,14 +341,15 @@ class bobs_observation extends bobs_element_commentaire {
 	 * @param array $data
 	 * @return integer Numéro de l'observation
 	 */
-	public static function insert($db, $data) {
+	public static function insertObservation($db, $data) {
 		if (defined('MAINT_ANCIENNE_DATE') && isset($data['date_observation'])) {
 			// ancien traitement de la date
 			$date_observation = $data['date_observation'];
-			if (array_key_exists('precision_date', $data))
+			if (array_key_exists('precision_date', $data)) {
 				$precision_date = $data['precision_date'];
-			else
+			} else {
 				$precision_date = 0;
+			}
 
 			// nouveau traitement
 			if ($precision_date == 0) {
@@ -352,8 +361,9 @@ class bobs_observation extends bobs_element_commentaire {
 				$data['datefin'] = strftime("%Y-%m-%d", $dn-86400*(int)$data['precision_date']);
 			}
 		} else if (defined('MAINT_ANCIENNE_DATE') && isset($data['datedeb'])) {
-			if (!isset($data['datefin']))
+			if (!isset($data['datefin'])) {
 				$data['datefin'] = $data['datedeb'];
+			}
 
 			if ($data['datedeb'] == $data['datefin']) {
 				$date_observation = $data['datedeb'];
