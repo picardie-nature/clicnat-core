@@ -470,14 +470,14 @@ class bobs_espace extends bobs_element_espace_commentaire {
 		$sql = "insert into $table (id_espace,id_utilisateur,reference,nom,the_geom)".
 			'values ($1,$2,$3,$4,st_setsrid(st_geomfromtext($5,$6),4326))';
 
-		$qa = array(
+		$qa = [
 			$id_espace,
 			$data['id_utilisateur'],
 			$data['reference'],
 			$data['nom'],
 			$data['wkt'],
 			SRID_BY_DEFAULT
-		);
+		];
 		bobs_qm()->query($db, $table.'_insert_wkt', $sql, $qa);
 
 		return $id_espace;

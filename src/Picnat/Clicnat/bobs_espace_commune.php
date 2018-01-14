@@ -2,24 +2,77 @@
 namespace Picnat\Clicnat;
 
 class bobs_espace_commune extends bobs_commune {
-	public $code_insee;
-	public $code_insee_txt;
-	public $nom2;
-	public $dept;
+	protected $code_insee;
+	protected $code_insee_txt;
+	protected $nom2;
+	protected $dept;
 	protected $id_pays;
+	protected $nombre_espece;
 
 	private $__cache_annees_obs;
 
-	function __construct($db, $id, $table='espace_commune') {
+	public function __construct($db, $id, $table='espace_commune') {
 		parent::__construct($db, $id, $table);
 		$this->__cache_annees_obs = array();
 	}
 
-	function __get($c) {
+	public function __get($c) {
 		switch($c) {
+			case 'code_insee':
+				return $this->code_insee;
+			case 'code_insee_txt':
+				return $this->code_insee_txt;
+			case 'nom2':
+				return $this->nom2;
 			case 'id_pays':
 				return $this->id_pays;
+			case 'nombre_espece':
+				return $this->nombre_espece;
 		}
+	}
+
+	/**
+	 * insertion des communes depuis un fichier geojson
+	 * @param ressource $db
+	 * @param string $pathToSrc
+	 * @return integer nombre de ligne intégrée
+	 */
+	public static function insertGeoJsonOSM($db, $pathToSrc) {
+		$n = 0;
+		static $sql = "
+			insert into espace_commune
+				(id_espace,reference,nom,the_geom,code_insee)
+			values ($1,$2,$3,st_setsrid(ST_GeomFromGeoJSON($4),4326),$5)
+			";
+
+		$src = file_get_contents($pathToSrc);
+
+		if (empty($src))  {
+			throw new \Exception("Ne peut ouvrir $pathToSrc");
+		}
+
+		$osm = json_decode($src, true);
+
+		foreach ($osm['features'] as $feature) {
+			$id_espace = self::nextval($db, 'espace_id_espace_seq');
+
+			if (empty($id_espace)) {
+				throw new \Exception('id_espace vide (échec nextval)');
+			}
+
+			$q = [
+				$id_espace,
+				$feature["properties"]["insee"],
+				$feature["properties"]["nom"],
+				json_encode($feature["geometry"]),
+				$feature["properties"]["insee"]
+			];
+
+			bobs_qm()->query($db, 'epcommune_insert_geojson', $sql, $q);
+
+			$n++;
+		}
+		return $n;
 	}
 
 	public function __toString() {
@@ -226,6 +279,9 @@ class bobs_espace_commune extends bobs_commune {
 		and et.id_tag=$1
 		order by ep.nom';
 
+	/**
+	 * @deprecated
+	 */
 	public function get_ecoles() {
 		$q = bobs_qm()->query($this->db, 'esp_com_l_ecoles', self::sql_liste_ecoles, array(clicnat_ecole::tag($this->db)->id_tag, $this->id_espace));
 		$t = array();
