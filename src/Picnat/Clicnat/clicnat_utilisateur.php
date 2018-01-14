@@ -61,9 +61,13 @@ class clicnat_utilisateur extends bobs_element {
 	protected $expert;
 	protected $id_extraction_utilisateur_flux;
 	protected $props;
-
+	protected $date_premiere_obs;
+	protected $especes_vues;
+	protected $nb_especes_vues;
+	protected $nb_citations_authok;
 	protected $pseudo;
 	protected $partage_opts;
+	private $reseaux_cache;
 
 	const sql_set_prop = 'update utilisateur set props=coalesce(props,\'\')::hstore||$2::hstore where id_utilisateur=$1';
 	const sql_get_prop = 'select props -> $2 as v from utilisateur where id_utilisateur=$1';
@@ -198,6 +202,8 @@ class clicnat_utilisateur extends bobs_element {
 				return $this->acces_chiros;
 			case 'reglement_date_sig':
 				return $this->reglement_date_sig;
+			case 'reglement_date_sig_tstamp':
+				return empty($this->reglement_date_sig)?null:strtotime($this->reglement_date_sig);
 			case 'diffusion_restreinte':
 				return $this->diffusion_restreinte;
 			case 'last_login':
@@ -222,11 +228,9 @@ class clicnat_utilisateur extends bobs_element {
 		if (empty($this->id_utilisateur)) {
 			throw new \Exception('id_utilisateur vide (utilisateur inexistant ?)');
 		}
-		$this->virtuel = !($this->virtuel == 'f');
+
 		$this->diffusion_restreinte = !($this->diffusion_restreinte == 'f');
-		if (!is_null($this->reglement_date_sig)) {
-			$this->reglement_date_sig_tstamp = strtotime($this->reglement_date_sig);
-		}
+
 		$this->acces_poste = $this->acces_poste == 't';
 		$this->acces_chiros = $this->acces_chiros == 't';
 		$this->acces_qg = $this->acces_qg == 't';
@@ -404,26 +408,27 @@ class clicnat_utilisateur extends bobs_element {
 		return $tr;
 	}
 
+	const sql_dernier_compte = 'select * from utilisateur order by id_utilisateur desc limit $1';
+
 	static public function derniers_comptes($db, $limite=30) {
 		self::cli($limite);
-		$sql = 'select * from utilisateur order by id_utilisateur desc limit $1';
-		$q = bobs_qm()->query($db, 'ul_derniers', $sql, [$limite]);
-		return $this->fetchAllAsUtilisateur($q);
+		$q = bobs_qm()->query($db, 'ul_derniers', self::sql_dernier_compte, [$limite]);
+		return self::fetchAllAsUtilisateur($q);
 	}
 
 	const sql_select_uname = 'select * from utilisateur where username=$1';
 
 	/**
 	 * @brief retourne une instance utilisateur en fonction du login
-	 * @return clicnat_utilisateur
+	 * @return clicnat_utilisateur|false
 	 */
-	static public function par_identifiant($db, $login) {
+	 public static function par_identifiant($db, $login) {
 		self::cls($login, self::except_si_vide);
 
 		$q = bobs_qm()->query($db, 'u_by_login', self::sql_select_uname, [$login]);
 		$r = self::fetch($q);
 
-		if (!$r) {
+		if (empty($r)) {
 			bobs_log('pas trouvé '.$login);
 			return false;
 		}
@@ -456,24 +461,19 @@ class clicnat_utilisateur extends bobs_element {
 
 	/**
 	 * @brief retourne une instance utilisateur en fonction de l'identifiant d'une structure tiers
-	 * @return bobs_utilisateur
+	 * @return bobs_utilisateur|false
 	 */
-	 # tiers : structure tiers id : id tiers
 	static public function by_id_tiers($db, $tiers, $id) {
-		#except_si_inf_1 from tests.php
 		self::cli($id, self::except_si_inf_1);
 		self::cls($tiers, self::except_si_vide);
 
-		#bobs_qm dans element.php
 		$q = bobs_qm()->query($db, 'u_by_id_tiers', self::sql_by_id_tiers, array($tiers, $id));
-		#cherche le résultat contenu dans $q
 		$r = self::fetch($q);
 
 		if (empty($r)) {
 			return false;
 		}
 
-		#retourne un id
 		return get_utilisateur($db, $r);
 	}
 
@@ -481,7 +481,7 @@ class clicnat_utilisateur extends bobs_element {
 	 * @brief retourne la liste de tous les utilisateurs
 	 * @return un tableau d'objet bobs_utilisateurs
 	 */
-	static public function tous($db) {
+	public static function tous($db) {
 		$q = self::query($db, 'select * from utilisateur order by nom,prenom');
 		return $this->fetchAllAsUtilisateur($q);
 	}
@@ -539,26 +539,23 @@ class clicnat_utilisateur extends bobs_element {
 	 * @return integer
 	 */
 	public function get_nb_observations($brouillard=false) {
-		if (!empty($this->nb_observations))
+		if (!empty($this->nb_observations)) {
 			return $this->nb_observations;
+		}
 		if (!$brouillard) {
 			$q = bobs_qm()->query($this->db, 'util_nb_obs','
 				select count(*) as n
 				from observations_observateurs oo, observations o
 				where oo.id_observation=o.id_observation
 				and oo.id_utilisateur=$1',
-				array(
-					$this->id_utilisateur
-				));
+				[$this->id_utilisateur]);
 		} else {
 			$q = bobs_qm()->query($this->db, 'util_nb_obs_b','
 				select count(*) as n
 				from observations o
 				where o.id_utilisateur=$1
 				and o.brouillard=true',
-				array(
-					$this->id_utilisateur
-				));
+				[$this->id_utilisateur]);
 		}
 		$r = self::fetch($q);
 		return $r['n'];
@@ -577,8 +574,8 @@ class clicnat_utilisateur extends bobs_element {
 			"n_liste_especes" => count($this->listes_especes()),
 			"n_fichiers" => $this->fichiers()->count()
 		];
-
 	}
+
 	const sql_nb_observateur = 'select count(distinct id_citation)
 		from citations c,observations o,observations_observateurs oo
 		where c.id_observation=o.id_observation and  oo.id_utilisateur=$1 and oo.id_observation=o.id_observation';
@@ -649,13 +646,14 @@ class clicnat_utilisateur extends bobs_element {
 
 	/**
 	 * @brief Liste des especes vues
-	 * @return un tableau des especes vues
+	 * @return array tableau des especes vues
 	 */
 	public function get_especes_vues() {
-		if (!empty($this->especes_vues))
+		if (!empty($this->especes_vues)) {
 			return $this->especes_vues;
+		}
 
-		$this->especes_vues = array();
+		$this->especes_vues = [];
 
 		$sql = sprintf("select distinct es.*
 				from
@@ -669,9 +667,12 @@ class clicnat_utilisateur extends bobs_element {
 				and os.id_observation=ci.id_observation
 				order by es.nom_f",
 				$this->id_utilisateur);
+
 		$q = self::query($this->db, $sql);
-		while ($r = self::fetch($q))
+
+		while ($r = self::fetch($q)) {
 			$this->especes_vues[] = $r;
+		}
 
 		$this->nb_especes_vues = count($this->especes_vues);
 
@@ -773,7 +774,7 @@ class clicnat_utilisateur extends bobs_element {
 			$q = bobs_qm()->query($this->db, 'u_mad_s_aut', self::sql_mad_insert.' '.self::sql_select_auteur, array($this->id_utilisateur, $position));
 			$q = bobs_qm()->query($this->db, 'u_mad_s_sel', self::sql_mad_insert.' '.self::sql_select_selection, array($this->id_utilisateur, $position));
 			$this->mise_a_dispo_autre($position);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			self::query($this->db, 'rollback');
 			throw $e;
 		}
@@ -1148,12 +1149,20 @@ class clicnat_utilisateur extends bobs_element {
 		$q = bobs_qm()->query($this->db, 'utilisateur_sel_c_atlas', self::sql_select_c_atlas, array($nom_zone));
 		$r = self::fetch($q);
 
-		if (empty($r['id_espace']))
+		if (empty($r['id_espace'])) {
 			throw new Exception('Carré atlas inconnu '.$nom_zone);
+		}
 
-		$this->l93_10x10_id_espace = $r['id_espace'];
-
-		return bobs_qm()->query($this->db, 'utilisateur_set_c_atlas', self::sql_insert_c_atlas, array($this->id_utilisateur, $r['id_espace'],$resp_aonfm?'true':'false'));
+		return bobs_qm()->query(
+			$this->db,
+			'utilisateur_set_c_atlas',
+			self::sql_insert_c_atlas,
+			[
+				$this->id_utilisateur,
+				$r['id_espace'],
+				$resp_aonfm?'true':'false'
+			]
+		);
 	}
 
 	/**
@@ -1366,7 +1375,7 @@ class clicnat_utilisateur extends bobs_element {
 		    where oo.id_utilisateur=u.id_utilisateur
 		    and o.id_observation=oo.id_observation
 		    group by nom,prenom";
-	    $q = bobs_qm()->query($this->db, 'l_obs_stats', $sql, array());
+	    $q = bobs_qm()->query($this->db, 'l_obs_stats', $sql, []);
 	    return self::fetch_all($q);
 	}
 
@@ -1583,7 +1592,7 @@ class clicnat_utilisateur extends bobs_element {
 		}
 	}
 
-	private $reseaux_cache;
+
 
 	public function reseaux() {
 		// TODO après avoir déconnecté gdtc retirer le merge
