@@ -269,6 +269,10 @@ class bobs_observation extends bobs_element_commentaire {
 		return str_replace('"',' ',trim($s,', '));
 	}
 
+	public function ajoute_observateur(clicnat_utilisateur $utilisateur) {
+		return $this->add_observateur($utilisateur->id_utilisateur);
+	}
+
 	/**
 	 * @brief Ajoute un observateur
 	 * @param int $id id_utilisateur
@@ -287,6 +291,10 @@ class bobs_observation extends bobs_element_commentaire {
 		}
 		bobs_log(sprintf('add user %d to observation %d', $id, $this->id_observation));
 		return $q;
+	}
+
+	public function retire_observateur(clicnat_utilisateur $utilisateur) {
+		return $this->del_observateur($utilisateur->id_utilisateur);
 	}
 
 	/**
@@ -381,10 +389,6 @@ class bobs_observation extends bobs_element_commentaire {
 				$diff_2 = new DateInterval(sprintf("P%dD",$diff->days/2));
 				$inter = clone $deb;
 				$inter->add($diff_2);
-				$ddeb = $deb->format("Y-m-d");
-				$dfin = $fin->format("Y-m-d");
-				$dinter = $inter->format("Y-m-d");
-
 				$date_observation = $inter->format("Y-m-d");
 				$precision_date = (int)($diff->days/2);
 			}
@@ -450,6 +454,7 @@ class bobs_observation extends bobs_element_commentaire {
 	}
 
 	const sql_s_citations_ids = 'select id_citation from citations where id_observation=$1 order by id_citation desc';
+
 	/**
 	 * @brief fourni un tableau des id de citations associés
 	 * @return un tableau
@@ -457,8 +462,9 @@ class bobs_observation extends bobs_element_commentaire {
 	public function get_citations_ids() {
 		$q = bobs_qm()->query($this->db, 'obs_citations_ids', self::sql_s_citations_ids, array($this->id_observation));
 		$ids = array();
-		while ($r = self::fetch($q))
+		while ($r = self::fetch($q)) {
 			$ids[] = $r['id_citation'];
+		}
 		return $ids;
 	}
 
@@ -481,8 +487,9 @@ class bobs_observation extends bobs_element_commentaire {
 	 * Utilise une transaction et lève une exception en cas d'erreur
 	 */
 	public function delete() {
-		if (empty($this->id_observation))
+		if (empty($this->id_observation)) {
 			throw new Exception('$this->id_observation vide');
+		}
 
 		try {
 			pg_query($this->db, 'begin');
@@ -539,9 +546,9 @@ class bobs_observation extends bobs_element_commentaire {
 	 */
 	public function send() {
 		self::cli($this->id_observation);
-		if ($this->brouillard != 't')
+		if ($this->brouillard != 't') {
 			throw new Exception("brouillard = false");
-
+		}
 		$tag_attv = bobs_tags::by_ref($this->db, TAG_ATTENTE_VALIDATION);
 		$tag_junior = bobs_tags::by_ref($this->db, TAG_NOUVEL_OBSERVATEUR);
 		$id_citations = $this->get_citations_ids();
@@ -696,37 +703,38 @@ class bobs_observation extends bobs_element_commentaire {
 	}
 
 	public function supprime_tag($id_tag, $id_utilisateur=false) {
-	    $this->__supprime_tag(BOBS_TBL_TAG_OBSERVATION, 'id_observation', $id_tag, $this->id_observation);
-		if ($id_utilisateur) {
+		$this->__supprime_tag(BOBS_TBL_TAG_OBSERVATION, 'id_observation', $id_tag, $this->id_observation);
+		if (is_int($id_utilisateur)) {
 			$this->ajoute_commentaire('attr', $id_utilisateur, "tag -$id_tag");
 		}
-	    $this->get_tags();
+		$this->get_tags();
 	}
 
 	public function dupliquer($date_observation) {
-	    $data = array(
+		$data = [
 			'id_observation' => $this->id_observation,
 			'id_utilisateur' => $this->id_utilisateur,
 			'date_observation' => $date_observation,
 			'id_espace' => $this->id_espace,
 			'table_espace' => $this->espace_table
-	    );
-	    self::query($this->db, 'begin');
-	    $new_id_observation = self::insert($this->db, $data);
-	    $observation = new bobs_observation($this->db, $new_id_observation);
+		];
+		self::query($this->db, 'begin');
+		$new_id_observation = self::insertObservation($this->db, $data);
+		$observation = new bobs_observation($this->db, $new_id_observation);
 
-	    $observateurs = $this->get_observateurs();
-	    if (count($observateurs) > 0) {
-		foreach ($observateurs as $observateur) {
+    $observateurs = $this->get_observateurs();
+    if (count($observateurs) > 0) {
+			foreach ($observateurs as $observateur) {
 				$observation->add_observateur($observateur['id_utilisateur']);
 			}
-	    }
+		}
 
 		$citations = $this->get_citations_ids();
-		if (count($citations) > 0)
+		if (count($citations) > 0) {
 			foreach ($citations as $citation_id) {
 				$citation = $this->get_citation($citation_id);
 				$observation->add_citation($citation->id_espece);
+			}
 		}
 		self::query($this->db, 'commit');
 		return $observation->id_observation;
@@ -751,14 +759,6 @@ class bobs_observation extends bobs_element_commentaire {
 		$d = cache_distance()->get($this->id_espace, $id_b);
 		if ($d === false) {
 			// on va le calculer
-			/*$sql = "select
-					ST_Distance(
-						ST_Transform(espace_a.the_geom, 2154),
-						ST_Transform(espace_b.the_geom, 2154)
-					) as distance
-					from {$this->espace_table} espace_a, $espace_b espace_b
-					where espace_a.id_espace=$1
-					and espace_b.id_espace=$2";*/
 			$sql = "select
 					ST_Distance_sphere(
 						espace_a.the_geom,

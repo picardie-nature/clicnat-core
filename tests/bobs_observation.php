@@ -35,5 +35,53 @@ class bobs_observationTests extends TestCase {
 
 		$date_fin = $observation->date_fin;
 		$this->assertInstanceOf(\DateTime::class, $date_fin);
+
+		$this->assertEquals($date_deb, $date_fin);
+
+		return $id_observation;
+	}
+
+	/**
+	 * @depends testNouvelObservation
+	 */
+	public function testAjoutObservateur($id_observation) {
+		$observation = new bobs_observation(get_db(), $id_observation);
+		$observateurs = bobs_utilisateur::rechercher2(get_db(), "pig");
+		$n = count($observateurs);
+		foreach ($observateurs as $observateur) {
+			$observation->ajoute_observateur($observateur);
+		}
+
+		$observateurs = $observation->get_observateurs();
+		$this->assertTrue(is_array($observateurs));
+		$this->assertCount($n, $observateurs);
+
+		return [$id_observation, end($observateurs)['id_utilisateur'], $n];
+	}
+
+	/**
+	 * @depends testAjoutObservateur
+	 */
+	public function testRetirerObservateur($params) {
+		list($id_observation, $id_utilisateur, $n) = $params;
+		$observation = new bobs_observation(get_db(), $id_observation);
+		$observateur = get_utilisateur(get_db(), $id_utilisateur);
+
+		$observation->retire_observateur($observateur);
+		$observation = new bobs_observation(get_db(), $id_observation);
+		$observateurs = $observation->get_observateurs();
+		$this->assertCount($n-1, $observateurs);
+		return $id_observation;
+	}
+
+
+	/**
+	 * @depends testNouvelObservation
+	 */
+	public function testSupprimer($id_observation) {
+		$observation = get_observation(get_db(), $id_observation);
+		$observation->delete();
+		$this->expectException(clicnat_exception_pas_trouve::class);
+		$obs = new bobs_observation(get_db(), $id_observation);
 	}
 }
