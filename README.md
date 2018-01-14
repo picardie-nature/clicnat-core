@@ -38,3 +38,7 @@ pour rendre ça permanent
 ```
 echo "POSTGRES_DB_TEST=postgres://baseobs:plop@localhost:65433/baseobsdev" >> ~/.bash_aliases
 ```
+
+une fois la variable créée vous pouvez lancer les tests (drop de la base
+existante, création d'une vierge, et lancement de phpunit) en lançant le script
+`clear_and_run_tests.sh`
