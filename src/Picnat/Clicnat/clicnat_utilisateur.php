@@ -62,12 +62,16 @@ class clicnat_utilisateur extends bobs_element {
 	protected $id_extraction_utilisateur_flux;
 	protected $props;
 	protected $date_premiere_obs;
+	protected $date_derniere_obs;
 	protected $especes_vues;
 	protected $nb_especes_vues;
 	protected $nb_citations_authok;
 	protected $pseudo;
 	protected $partage_opts;
 	private $reseaux_cache;
+	protected $id_gdtc;
+	/** @see bobs_utilisateur::get_reseaux */
+	private $reseaux_nc;
 
 	const sql_set_prop = 'update utilisateur set props=coalesce(props,\'\')::hstore||$2::hstore where id_utilisateur=$1';
 	const sql_get_prop = 'select props -> $2 as v from utilisateur where id_utilisateur=$1';
@@ -451,7 +455,7 @@ class clicnat_utilisateur extends bobs_element {
 		$q = bobs_qm()->query($db, 'u_by_mail',self::sql_by_mail, [$mail]);
 		$r = self::fetch($q);
 
-		if (!$r) {
+		if (empty($r)) {
 			throw new clicnat_exception_pas_trouve("pas de compte a cette adresse");
 		}
 		return get_utilisateur($db, $r);
@@ -483,7 +487,7 @@ class clicnat_utilisateur extends bobs_element {
 	 */
 	public static function tous($db) {
 		$q = self::query($db, 'select * from utilisateur order by nom,prenom');
-		return $this->fetchAllAsUtilisateur($q);
+		return self::fetchAllAsUtilisateur($q);
 	}
 
 	const sql_update_last_login = 'update utilisateur set last_login=now() where id_utilisateur=$1';
@@ -764,6 +768,7 @@ class clicnat_utilisateur extends bobs_element {
 						where utilisateur_citations_ok.id_citation=selection_data.id_citation
 						and utilisateur_citations_ok.id_utilisateur=selection.id_utilisateur
 					)';
+
 	public function mise_a_disposition() {
 		$q = bobs_qm()->query($this->db, 'u_mad_pos', self::sql_mad_position, array($this->id_utilisateur));
 		$r = self::fetch($q);
@@ -1375,7 +1380,7 @@ class clicnat_utilisateur extends bobs_element {
 		    where oo.id_utilisateur=u.id_utilisateur
 		    and o.id_observation=oo.id_observation
 		    group by nom,prenom";
-	    $q = bobs_qm()->query($this->db, 'l_obs_stats', $sql, []);
+	    $q = bobs_qm()->query(get_db(), 'l_obs_stats', $sql, []);
 	    return self::fetch_all($q);
 	}
 
@@ -1403,7 +1408,7 @@ class clicnat_utilisateur extends bobs_element {
 			from observations,observations_observateurs
 			where observations.id_observation=observations_observateurs.id_observation
 			";
-		if ($depuis_annee) {
+		if (is_int($depuis_annee)) {
 			$sql .= sprintf(" and extract('year' from date_observation) >= %04d", $depuis_annee);
 		}
 		$q = self::query($db, $sql);
@@ -1426,12 +1431,12 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function repertoire_ajoute_polygone($nom, $wkt) {
-		$data = array(
+		$data = [
 			'id_utilisateur' => $this->id_utilisateur,
 			'reference' => '',
 			'nom' => $nom,
 			'wkt' => $wkt
-		);
+		];
 
 		$id_espace = bobs_espace_polygon::insert_wkt($this->db, $data);
 
@@ -1443,17 +1448,17 @@ class clicnat_utilisateur extends bobs_element {
 	}
 
 	public function repertoire_ajoute_ligne($nom, $wkt) {
-		$data = array(
+		$data = [
 			'id_utilisateur' => $this->id_utilisateur,
 			'reference' => '',
 			'nom' => $nom,
 			'wkt' => $wkt
-		);
+		];
 
 		$id_espace = bobs_espace_ligne::insert_wkt($this->db, $data);
 
 		if (!$id_espace) {
-			throw new Exception('problème pour créer le polygone');
+			throw new \Exception('problème pour créer le polygone');
 		}
 
 		return $this->repertoire_ajoute('espace_line', $id_espace);
@@ -1497,17 +1502,6 @@ class clicnat_utilisateur extends bobs_element {
 			order by date_commentaire desc limit $limite";
 		$q = bobs_qm()->query($this->db, 'u_ctr_liste_'.$limite, $sql, array($this->id_utilisateur, $this->id_utilisateur));
 		$t = self::fetch_all($q);
-		/*for ($i=0; $i<count($t); $i++) {
-			if ($t[$i]['tble'] == 'citations_commentaires') {
-				$citation = get_citation($this->db, $t[$i]['ele_id']);
-				$commentaires = $citation->get_commentaires();
-				foreach ($commentaires as $comtr) {
-					if ($comtr->id_commentaire == $t[$i]['id_commentaire']) {
-						$t[$i]['commentaire'] = $comtr->commentaire;
-					}
-				}
-			}
-		}*/
 		return $t;
 	}
 
@@ -1539,29 +1533,24 @@ class clicnat_utilisateur extends bobs_element {
 		self::cls($wkt, self::except_si_vide);
 		try {
 			return bobs_qm()->query($this->db, 'utl_set_loc', self::sql_set_localisation, array($wkt, $this->id_utilisateur));
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			throw $e;
 		}
 	}
+
 	const sql_set_date_naissance = 'update utilisateur set date_naissance = $1::Date where id_utilisateur=$2';
-	public function set_date_naissance($date_naissance){
+
+	public function set_date_naissance($date_naissance) {
 		self::cls($date_naissance, self::except_si_vide);
-		try{
-			$q = bobs_qm()->query($this->db,'utl_set_date_naiss', self::sql_set_date_naissance, array(bobs_element::date_fr2sql($date_naissance), $this->id_utilisateur));
-			if ($q) {
-				$this->date_naissance = bobs_element::date_fr2sql($date_naissance);
-				return true;
-			}
-		}
-		catch (Exception $e) {
-			throw $e;
+		$q = bobs_qm()->query($this->db,'utl_set_date_naiss', self::sql_set_date_naissance, array(bobs_element::date_fr2sql($date_naissance), $this->id_utilisateur));
+		if ($q) {
+			$this->date_naissance = bobs_element::date_fr2sql($date_naissance);
+			return true;
 		}
 		return false;
-
 	}
 
-	/** @see bobs_utilisateur::get_reseaux */
-	private $reseaux_nc;
+
 
 	const gdtc_sql_adresse = 'select address1,address2,address3,zip_code,city from person where actor_id=:actor_id';
 
@@ -1654,7 +1643,7 @@ class clicnat_utilisateur extends bobs_element {
 			throw new \InvalidArgumentException('nom sur 2 caractères');
 		}
 		if (empty($this->reseaux_nc)) {
-			$this->get_reseaux();
+			$this->reseaux_gdtc();
 		}
 		return !(strpos($this->reseaux_nc, $reseau) === false);
 	}
@@ -1679,8 +1668,9 @@ class clicnat_utilisateur extends bobs_element {
 		$identifiant_base = $identifiant;
 		while ($r['n'] >= 1) {
 			$n++;
-			if ($n > 20) // fort peut probable
-				throw new Exception('impossible 20 homonymes ?');
+			if ($n > 20) {// fort peut probable
+				throw new \Exception('impossible 20 homonymes ?');
+			}
 			$identifiant = $identifiant_base.$n;
 			$q = bobs_qm()->query($db, 'utl_test_id', self::sql_test_identifiant_libre, array($identifiant));
 			$r = self::fetch($q);
