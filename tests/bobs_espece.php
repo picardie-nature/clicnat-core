@@ -63,13 +63,39 @@ class bobs_especeTests extends TestCase {
 				'classe'       => 'M',
 				'type_fiche'   => '',
 				'systematique' => '',
-				'ordre'        => 'Muridae',
+				'ordre'        => 'Rodentia',
 				'commentaire'  => '',
-				'famille'      => '',
+				'famille'      => 'Muridae',
 				'nom_f'        => 'Souris, Campagnols, Mulots, Rats',
 				'nom_s'        => 'Muridae',
 				'nom_a'        => 'Murid rodents',
 				'taxref_inpn_especes' => '186259'
+			],
+			[
+				'espece'       => '',
+				'classe'       => 'M',
+				'type_fiche'   => '',
+				'systematique' => '',
+				'ordre'        => 'Rodentia',
+				'commentaire'  => '',
+				'famille'      => 'Muridae',
+				'nom_f'        => '',
+				'nom_s'        => 'Micromys',
+				'nom_a'        => '',
+				'taxref_inpn_especes' => '194740'
+			],
+			[
+				'espece'       => '',
+				'classe'       => 'M',
+				'type_fiche'   => '',
+				'systematique' => '',
+				'ordre'        => 'Rodentia',
+				'commentaire'  => '',
+				'famille'      => 'Muridae',
+				'nom_f'        => 'Rat des moissons',
+				'nom_s'        => 'Micromys minutus  Pallas 1771',
+				'nom_a'        => '',
+				'taxref_inpn_especes' => '61543'
 			],
 		];
 		$id_espece = $id_prev = null;
