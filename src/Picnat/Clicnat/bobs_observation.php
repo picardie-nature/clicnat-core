@@ -12,6 +12,25 @@ use DateInterval;
  * Une observation définit l'heure et lieu d'une observation,
  * elle contient des citations qui listent les espèces observées
  *
+ * @property-read $id_observation
+ * @property-read $id_observation
+ * @property-read $id_utilisateur
+ * @property-read $date_observation
+ * @property-read $precision_date
+ * @property-read $id_espace
+ * @property-read $date_modif
+ * @property-read $espace_table
+ * @property-read $brouillard
+ * @property-read $heure_observation
+ * @property-read $duree_observation
+ * @property-read $date_creation
+ * @property-read $date_deb
+ * @property-read $date_fin
+ * @property-read $champ_date_maj
+ * @property-read $date_obs_tstamp
+ * @property-read $precision_date_lib
+ * @property-read $date_min
+ * @property-read $date_max
  */
 class bobs_observation extends bobs_element_commentaire {
 	protected $id_observation;
@@ -65,7 +84,7 @@ class bobs_observation extends bobs_element_commentaire {
 					case 30*3:
 						return "+ ou - trois mois";
 					case 30*6:
-						list($y,$m,$d) = explode('-', $this->date_observation);
+						list(,$m,$d) = explode('-', $this->date_observation);
 						if (((int)$m == 6 )&& ((int)$d == 31))
 							return "dans l'année";
 						else
@@ -418,17 +437,17 @@ class bobs_observation extends bobs_element_commentaire {
 
 		$id_observation = self::nextval($db, 'observations_id_observation_seq');
 
-		parent::insert($db, 'observations', array(
+		parent::insert($db, 'observations', [
 			'id_observation' => $id_observation,
 			'id_utilisateur' => $id_utilisateur,
 			'date_observation' => $date_observation,
 			'id_espace' => $id_espace,
 			'espace_table' => $table_espace,
-			'date_creation' => strftime('%Y-%m-%d %H:%M:%S',mktime()),
+			'date_creation' => strftime('%Y-%m-%d %H:%M:%S'),
 			'precision_date' => $precision_date,
 			'date_deb' => $data['datedeb'],
 			'date_fin' => $data['datefin']
-		));
+		]);
 		bobs_log(sprintf('create new observation %d by user %d', $id_observation, $id_utilisateur));
 		return $id_observation;
 	}
@@ -822,6 +841,11 @@ class bobs_observation extends bobs_element_commentaire {
 		return true;
 	}
 
+	/**
+	 * @deprecated
+	 * @return boolean
+	 * FIXME ne change pas date_deb & date_fin
+	 */
 	public function set_date_observation($date) {
 		self::cls($date);
 
@@ -880,7 +904,3 @@ class bobs_observation extends bobs_element_commentaire {
 		return new DateTime(strftime('%d-%m-%Y %H:%M:%S', strtotime($date->format('d-m-Y G:i:s')) + $h*3600 + $m*60 + $s));
 	}
 }
-
-
-
-?>
