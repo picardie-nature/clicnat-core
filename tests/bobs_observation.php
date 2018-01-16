@@ -74,6 +74,21 @@ class bobs_observationTests extends TestCase {
 		return $id_observation;
 	}
 
+	/**
+	 * @depends testNouvelObservation
+	 */
+	public function testAjouterCitation($id_observation) {
+		$e = bobs_espece::recherche_par_nom(get_db(), "rat des moisson");
+		$observation = new bobs_observation(get_db(), $id_observation);
+		$observation->add_citation($e[0]['id_espece']);
+
+		$observation = new bobs_observation(get_db(), $id_observation);
+		$citations = $observation->get_citations();
+
+		$this->assertInstanceOf(clicnat_iterateur_citations::class, $citations);
+		$this->assertCount(1, $citations);
+		$this->assertEquals($citations->current()->id_espece, $e[0]['id_espece']);
+	}
 
 	/**
 	 * @depends testNouvelObservation

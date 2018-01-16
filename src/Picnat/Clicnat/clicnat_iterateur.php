@@ -192,7 +192,7 @@ abstract class clicnat_iterateur implements \Iterator {
 	 * @param nom de l'iterateur
 	 * @return si en session objet iterateur false sinon
 	 */
-	public static function from_session($hash) {
+	public static function from_session($db, $hash) {
 		if (isset($_SESSION["iterateurs"][$hash]) && !is_null($_SESSION["iterateurs"][$hash])) {
 			$iterateur = $_SESSION["iterateurs"][$hash];
 			return $iterateur;

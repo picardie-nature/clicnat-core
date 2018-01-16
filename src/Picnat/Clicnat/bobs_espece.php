@@ -978,7 +978,21 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 
 	/**
-	 * @brief recherche une espèce dans l'index
+	 * recherche une espèce dans l'index
+	 * @return array
+	 *     [mots] => Array
+	 *        (
+	 *            [0] => rat
+	 *           	[1] => des
+	 *            [2] => moissons
+	 *        )
+	 *    [last_ok] => 0
+	 *    [n_mots] => 3
+	 *    [especes] => Array
+	 *        (
+	 *        )
+	 *    [n_resultat] => 0
+	 *    [sstring] => rat des moissons
 	 *
 	 */
 	public static function index_recherche($db, $nom) {

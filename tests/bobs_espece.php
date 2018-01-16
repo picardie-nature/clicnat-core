@@ -116,4 +116,11 @@ class bobs_especeTests extends TestCase {
 			}
 		}
 	}
+
+	public function testRecherche() {
+		$e = bobs_espece::recherche_par_nom(get_db(), "rat des moisson");
+		$this->assertTrue(is_array($e));
+		$this->assertCount(1, $e);
+		$this->assertEquals("Rat des moissons", $e[0]['nom_f']);
+	}
 }

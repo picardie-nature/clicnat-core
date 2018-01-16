@@ -24,6 +24,7 @@ create extension fuzzystrmatch;
 \i travaux.sql
 \i validation.sql
 \i reseau.sql
+\i sinp.sql
 
 \i vues/v_especes_synonymes_inpn.sql
 
