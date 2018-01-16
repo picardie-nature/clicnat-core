@@ -110,17 +110,40 @@ class bobs_especeTests extends TestCase {
 			$this->assertGreaterThan(0, $id_espece);
 
 			if (!empty($id_prev)) {
-				$e->set_id_espece_parent($id_espece);
+				$e->set_id_espece_parent($id_prev);
 				$p = $e->taxon_parent();
-				$this->assertEquals($id_espece, $p->id_espece);
+				$this->assertEquals($id_prev, $p->id_espece);
 			}
 		}
 	}
 
+	/**
+	 * @depends testInsertEspece
+	 */
 	public function testRecherche() {
 		$e = bobs_espece::recherche_par_nom(get_db(), "rat des moisson");
 		$this->assertTrue(is_array($e));
 		$this->assertCount(1, $e);
 		$this->assertEquals("Rat des moissons", $e[0]['nom_f']);
+	}
+
+	/**
+	 * @depends testInsertEspece
+	 */
+	public function testParRefTiers() {
+		$e = bobs_espece::by_id_ref_tiers(get_db(), "taxref", 183716);
+		$this->assertInstanceOf(bobs_espece::class, $e);
+		$this->assertEquals("animalia", $e->nom_s);
+	}
+
+	public function testBornage() {
+		$e = bobs_espece::by_id_ref_tiers(get_db(), "taxref", 183716);
+		bobs_espece::bornage(get_db(), $e->id_espece);
+		foreach (bobs_espece::tous(get_db()) as $espece) {
+			$espece = new bobs_espece(get_db(), $espece->id_espece);
+			$this->assertNotEmpty($espece->borne_a);
+			$this->assertNotEmpty($espece->borne_b);
+			$this->assertGreaterThan($espece->borne_a, $espece->borne_b);
+		}
 	}
 }

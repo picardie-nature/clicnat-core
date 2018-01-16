@@ -128,6 +128,9 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 
 	public function set_id_espece_parent($id_espece) {
+		if ($this->id_espece == $id_espece) {
+			throw new \Exception("loopback to myself");
+		}
 		self::cli($id_espece, self::except_si_vide);
 		$this->update_field('id_espece_parent', $id_espece, true);
 	}
@@ -184,7 +187,7 @@ class bobs_espece extends bobs_abstract_espece {
 	}
 	/**
 	 * @brief Instance du taxon parent
-	 * @return false s'il n'y en a pas
+	 * @return bobs_espece|false s'il n'y en a pas
 	 */
 	public function taxon_parent() {
 		if (empty($this->id_espece_parent)) {
@@ -243,8 +246,8 @@ class bobs_espece extends bobs_abstract_espece {
 		$this->update_field("borne_$borne", $valeur, true);
 	}
 
-	public static function bornage($db) {
-		$espece = get_espece($db, RACINE_ARBRE_TAXO); // Animalia
+	public static function bornage($db, $id_espece_racine=RACINE_ARBRE_TAXO) {
+		$espece = get_espece($db, $id_espece_racine); // Animalia
 		function r($espece, $b) {
 			$espece->set_borne("a", $b);
 			$b++;
@@ -257,12 +260,27 @@ class bobs_espece extends bobs_abstract_espece {
 		}
 		r($espece,1);
 	}
+
 	const sql_taxons_descendants = 'select id_espece from especes where borne_a>$1 and borne_b<$2 order by borne_a';
 
+	/**
+	 * @return clicnat_iterateur_especes
+	 */
 	public function taxons_descendants() {
 		$q = bobs_qm()->query($this->db, 'taxons_descendants', self::sql_taxons_descendants, [$this->borne_a, $this->borne_b]);
 		$r = self::fetch_all($q);
 		return new clicnat_iterateur_especes($this->db, array_column($r, 'id_espece'));
+	}
+
+	const sql_tous = 'select id_espece from especes';
+
+	/**
+	 * @return clicnat_iterateur_especes
+	 */
+	public static function tous($db) {
+		$q = bobs_qm()->query($db, 'tous_les_taxons', self::sql_tous, []);
+		$r = self::fetch_all($q);
+		return new clicnat_iterateur_especes($db, array_column($r, 'id_espece'));
 	}
 
 	const sql_sel_nom_sc_inpn = "select id_espece,nom_sc from v_especes_synonymes_sc_inpn where nom_sc ilike $1";
@@ -479,14 +497,15 @@ class bobs_espece extends bobs_abstract_espece {
 	 * @param $db ressource base de données
 	 * @param $tiers référence du tiers
 	 * @param $id numéro de l'espèce (dans le ref. tiers)
-	 * @return bobs_espece
+	 * @return bobs_espece|false
 	 */
 	public static function by_id_ref_tiers($db, $tiers, $id) {
 		self::cli($id);
 		$q = bobs_qm()->query($db, 'g_by_ref_tiers', self::sql_by_ref_tiers, array($tiers, $id));
 		$r = self::fetch($q);
-		if (is_array($r))
+		if (is_array($r)) {
 			return get_espece($db, $r['id_espece']);
+		}
 		return false;
 	}
 
@@ -1263,6 +1282,10 @@ class bobs_espece extends bobs_abstract_espece {
 		parent::insert($db, 'especes', $ti);
 		$esp = get_espece($db, $ti['id_espece']);
 		$esp->indexer_nom_scientifique_espece();
+		if (isset($args['taxref_inpn_especes']) && !empty($args['taxref_inpn_especes'])) {
+			$esp->ajoute_reference_tiers("taxref", $args['taxref_inpn_especes']);
+		}
+
 		return $esp->id_espece;
 	}
 
