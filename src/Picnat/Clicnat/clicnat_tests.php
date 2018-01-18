@@ -15,9 +15,9 @@ trait clicnat_tests {
 					return 0;
 				return null;
 			} elseif ($opt == self::except_si_vide) {
-				throw new Exception('chaine vide');
+				throw new \Exception('chaine vide');
 			} elseif ($opt == self::except_si_inf) {
-				throw new Exception('$opt invalide');
+				throw new \Exception('$opt invalide');
 			}
 		}
 		return $str;
@@ -43,11 +43,11 @@ trait clicnat_tests {
 				break;
 			case self::except_si_vide:
 				if (empty($str) && $str != '0')
-					throw new Exception('chaine vide cli');
+					throw new \Exception('chaine vide cli');
 				break;
 			case self::except_si_inf_1:
 				if ($entier < 1)
-					throw new Exception('entier inf. 1');
+					throw new \Exception('entier inf. 1');
 				break;
 		}
 		$ent = (int)$ent;

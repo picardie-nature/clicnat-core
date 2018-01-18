@@ -14,7 +14,13 @@ class clicnat_api_session extends bobs_element {
 	const nb_essai_max = 5;
 	const sql_count = "select count(*) as n from sessions_api where id_session=$1";
 
-	public static function init($db, $utilisateur) {
+	/**
+	 * Démarrer une nouvelle session
+	 * @param ressource $db
+	 * @param bobs_utilisateur $utilisateur
+	 * @return string identifiant de la session
+	 */
+	public static function init($db, bobs_utilisateur $utilisateur) {
 		$id_session = false;
 		for ($i=0; $i<self::nb_essai_max; $i++) {
 			$id_session_test = bin2hex(openssl_random_pseudo_bytes(64));
@@ -25,6 +31,7 @@ class clicnat_api_session extends bobs_element {
 				break;
 			}
 			bobs_log("clicnat_session::init essai $i");
+			return $id_session;
 		}
 
 		if (!$id_session) return false;
