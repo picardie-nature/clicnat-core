@@ -56,7 +56,7 @@ class clicnat_utilisateur extends bobs_element {
 	protected $diffusion_restreinte;
 	protected $last_login;
 	protected $last_ip;
-	protected $id_csnp;
+	protected $id_csnp; /** @deprecated */
 	protected $peut_ajouter_espece;
 	protected $expert;
 	protected $id_extraction_utilisateur_flux;

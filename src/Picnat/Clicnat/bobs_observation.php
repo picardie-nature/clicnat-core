@@ -245,12 +245,18 @@ class bobs_observation extends bobs_element_commentaire {
 	 */
 	public function get_observateurs() {
 		self::cli($this->id_observation);
-		return self::query_fetch_all($this->db, sprintf("
+		return array_map(
+			function ($obs) {
+				$obs["id_utilisateur"] = intval($obs["id_utilisateur"]);
+				return $obs;
+			},
+			self::query_fetch_all($this->db, sprintf("
 			select u.id_utilisateur, u.nom, u.prenom
 			from utilisateur u, observations_observateurs oo
 			where oo.id_utilisateur = u.id_utilisateur
 			and oo.id_observation = %d order by u.nom, u.prenom",
-			$this->id_observation));
+			$this->id_observation))
+		);
 	}
 
 	const sql_l_observateurs = "
@@ -479,12 +485,9 @@ class bobs_observation extends bobs_element_commentaire {
 	 * @return un tableau
 	 */
 	public function get_citations_ids() {
-		$q = bobs_qm()->query($this->db, 'obs_citations_ids', self::sql_s_citations_ids, array($this->id_observation));
-		$ids = array();
-		while ($r = self::fetch($q)) {
-			$ids[] = $r['id_citation'];
-		}
-		return $ids;
+		$q = bobs_qm()->query($this->db, 'obs_citations_ids', self::sql_s_citations_ids, [$this->id_observation]);
+		$r = self::fetch_all($q);
+		return array_map("intval", array_column($r , "id_citation"));
 	}
 
 	/**

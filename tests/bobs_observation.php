@@ -55,6 +55,9 @@ class bobs_observationTests extends TestCase {
 		$observateurs = $observation->get_observateurs();
 		$this->assertTrue(is_array($observateurs));
 		$this->assertCount($n, $observateurs);
+		foreach ($observateurs as $o) {
+			$this->assertTrue(is_int($o["id_utilisateur"]));
+		}
 
 		return [$id_observation, end($observateurs)['id_utilisateur'], $n];
 	}
@@ -88,6 +91,10 @@ class bobs_observationTests extends TestCase {
 		$this->assertInstanceOf(clicnat_iterateur_citations::class, $citations);
 		$this->assertCount(1, $citations);
 		$this->assertEquals($citations->current()->id_espece, $e[0]['id_espece']);
+
+		foreach ($observation->get_citations_ids() as $id) {
+			$this->assertTrue(is_int($id));
+		}
 	}
 
 	/**
