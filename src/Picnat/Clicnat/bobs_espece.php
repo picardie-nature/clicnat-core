@@ -107,6 +107,8 @@ class bobs_espece extends bobs_abstract_espece {
 				return $this->nom_s;
 			case 'nom_f':
 				return $this->nom_f;
+			case 'id_chr':
+				return $this->id_chr;
 			default:
 				// FIXME ReflectionObject
 				if (isset($this->$c)) {
