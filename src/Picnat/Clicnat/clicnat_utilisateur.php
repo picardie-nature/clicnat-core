@@ -229,7 +229,7 @@ class clicnat_utilisateur extends bobs_element {
 
 	public function __construct($db, $id) {
 		parent::__construct($db, 'utilisateur', 'id_utilisateur', $id);
-		if (empty($this->id_utilisateur)) {
+		if (empty($this->id_utilisateur) && $this->id_utilisateur != 0) {
 			throw new \Exception('id_utilisateur vide (utilisateur inexistant ?)');
 		}
 
@@ -486,8 +486,9 @@ class clicnat_utilisateur extends bobs_element {
 	 * @return un tableau d'objet bobs_utilisateurs
 	 */
 	public static function tous($db) {
-		$q = self::query($db, 'select * from utilisateur order by nom,prenom');
-		return self::fetchAllAsUtilisateur($q);
+		$q = self::query($db, 'select id_utilisateur from utilisateur order by nom,prenom');
+		$ids = array_column(self::fetch_all($q),"id_utilisateur");
+		return new clicnat_iterateur_utilisateurs($db, $ids);
 	}
 
 	const sql_update_last_login = 'update utilisateur set last_login=now() where id_utilisateur=$1';

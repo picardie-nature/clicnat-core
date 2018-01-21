@@ -640,6 +640,7 @@ function get_utilisateur($db, $id_or_array) {
 	try {
 		return $mngr->get($db, $id_or_array);
 	} catch (\Exception $e) {
+		error_log($e->getMessage()." ".__FILE__."(".__LINE__.")");
 		return null;
 	}
 }

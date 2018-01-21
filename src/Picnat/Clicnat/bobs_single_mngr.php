@@ -33,8 +33,9 @@ class bobs_single_mngr {
 		else
 			$id = $t_id;
 
-		if (empty($id))
+		if (empty($id) && $id != 0) {
 			throw new \InvalidArgumentException('$id is empty');
+		}
 
 		if (!array_key_exists($id, $this->instances)) {
 			if (memory_limit() - memory_get_usage() < (1024*1024*5)) {
