@@ -414,7 +414,7 @@ class clicnat_utilisateur extends bobs_element {
 
 	const sql_dernier_compte = 'select * from utilisateur order by id_utilisateur desc limit $1';
 
-	static public function derniers_comptes($db, $limite=30) {
+	public static function derniers_comptes($db, $limite=30) {
 		self::cli($limite);
 		$q = bobs_qm()->query($db, 'ul_derniers', self::sql_dernier_compte, [$limite]);
 		return self::fetchAllAsUtilisateur($q);
@@ -1243,7 +1243,7 @@ class clicnat_utilisateur extends bobs_element {
 
 	public function session_var_get($var) {
 		if (array_key_exists(md5($var.$this->id_utilisateur), $_SESSION))
-	    		return $_SESSION[md5($var.$this->id_utilisateur)];
+	    return $_SESSION[md5($var.$this->id_utilisateur)];
 		return null;
 	}
 
@@ -1258,35 +1258,37 @@ class clicnat_utilisateur extends bobs_element {
 	/**
 	 * @brief Changer le mot de passe
 	 * @param string $newpwd
-	 * @return handle le résultat de la requête
+	 * @return true
 	 */
 	public function set_password($newpwd) {
 		self::cls($newpwd);
-		if (strlen($newpwd) > 5) {
-			$newpwd = $this->crypte_mot_de_passe($newpwd);
-			bobs_log("set pwd {$newpwd} pour {$this->id_utilisateur}");
-			$q = bobs_qm()->query($this->db, 'utl_set_pwd', self::sql_set_pwd, array($this->id_utilisateur, $newpwd));
-			if (!$q) throw new Exception('problème mise à jour du mot de passe');
-			return true;
-		} else {
-			throw new InvalidArgumentException('mot de passe trop court');
+		if (strlen($newpwd) <= 5) {
+			throw new \InvalidArgumentException('mot de passe trop court');
 		}
-		throw new Exception('mot passe pas changé');
+		$newpwd = $this->crypte_mot_de_passe($newpwd);
+		bobs_log("set pwd {$newpwd} pour {$this->id_utilisateur}");
+		$q = bobs_qm()->query($this->db, 'utl_set_pwd', self::sql_set_pwd, array($this->id_utilisateur, $newpwd));
+		if (!$q) {
+			throw new \Exception('problème mise à jour du mot de passe');
+		}
+		return true;
 	}
 
 	/**
 	 * @brief Changer l'adresse mail
 	 * @param string $mail
-	 * @return handle le résultat de la requête
+	 * @return boolean
 	 */
 	public function set_mail($mail) {
 		self::cls($mail);
 
-		if (strpos($mail, '@') <= 0)
-			throw new InvalidArgumentException('pas de @');
+		if (strpos($mail, '@') <= 0) {
+			throw new \InvalidArgumentException('pas de @');
+		}
 
 		if (!empty($mail)) {
 			$this->update_field('mail', $mail);
+			return true;
 		}
 		return false;
 	}
@@ -1316,8 +1318,8 @@ class clicnat_utilisateur extends bobs_element {
 		$msg = self::mini_template($msg_tpl, $vars);
 
 		if (!mail($this->mail, $sujet, $msg, $headers, "-f$mail_support")) {
-			throw new Exception('Message pas envoyé');
-	    	}
+			throw new \Exception('Message pas envoyé');
+		}
 
 		return true;
 	}
@@ -1441,7 +1443,7 @@ class clicnat_utilisateur extends bobs_element {
 		$id_espace = bobs_espace_polygon::insert_wkt($this->db, $data);
 
 		if (!$id_espace) {
-			throw new Exception('problème pour créer le polygone');
+			throw new \Exception('problème pour créer le polygone');
 		}
 
 		return $this->repertoire_ajoute('espace_polygon', $id_espace);
