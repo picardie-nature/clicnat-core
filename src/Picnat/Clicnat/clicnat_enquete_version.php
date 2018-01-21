@@ -37,7 +37,7 @@ class clicnat_enquete_version {
 	public static function getInstanceFromXML($db, $xml) {
 		if (empty($xml))
 			return false;
-		$resultat = new DOMDocument();
+		$resultat = new \DOMDocument();
 		$resultat->loadXML($xml);
 		$xml_id_enquete = $resultat->firstChild->getAttribute("id_enquete");
 		$xml_version = $resultat->firstChild->getAttribute("version");
@@ -112,7 +112,7 @@ class clicnat_enquete_version {
 		$valeurs_init = array();
 		if ($id_citation) {
 			$citation = get_citation($this->db, (int)$id_citation);
-			$doc = new DOMDocument('1.0', 'UTF-8');
+			$doc = new \DOMDocument('1.0', 'UTF-8');
 			@$doc->loadXML($citation->enquete_resultat);
 			$champs_resultat = $doc->getElementsByTagName('champ');
 			foreach ($champs_resultat as $champ_resultat) {
@@ -144,7 +144,7 @@ class clicnat_enquete_version {
 	 * @brief création d'un instance d'un champ à partir de son code xml
 	 */
 	public static function champ_obj($xml) {
-		$doc = new DOMDocument('1.0', 'UTF-8');
+		$doc = new \DOMDocument('1.0', 'UTF-8');
 		$doc->loadXML($xml);
 		switch ($doc->documentElement->getAttribute('type')) {
 			case 'clc':
@@ -160,13 +160,13 @@ class clicnat_enquete_version {
 			case 'liste_choix_multiple':
 				return new clicnat_enquete_champ_choix_multiple($doc);
 			default:
-				throw new Exception('type de champ inconnu');
+				throw new \Exception('type de champ inconnu');
 		}
 		return false;
 	}
 
 	public function resultat_enregistre($id_citation, $data) {
-		$doc_resultat = new DOMDocument('1.0','UTF-8');
+		$doc_resultat = new \DOMDocument('1.0','UTF-8');
 		$doc_resultat->formatOutput=true;
 		$enq_res = $doc_resultat->createElement('enquete_resultat');
 		$enq_res->setAttribute('id_enquete', $this->id_enquete);
@@ -215,7 +215,7 @@ class clicnat_enquete_version {
 		if (empty($citation->enquete_resultat))
 			return false;
 		$ret = [];
-		$resultat = new DOMDocument();
+		$resultat = new \DOMDocument();
 		$resultat->loadXML($citation->enquete_resultat);
 		$xml_id_enquete = $resultat->firstChild->getAttribute("id_enquete");
 		$xml_version = $resultat->firstChild->getAttribute("version");
@@ -223,7 +223,7 @@ class clicnat_enquete_version {
 		if (($xml_id_enquete != $this->id_enquete) || ($xml_version != $this->version))
 			return false;
 
-		$xpath = new DOMXpath($resultat);
+		$xpath = new \DOMXpath($resultat);
 		foreach ($this->champs_xml() as $champ_xml) {
 			$champ = self::champ_obj($champ_xml);
 			$elems = $xpath->query("//champ[@nom='{$champ->nom}']");
@@ -243,7 +243,7 @@ class clicnat_enquete_version {
 						$v = trim($l,';');
 						break;
 					default:
-						throw new Exception('Pas simple ni multiple ?');
+						throw new \Exception('Pas simple ni multiple ?');
 
 				}
 				break;
@@ -258,9 +258,9 @@ class clicnat_enquete_version {
 		foreach ($this->citations() as $citation) {
 			$ligne = $citation->get_ligne_array();
 			// ajouter les champs de l'enquete ici
-			$resultat = new DOMDocument();
+			$resultat = new \DOMDocument();
 			$resultat->loadXML($citation->enquete_resultat);
-			$xpath = new DOMXpath($resultat);
+			$xpath = new \DOMXpath($resultat);
 			foreach ($this->champs_xml() as $champ_xml) {
 				$champ = self::champ_obj($champ_xml);
 				$elems = $xpath->query("//champ[@nom='{$champ->nom}']");
@@ -279,7 +279,7 @@ class clicnat_enquete_version {
 							$ligne[] = trim($l,';');
 							break;
 						default:
-							throw new Exception('Pas simple ni multiple ?');
+							throw new \Exception('Pas simple ni multiple ?');
 
 					}
 					break;

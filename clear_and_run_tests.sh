@@ -9,4 +9,4 @@ echo "drop schema public cascade; create schema public;"|psql $POSTGRES_DB_TEST
 psql $POSTGRES_DB_TEST -f init.sql;
 cd -
 
-phpunit -v
+vendor/bin/phpunit -v
