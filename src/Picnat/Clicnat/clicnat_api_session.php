@@ -34,14 +34,14 @@ class clicnat_api_session extends bobs_element {
 			return $id_session;
 		}
 
-		if (!$id_session) {
+		if ($id_session === false) {
 			return false;
 		}
 
 		$data = [
 			"id_utilisateur" => $utilisateur->id_utilisateur,
 			"id_session" => $id_session,
-			"date" => strftime("%Y-%m-%d %H:%M:%S", mktime())
+			"date" => strftime("%Y-%m-%d %H:%M:%S", time())
 		];
 
 		self::insert($db, 'sessions_api', $data);
