@@ -18,7 +18,7 @@ class clicnat_api_session extends bobs_element {
 	 * Démarrer une nouvelle session
 	 * @param ressource $db
 	 * @param bobs_utilisateur $utilisateur
-	 * @return string identifiant de la session
+	 * @return string|false identifiant de la session
 	 */
 	public static function init($db, bobs_utilisateur $utilisateur) {
 		$id_session = false;
@@ -34,7 +34,9 @@ class clicnat_api_session extends bobs_element {
 			return $id_session;
 		}
 
-		if (!$id_session) return false;
+		if (!$id_session) {
+			return false;
+		}
 
 		$data = [
 			"id_utilisateur" => $utilisateur->id_utilisateur,
@@ -47,7 +49,13 @@ class clicnat_api_session extends bobs_element {
 	}
 
 	public function check() {
-		// TODO vérifier date et valid
+		$format = "Y-m-d H:i:s";
+		$dateSession = \DateTime::createFromFormat($format, $this->date);
+		$dateLimite = $dateSession->add(new \DateInterval("PT7H"));
+		$now = new \DateTime();
+		if ($now > $dateLimite) {
+			return false;
+		}
 		return true;
 	}
 
