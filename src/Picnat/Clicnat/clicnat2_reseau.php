@@ -10,7 +10,8 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 	protected $restitution_auto;
 	protected $date_modif;
 	protected $date_creation;
-
+	private $l_coordinateurs;
+	const TAG_EN_ATTENTE_VALIDATION = 579;
 	const sql_liste_reseaux = 'select * from reseau order by nom';
 	const sql_n_especes = 'select coalesce(count(*),0) as n from reseau';
 	const sql_l_coordinateurs = '
@@ -47,10 +48,11 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 	const sql_suppr_branche = 'delete from reseau_branche_especes where id_reseau=$1 and id_espece=$2';
 	const sql_suppr_membre = 'delete from reseau_membres where id_reseau=$1 and id_utilisateur=$2';
 
+	const table = 'reseau';
 	/**
 	 * @param $id identifiant du réseau sur 2 lettres
 	 */
-	function __construct($db, $id, $table='reseau') {
+	public function __construct($db, $id, $table=self::table) {
 		parent::__construct($db, $table, 'id', $id);
 	}
 
@@ -65,23 +67,24 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 		];
 	}
 
-	public function getInstance($db, $id, $table='reseau', $pk='id') {
+	public function getInstance($db, $id, $table='reseau', $pk='id', $refresh=false) {
 		static $instances;
-		if (!isset($instances))
+		if (!isset($instances)) {
 			$instances = [];
+		}
 
 		if (is_array($id)) {
 			if (!isset($id[$pk])) {
-				throw new Exception("le tableau \$id n'a pas de clé $pk");
+				throw new \Exception("le tableau \$id n'a pas de clé $pk");
 			}
 			$__id = $id[$pk];
 		} else {
 			$__id = $id;
 		}
 
-		if (!isset($instances[$__id]))
+		if (!isset($instances[$__id])||$refresh) {
 			$instances[$__id] = new self($db, $id);
-
+		}
 		return $instances[$__id];
 	}
 
@@ -114,16 +117,14 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 				foreach ($this->liste_branches_especes() as $branche) {
 					$borne_a = $branche->borne_a;
 					if (empty($borne_a))
-						throw new Exception("Branche borne_a vide reseau::__get('where') id_espece={$branche->id_espece}");
+						throw new \Exception("Branche borne_a vide reseau::__get('where') id_espece={$branche->id_espece}");
 
 					$ws[] = "(especes.borne_a>={$branche->borne_a} and especes.borne_b<={$branche->borne_b})";
 				}
-				if (count($ws) == 0) throw new Exception("Pas de branches dans le réseau {$this->id}");
+				if (count($ws) == 0) throw new \Exception("Pas de branches dans le réseau {$this->id}");
 				return "(".join(" or ", $ws).")";
 		}
 	}
-
-	private $l_coordinateurs;
 
 	private function __coordinateurs() {
 		if (!isset($this->l_coordinateurs)) {
@@ -144,11 +145,17 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 		return $this->l_validateurs;
 	}
 
-	public static function liste_reseaux($db) {
+	/**
+	 * liste des reseaux
+	 * @param $db handler db
+	 * @param $refresh boolean forcer la création d'une nouvelle instance des objets
+	 * @return clicnat2_reseau[]
+	 */
+	public static function liste_reseaux($db, $refresh=false) {
 		$q = bobs_qm()->query($db, 'rliste_reseaux', self::sql_liste_reseaux, []);
 		$reseaux = [];
 		while ($r = self::fetch($q)) {
-			$reseaux[] = self::getInstance($db, $r);
+			$reseaux[] = self::getInstance($db, $r, $refresh);
 		}
 		return $reseaux;
 	}
@@ -209,14 +216,24 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 
 
 	/**
-	 * @brief Espèce présente dans le réseau
+	 * @brief Test si l'espèce est présente dans le réseau
+	 * @param $espece bobs_espece ou id_espece
 	 * @return boolean
 	 */
-	public function espece_dans_le_reseau($id_espece) {
-		$espece = get_espece($this->db, $id_espece);
+	public function espece_dans_le_reseau($espece) {
+		if (!is_object($espece)) {
+			$espece = get_espece($this->db, $espece);
+		}
 		foreach ($this->liste_branches_especes() as $esp_branche) {
-			if (($esp_branche->borne_a <= $espece->borne_a) && ($esp_branche->borne_b >= $espece->borne_a))
+			if (!is_object($esp_branche)) {
+				throw new \Exception("esp_branche n'est pas un objet");
+			}
+			if (!is_object($espece)) {
+				throw new \Exception("espece n'est pas un objet $espece");
+			}
+			if (($esp_branche->borne_a <= $espece->borne_a) && ($esp_branche->borne_b >= $espece->borne_a)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -244,7 +261,7 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 
 	public function ajouter_coordinateur($utilisateur) {
 		$id_utilisateur = is_object($utilisateur)?$utilisateur->id_utilisateur:(int)$utilisateur;
-		if (empty($id_utilisateur)) throw new Exception('id ne peut être vide');
+		if (empty($id_utilisateur)) throw new \Exception('id ne peut être vide');
 		bobs_log("réseau ajout coordinateur $id_utilisateur sur le réseau {$this->id}");
 		return bobs_qm()->query($this->db, 'r_ajout_coordinateur', self::sql_ajout_coordinateur, [$this->id, $id_utilisateur]);
 	}
@@ -252,6 +269,12 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 	public function ajouter_validateur($utilisateur, $espece) {
 		$id_utilisateur = is_object($utilisateur)?$utilisateur->id_utilisateur:(int)$utilisateur;
 		$id_espece = is_object($espece)?$espece->id_espece:(int)$espece;
+		if (empty($id_utilisateur)) {
+			throw new \InvalidArgumentException("utilisateur invalide ($u)");
+		}
+		if (empty($this->id)) {
+			throw new \Exception("id reseau vide ?");
+		}
 		bobs_log("ajout validateur $id_utilisateur sur le réseau {$this->id} peut valider branche $id_espece");
 		return bobs_qm()->query($this->db, 'r_ajout_espece', self::sql_ajout_validateur, [$this->id, $id_utilisateur, $id_espece]);
 	}
@@ -264,7 +287,7 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 
 	public function retirer_coordinateur($utilisateur) {
 		$id_utilisateur = is_object($utilisateur)?$utilisateur->id_utilisateur:(int)$utilisateur;
-		if (empty($id_utilisateur)) throw new Exception('id ne peut être vide');
+		if (empty($id_utilisateur)) throw new \Exception('id ne peut être vide');
 		bobs_log("retrait coordinateur $id_utilisateur du réseau {$this->id}");
 		return bobs_qm()->query($this->db, 'r_suppr_coordinateur', self::sql_suppr_coordinateur, [$this->id, $id_utilisateur]);
 	}
@@ -304,7 +327,7 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 		$extraction->ajouter_condition(new bobs_ext_c_reseau($this));
 		$branches_utilisateur = $this->liste_branches_validateur($utilisateur);
 		if ($branches_utilisateur->count() < 1) {
-			throw new Exception("{$utilisateur} pas validateur sur le réseau");
+			throw new \Exception("{$utilisateur} pas validateur sur le réseau");
 		}
 		foreach ($branches_utilisateur as $branche) {
 			$extraction->ajouter_condition(new bobs_ext_c_taxon_branche($branche->id_espece));
@@ -334,7 +357,7 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 			if ( $utilisateur != null ) {
 				$branches_utilisateur = $this->liste_branches_validateur($utilisateur);
 				if ($branches_utilisateur->count() < 1) {
-					throw new Exception("{$utilisateur} pas validateur sur le réseau");
+					throw new \Exception("{$utilisateur} pas validateur sur le réseau");
 				}
 				foreach ($branches_utilisateur as $branche) {
 					$extraction->ajouter_condition(new bobs_ext_c_taxon_branche($branche->id_espece));
@@ -347,14 +370,14 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 				$stats['pourcent_attente_utl'] = round(100 * ($stats['n_citations_utl'] - $stats['n_citations_a_valider_utl']) / $stats['n_citations_utl']);
 			}
 		}
-		catch (Exception $e){
+		catch (\Exception $e){
 
 		}
 		return $stats;
 
 	}
 
-	const TAG_EN_ATTENTE_VALIDATION = 579;
+
 
 	public function selection_a_valider($utilisateur,$selection,$n=50){
 		if( isset($selection) && !is_null($selection)){
@@ -369,9 +392,8 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 				';
 			$branches_utilisateur = $this->liste_branches_validateur($utilisateur);
 			if ($branches_utilisateur->count() < 1) {
-				throw new Exception("{$utilisateur} pas validateur sur le réseau");
-			}
-			else{
+				throw new \Exception("{$utilisateur} pas validateur sur le réseau");
+			} else {
 				$sql .= " and (";
 				foreach ($branches_utilisateur as $branche) {
 					$esp = get_espece($this->db,$branche->id_espece);

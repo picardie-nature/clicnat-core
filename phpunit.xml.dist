@@ -8,6 +8,7 @@
 			<file>tests/clicnat_utilisateur.php</file>
 			<file>tests/clicnat_api_session.php</file>
 			<file>tests/bobs_espece.php</file>
+			<file>tests/clicnat2_reseau.php</file>
 			<file>tests/bobs_espace_commune.php</file>
 			<file>tests/bobs_observation.php</file>
 			<file>tests/bobs_extractions.php</file>

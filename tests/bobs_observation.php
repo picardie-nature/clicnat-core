@@ -83,7 +83,8 @@ class bobs_observationTests extends TestCase {
 	public function testAjouterCitation($id_observation) {
 		$e = bobs_espece::recherche_par_nom(get_db(), "rat des moisson");
 		$observation = new bobs_observation(get_db(), $id_observation);
-		$observation->add_citation($e[0]['id_espece']);
+		$id_citation = $observation->add_citation($e[0]['id_espece']);
+		$this->assertTrue(is_int($id_citation));
 
 		$observation = new bobs_observation(get_db(), $id_observation);
 		$citations = $observation->get_citations();
@@ -95,6 +96,20 @@ class bobs_observationTests extends TestCase {
 		foreach ($observation->get_citations_ids() as $id) {
 			$this->assertTrue(is_int($id));
 		}
+		return $id_citation;
+	}
+
+	/**
+	 * @depends testAjouterCitation
+	 */
+	public function testValidationCitation($id_citation) {
+		$citation = get_citation(get_db(), $id_citation);
+		$this->assertInstanceOf(bobs_citation::class, $citation);
+		$v1 = bobs_utilisateur::by_mail(get_db(), "peppa.pig@example.com");
+		$v2 = bobs_utilisateur::by_mail(get_db(), "john.doe@example.com");
+
+		$citation->prevalidation_ajoute_evaluation($v1, 1);
+		$citation->prevalidation_ajoute_evaluation($v2, 1);
 	}
 
 	/**

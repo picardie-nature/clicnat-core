@@ -843,12 +843,12 @@ class bobs_citation extends bobs_element_commentaire {
 	 * @param $utilisateur instance de clicnat_utilisateur ou id_utilisateur
 	 * @param $points 1 pour valider, -1 pour invalider, 0 pour ne se prononce pas
 	 */
-	public function prevalidation_ajoute_evaluation($utilisateur, $points) {
+	public function prevalidation_ajoute_evaluation(clicnat_utilisateur $utilisateur, $points) {
+		if (!in_array($points, [-1,1,0])) {
+			throw new \Exception('$points doit être -1, 1 ou 0');
+		}
 		if ($this->deja_evalue($utilisateur) == 't') {
 			throw new \Exception('Citation déjà évalué par cet utilisateur');
-		}
-		if (abs($points) > 1) {
-			throw new \Exception('$points doit être -1, 1 ou 0');
 		}
 		$observateurs = $this->get_observation()->observateurs();
 		if ($observateurs->in_array($utilisateur->id_utilisateur)){
@@ -859,8 +859,9 @@ class bobs_citation extends bobs_element_commentaire {
 			throw new \Exception('Citation déja évaluée (contacter un administrateur)');
 		}
 		$reseau = clicnat2_reseau::get_reseau_espece($this->db, $this->id_espece);
-		if (!$reseau)
+		if (!$reseau) {
 			throw new \Exception('Pas trouvé le réseau de l\'espèce');
+		}
 		$validateur =  $reseau->est_validateur($utilisateur->id_utilisateur);
 		if (!$validateur){
 			throw new \Exception('Utilisateur non validateur pour cette espèce.');

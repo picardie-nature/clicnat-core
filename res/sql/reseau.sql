@@ -32,7 +32,7 @@ create table reseau_validateurs (
 	primary key (id_reseau, id_utilisateur, id_espece)
 );
 
-create table reseau_branches_especes (
+create table reseau_branche_especes (
 	id_reseau char(2) not null references reseau(id),
 	id_espece integer not null references especes(id_espece),
 	date_creation timestamp default now(),

@@ -5,7 +5,7 @@ class bobs_ext_c_sans_tag_invalide extends bobs_ext_c_sans_tag {
 	const poste = true;
 
 	function __construct() {
-		parent::__construct(get_config()->query_nv('/clicnat/validation/id_tag_invalide'));
+		parent::__construct(\Picnat\Clicnat\get_config()->query_nv('/clicnat/validation/id_tag_invalide'));
 	}
 
 	public static function new_by_array($t) {
