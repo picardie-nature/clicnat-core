@@ -67,7 +67,7 @@ class clicnat2_reseau extends bobs_element implements i_clicnat_reseau, \JsonSer
 		];
 	}
 
-	public function getInstance($db, $id, $table='reseau', $pk='id', $refresh=false) {
+	public static function getInstance($db, $id, $table='reseau', $pk='id', $refresh=false) {
 		static $instances;
 		if (!isset($instances)) {
 			$instances = [];
