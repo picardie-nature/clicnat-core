@@ -92,6 +92,26 @@ class bobs_selection extends bobs_element {
 	}
 
 
+	const sql_liste_esp_carre = '
+		select distinct id_espece
+		from selection_data sd,citations c,observations o,espace_index_atlas ei
+		where id_selection = $1 and c.id_citation=sd.id_citation and o.id_observation=c.id_observation and ei.id_espace=o.id_espace and srid=$2 and pas=$3
+		and x0=$4 and y0=$5
+	';
+
+	/**
+	 * Liste les espèces dans un carré
+	 * @param $pas pas de la grille
+	 * @param $srid srid de la grille
+	 * @param $x0 coordonnée X
+	 * @param $y0 coordonnée Y
+	 * @return array x0,y0,count_citation,count_selectio
+	 */
+	public function carre_liste_especes($pas, $srid, $x0, $y0) {
+		$q = bobs_qm()->query($this->db, 'sel_carr_liste_espe', self::sql_liste_esp_carre, [$this->id_selection,$srid,$pas,$x0,$y0]);
+		return new clicnat_iterateur_especes($this->db, array_column(self::fetch_all($q), "id_espece"));
+	}
+
 	const sql_par_nom = 'select id_selection from selection where id_utilisateur=$1 and nom_selection=$2 limit 1';
 
 	/**
