@@ -270,7 +270,7 @@ class bobs_espace extends bobs_element_espace_commentaire {
 
 		$sql = sprintf("select *,astext(the_geom) as geom
 					from espace_%s
-					where contains(GeomFromText('%s',%s),the_geom)",
+					where st_contains(GeomFromText('%s',%s),the_geom)",
 			self::escape($typetab), self::escape($poly), SRID_BY_DEFAULT);
 
 		$t = Array();

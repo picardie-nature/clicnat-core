@@ -144,7 +144,7 @@ class bobs_espace_point extends bobs_espace implements interface_clicnat_espace 
 	 */
 	private function get_xy($pt) {
 		if ($pt != 'x' and $pt != 'y')
-			throw new InvalidArgumentException('$pt values allowed values : "x" or "y"');
+			throw new \InvalidArgumentException('$pt values allowed values : "x" or "y"');
 
 		self::cli($this->id_espace);
 
@@ -244,7 +244,7 @@ class bobs_espace_point extends bobs_espace implements interface_clicnat_espace 
 	    return $this->__supprime_tag(BOBS_TBL_TAG_ESPACE, 'id_espace', $id_tag, $this->id_espace);
 	}
 
-	const sql_type_sol = "select reference from espace_corine where reference in ('111','112','121') and contains(the_geom,ST_PointFromText($1,$2))";
+	const sql_type_sol = "select reference from espace_corine where reference in ('111','112','121') and st_contains(the_geom,ST_PointFromText($1,$2))";
 
 	public static function point_dans_zone_urbaine_dense($db, $wkt, $srid) {
 		self::cls($wkt, self::except_si_vide);

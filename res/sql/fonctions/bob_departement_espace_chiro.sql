@@ -3,7 +3,7 @@ declare
 	id integer;
 begin
 	select ed.id_espace into id from espace_departement ed, espace_chiro ec
-		where contains(ed.the_geom , ec.the_geom)
+		where st_contains(ed.the_geom , ec.the_geom)
 		and ec.id_espace = espace_chiro_id;
 	return id;
 end

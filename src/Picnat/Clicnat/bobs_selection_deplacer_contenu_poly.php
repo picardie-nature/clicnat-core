@@ -54,7 +54,7 @@ class bobs_selection_deplacer_contenu_poly extends bobs_selection_action {
 		    and o.espace_table = $2
 		    and o.id_observation = c.id_observation
 		    and o.id_espace = e.id_espace
-		    and contains(setsrid(geomfromtext($3),4326), e.the_geom)';
+		    and st_contains(setsrid(geomfromtext($3),4326), e.the_geom)';
 
 		$args = array($this->id_selection_a, 'espace_point', $this->geom_wkt);
 

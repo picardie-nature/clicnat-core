@@ -204,7 +204,7 @@ class bobs_observation extends bobs_element_commentaire {
 					and c.id_espece = e.id_espece
 					and ep.id_espace = o.id_espace
 					and ed.id_espace = %d
-					and contains(ed.the_geom, ep.the_geom)
+					and st_contains(ed.the_geom, ep.the_geom)
 					group by to_char(date_modif,'MM'),to_char(date_modif,'YYYY')
 					order by to_char(date_modif,'YYYY'),to_char(date_modif,'MM')",
 					$departement);
