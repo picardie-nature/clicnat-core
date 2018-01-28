@@ -1032,7 +1032,7 @@ class bobs_citation extends bobs_element_commentaire {
 		$r = self::fetch($q);
 		if (!$r) return false;
 		switch (get_called_class()) {
-			case 'clicnat_citation_export_sinp':
+			case clicnat_citation_export_sinp::class:
 				return new clicnat_citation_export_sinp($db, $r);
 			default:
 				return get_citation($db, $r);
