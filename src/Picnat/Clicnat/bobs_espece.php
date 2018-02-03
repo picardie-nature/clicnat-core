@@ -67,6 +67,8 @@ class bobs_espece extends bobs_abstract_espece {
 		switch ($c) {
 			case 'id_espece':
 				return $this->id_espece;
+			case 'espece':
+				return $this->espece;
 			case 'determinant_znieff':
 				return $this->determinant_znieff == 't';
 			case 'invasif':
@@ -109,11 +111,29 @@ class bobs_espece extends bobs_abstract_espece {
 				return $this->nom_f;
 			case 'id_chr':
 				return $this->id_chr;
-			default:
-				// FIXME ReflectionObject
-				if (isset($this->$c)) {
-					return $this->$c;
-				}
+			case 'taxref_inpn_especes':
+				//FIXME aller chercher dans le referentiel
+				return $this->taxref_inpn_especes;
+			case 'classe_lib':
+				return $this->get_classe_lib();
+			case 'type_fiche':
+				return $this->type_fiche;
+			case 'systematique':
+				return $this->systematique;
+			case 'commentaire':
+				return $this->commentaire;
+			case 'exclure_restitution':
+				return $this->exclure_restitution;
+			case 'habitat':
+				return $this->habitat;
+			case 'menace':
+				return $this->menace;
+			case 'action_conservation':
+				return $this->action_conservation;
+			case 'commentaire_statut_menace':
+				return $this->commentaire_statut_menace;
+			case 'ordre':
+				return $this->ordre;
 		}
 		throw new \InvalidArgumentException("unknown property $c");
 	}

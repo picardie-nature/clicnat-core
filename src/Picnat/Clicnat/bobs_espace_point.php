@@ -140,7 +140,7 @@ class bobs_espace_point extends bobs_espace implements interface_clicnat_espace 
 	}
 
 	/**
-	 * @param $pt 'x' or 'y' character
+	 * @param string $pt 'x' or 'y' character
 	 */
 	private function get_xy($pt) {
 		if ($pt != 'x' and $pt != 'y')
@@ -246,6 +246,9 @@ class bobs_espace_point extends bobs_espace implements interface_clicnat_espace 
 
 	const sql_type_sol = "select reference from espace_corine where reference in ('111','112','121') and st_contains(the_geom,ST_PointFromText($1,$2))";
 
+	/**
+	 * @param integer $srid
+	 */
 	public static function point_dans_zone_urbaine_dense($db, $wkt, $srid) {
 		self::cls($wkt, self::except_si_vide);
 		self::cli($srid, self::except_si_inf_1);
