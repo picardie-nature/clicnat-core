@@ -7,14 +7,14 @@ class bobs_ext_c_taxon_branche extends bobs_extractions_conditions {
 
 	function __construct($id_espece) {
 		if (empty($id_espece))
-			throw new Exception("pas d'identifiant de taxon");
+			throw new \Exception("pas d'identifiant de taxon");
 		$this->id = $id_espece;
 		$this->arguments[] = 'id';
 	}
 
 	public function __toString() {
-		$db = get_db();
-		$espece = get_espece($db, $this->id);
+		$db = \Picnat\Clicnat\get_db();
+		$espece = \Picnat\Clicnat\get_espece($db, $this->id);
 		return "Taxons en dessous de {$espece}";
 	}
 
@@ -23,14 +23,14 @@ class bobs_ext_c_taxon_branche extends bobs_extractions_conditions {
 	}
 
 	public function get_sql() {
-		$db = get_db();
-		$esp = get_espece($db, $this->id);
-		if (!$esp) throw new Exception("id_espece={$this->id}");
+		$db = \Picnat\Clicnat\get_db();
+		$esp = \Picnat\Clicnat\get_espece($db, $this->id);
+		if (!$esp) throw new \Exception("id_espece={$this->id}");
 		$borne_a = $esp->borne_a;
 
 		$borne_b = $esp->borne_b;
-		if (empty($borne_a)) throw new Exception("Borne_a est vide {$this->id}");
-		if (empty($borne_b)) throw new Exception("Borne_b est vide {$this->id}");
+		if (empty($borne_a)) throw new \Exception("Borne_a est vide {$this->id}");
+		if (empty($borne_b)) throw new \Exception("Borne_b est vide {$this->id}");
 		return "(especes.borne_a between {$esp->borne_a} and {$esp->borne_b})";
 	}
 
