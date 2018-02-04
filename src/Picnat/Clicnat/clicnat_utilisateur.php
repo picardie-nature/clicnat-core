@@ -887,20 +887,25 @@ class clicnat_utilisateur extends bobs_element {
 				and utilisateur_citations_ok.id_citation=citations.id_citation
 			)';
 
+	/**
+	 * retourne une observation si l'utilisateur a le droit de la voir
+	 * @return bobs_observation|false
+	 */
 	public function get_observation_authok($observation) {
 		$n_ok = 0;
 		try {
 			foreach ($observation->get_citations() as $citation) {
 				if ($this->get_citation_authok($citation->id_citation)) {
 					$n_ok++;
+					break;
 				}
 			}
 		} catch (\Exception $e) {
 		}
-		if ($n_ok > 0) {
-			return $observation;
+		if ($n_ok == 0) {
+			return false;
 		}
-		return false;
+		return $observation;
 	}
 
 	/**
