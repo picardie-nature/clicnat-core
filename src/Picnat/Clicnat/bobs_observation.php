@@ -468,11 +468,11 @@ class bobs_observation extends bobs_element_commentaire {
 		self::cli($this->id_observation);
 
 		$id_citation = self::nextval($this->db, 'citations_id_citation_seq');
-		$data = array(
-			'id_citation' => $id_citation,
+		$data = [
+			'id_citation'    => $id_citation,
 			'id_observation' => $this->id_observation,
-			'id_espece' => $id_espece
-		);
+			'id_espece'      => $id_espece
+		];
 		bobs_citation::insert($this->db, 'citations', $data);
 		bobs_log(sprintf('add citation %d to obs %d', $id_citation, $this->id_observation));
 		return $id_citation;
